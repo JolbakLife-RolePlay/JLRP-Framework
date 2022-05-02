@@ -9,6 +9,9 @@ description 'RolePlay Framework'
 version '0.0'
 
 shared_scripts {
+	'shared/locale.lua',
+	'locales/*.lua',
+
 	'config.lua',
 
 	'shared/functions/table.lua',
