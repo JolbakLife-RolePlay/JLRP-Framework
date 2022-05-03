@@ -1,6 +1,23 @@
 Config = {}
 Config.Locale = 'en'
 
+Config.DefaultSpawn = {x = -269.4, y = -955.3, z = 31.2, heading = 205.8} -- Default spawn point
+Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaultDuty | false: set duty state from database last saved
+
+
+Config.Accounts = {}
+Config.Accounts.MoneyTypes = {['bank'] = 5000, ['cash'] = 500, ['black_money'] = 0, ['crypto'] = 0,} -- ['type'] = startamount - Add or remove money types for your server (for ex. ['bitcoin'] = 0)
+Config.Accounts.DontAllowMinus = {'cash', 'black_money', 'crypto'} -- Money that is not allowed going in minus
+Config.Accounts.PayCheckTimeOut = 15 -- The time in minutes that it will give the paycheck
+Config.Accounts.PayCheckSociety = false -- If true paycheck will come from the society account that the player is employed at, requires qb-bossmenu
+
+Config.Player = {}
+Config.Player.HungerRate = 4.2 -- Rate at which hunger goes down.
+Config.Player.ThirstRate = 3.8 -- Rate at which thirst goes down.
+Config.Player.Bloodtypes = {
+    "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
+}
+
 Config.MaxWeight = 30   -- The max inventory weight in KG
 Config.EnablePVP = true -- Enable or disable pvp on the server (Ability to shoot other players)
 
@@ -18,4 +35,4 @@ Config.Server.Whitelist = false -- Enable or disable whitelist on the server
 Config.Server.WhitelistPermission = 'admin' -- Permission that's able to enter the server when the whitelist is on
 Config.Server.Discord = "" -- Discord invite link
 Config.Server.CheckDuplicateLicense = true -- Check for duplicate rockstar license on join
-Config.Server.Permissions = {'developer', 'god', 'superadmin', 'admin', 'mod'} -- Add as many groups as you want here after creating them in your server.cfg
+Config.Server.AdminGroups = {'developer', 'god', 'superadmin', 'admin', 'mod'} -- Add as many groups as you want here after creating them in your server.cfg

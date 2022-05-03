@@ -23,6 +23,10 @@ server_scripts {
 	'server/tables.lua',
 
 	'server/MySQL.lua',
+	
+	'server/functions.lua',
+
+	'server/classes/player.lua',
 
 	'server/events.lua',
 

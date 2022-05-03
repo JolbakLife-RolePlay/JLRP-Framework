@@ -65,4 +65,46 @@ MySQL.ready(function()
 	else
 		Framework.Jobs = Jobs
 	end
+
+	local Gangs = {}
+	local gangs = MySQL.query.await('SELECT * FROM gangs')
+
+	for _, v in ipairs(gangs) do
+		Gangs[v.name] = v
+		Gangs[v.name].grades = {}
+	end
+
+	local gangGrades = MySQL.query.await('SELECT * FROM gang_grades')
+
+	for _, v in ipairs(gangGrades) do
+		if Gangs[v.gang_name] then
+			Gangs[v.gang_name].grades[tostring(v.grade)] = v
+		else
+			print(('[^3WARNING^7] Ignoring gang grades for ^5"%s"^0 due to missing gang'):format(v.gang_name))
+		end
+	end
+
+	for _, v in pairs(Gangs) do
+		if Framework.Table.Length(v.grades) == 0 then
+			Gangs[v.name] = nil
+			print(('[^3WARNING^7] Ignoring gang ^5"%s"^0 due to no gang grades found'):format(v.name))
+		end
+	end
+
+	if not Gangs then
+		Framework.Gangs['nogang'] = {
+			label = 'NoGang',
+			grades = {
+				['0'] = {
+					grade = 0,
+					label = 'No Gang Affiliation',
+					salary = 0,
+					skin_male = {},
+					skin_female = {}
+				}
+			}
+		}
+	else
+		Framework.Gangs = Gangs
+	end
 end)
