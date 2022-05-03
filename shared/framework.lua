@@ -1,4 +1,4 @@
-AddEventHandler('Framework:GetFrameworkObjects', function(cb)
+AddEventHandler('GetFrameworkObjects', function(cb)
 	cb(Framework)
 end)
 
