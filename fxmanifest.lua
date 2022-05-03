@@ -15,6 +15,8 @@ shared_scripts {
 	'config.lua',
 
 	'shared/functions/table.lua',
+	
+	'shared/framework.lua',
 }
 
 server_scripts {
@@ -42,7 +44,7 @@ ui_page {
 }
 
 files {
-
+	'imports.lua',
 }
 
 dependencies {
