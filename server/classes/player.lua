@@ -1,4 +1,4 @@
-function Framework.Player.Login(source, citizenid, newData)
+function Core.Player.Login(source, citizenid, newData)
     if source and source ~= '' then
         if citizenid then
             local identifier = Framework.GetIdentifier(source)
@@ -19,13 +19,13 @@ function Framework.Player.Login(source, citizenid, newData)
                 end
                 PlayerData.position = json.decode(PlayerData.position)
                 ]]
-                Framework.Player.CheckPlayerData(source, PlayerData)
+                Core.Player.CheckPlayerData(source, PlayerData)
             else
                 Framework.Kick(source, 'You Have Been Kicked For Exploitation', nil, nil)
                 --TODO Add Anticheat?!
             end
         else
-            Framework.Player.CheckPlayerData(source, newData)
+            Core.Player.CheckPlayerData(source, newData)
         end
         return true
     else
@@ -34,12 +34,12 @@ function Framework.Player.Login(source, citizenid, newData)
     end
 end
 
-function Framework.Player.CheckPlayerData(source, PlayerData)
+function Core.Player.CheckPlayerData(source, PlayerData)
     PlayerData = PlayerData or {}
     -- source
     PlayerData.source = source
     -- citizenid
-    PlayerData.citizenid = PlayerData.citizenid or Framework.Player.CreateCitizenId()
+    PlayerData.citizenid = PlayerData.citizenid or Core.Player.CreateCitizenId()
     -- identifier
     PlayerData.identifier = PlayerData.identifier or Framework.GetIdentifier(source)
     -- name
@@ -187,11 +187,25 @@ function Framework.Player.CheckPlayerData(source, PlayerData)
 		end
 	end
 
-    -- Charinfo
+    -- position
+    PlayerData.position = PlayerData.position or Config.DefaultSpawn
+
+    -- firstname
+
+    --lastname
+
+    -- dateofbirth
+
+    -- sex
+
+    -- height
+
+    -- charinfo
     PlayerData.charinfo = PlayerData.charinfo or {}
     PlayerData.charinfo.backstory = PlayerData.charinfo.backstory or 'placeholder backstory'
     PlayerData.charinfo.nationality = PlayerData.charinfo.nationality or 'CANADA'
-    -- Metadata
+
+    -- metadata
     PlayerData.metadata = PlayerData.metadata or {}
     PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
     PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
@@ -205,7 +219,7 @@ function Framework.Player.CheckPlayerData(source, PlayerData)
     PlayerData.metadata['status'] = PlayerData.metadata['status'] or {}
     PlayerData.metadata['bloodtype'] = PlayerData.metadata['bloodtype'] or Config.Player.Bloodtypes[math.random(1, #Config.Player.Bloodtypes)]
     PlayerData.metadata['callsign'] = PlayerData.metadata['callsign'] or 'NO CALLSIGN'
-    PlayerData.metadata['fingerprint'] = PlayerData.metadata['fingerprint'] or Framework.Player.CreateFingerId()
+    PlayerData.metadata['fingerprint'] = PlayerData.metadata['fingerprint'] or Core.Player.CreateFingerId()
     PlayerData.metadata['criminalrecord'] = PlayerData.metadata['criminalrecord'] or {
         ['hasRecord'] = false,
         ['date'] = nil
@@ -225,11 +239,13 @@ function Framework.Player.CheckPlayerData(source, PlayerData)
         }
     }
 
-    -- Other
-    PlayerData.position = PlayerData.position or Config.DefaultSpawn
+    -- skin
+
+    -- is_dead
+    
 end
 
-function Framework.Player.CreateCitizenId()
+function Core.Player.CreateCitizenId()
     local UniqueFound = false
     local CitizenId = nil
     while not UniqueFound do
@@ -242,21 +258,7 @@ function Framework.Player.CreateCitizenId()
     return CitizenId
 end
 
-function Framework.Player.CreateAccountNumber()
-    local UniqueFound = false
-    local AccountNumber = nil
-    while not UniqueFound do
-        AccountNumber = 'CA0' .. math.random(1, 9) .. 'Framework' .. math.random(1111, 9999) .. math.random(1111, 9999) .. math.random(11, 99)
-        local query = '%' .. AccountNumber .. '%'
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM users WHERE charinfo LIKE ?', { query })
-        if result == 0 then
-            UniqueFound = true
-        end
-    end
-    return AccountNumber
-end
-
-function Framework.Player.CreateFingerId()
+function Core.Player.CreateFingerId()
     local UniqueFound = false
     local FingerId = nil
     while not UniqueFound do
