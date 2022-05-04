@@ -6,3 +6,5 @@ Framework.Shared = {}
 Framework.Player = {}
 Framework.Players = {}
 Framework.Functions = {}
+
+Core = {} -- For Internal Usage

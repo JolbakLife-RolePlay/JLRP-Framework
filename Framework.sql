@@ -23,7 +23,7 @@ CREATE TABLE `users` (
   	`dateofbirth` varchar(10) DEFAULT NULL,
   	`sex` varchar(1) DEFAULT NULL,
   	`height` int(11) DEFAULT NULL,
-	--`charinfo` TEXT DEFAULT NULL,
+	`charinfo` TEXT DEFAULT NULL,
 	`metadata` TEXT NULL DEFAULT NULL,
 	`skin` LONGTEXT DEFAULT NULL,
 	`is_dead` tinyint(1) DEFAULT 0,

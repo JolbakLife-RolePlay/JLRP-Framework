@@ -1,8 +1,8 @@
-function Framework.Functions.GetPlayerFromId(source)
+function Framework.GetPlayerFromId(source)
     return Framework.Players[tonumber(source)]	
 end
 
-function Framework.Functions.GetPlayerFromIdentifier(identifier)
+function Framework.GetPlayerFromIdentifier(identifier)
 	for _, v in pairs(Framework.Players) do
 		if v.identifier == identifier then
 			return v
@@ -10,25 +10,18 @@ function Framework.Functions.GetPlayerFromIdentifier(identifier)
 	end
 end
 
-function Framework.Functions.GetIdentifier(source, idtype)
-    if not idtype or idtype == nil then
-        for _, v in ipairs(GetPlayerIdentifiers(source)) do
-            if string.find(v, 'license') then
-                return v
-            end
+function Framework.GetIdentifier(source, idtype)
+    idtype = idtype or 'license'
+    for _, v in pairs(GetPlayerIdentifiers(source)) do
+        if string.find(v, idtype) then
+            return v
         end
-    else
-        for _, v in pairs(GetPlayerIdentifiers(source)) do
-            if string.find(v, idtype) then
-                return v
-            end
-        end
-        return nil
     end
+    return nil
 end
 
-function Framework.Functions.IsPlayerBanned(source)
-    local identifier = Framework.Functions.GetIdentifier(source)
+function Framework.IsPlayerBanned(source)
+    local identifier = Framework.GetIdentifier(source)
     local result = MySQL.Sync.fetchSingle('SELECT * FROM bans WHERE identifier = ?', { identifier })
     if not result then return false end
     if os.time() < result.expire then
@@ -40,23 +33,23 @@ function Framework.Functions.IsPlayerBanned(source)
     return false
 end
 
-function Framework.Functions.IsLicenseInUse(identifier)
-    if Framework.Functions.GetPlayerFromIdentifier(identifier) then return true end
+function Framework.IsLicenseInUse(identifier)
+    if Framework.GetPlayerFromIdentifier(identifier) then return true end
     return false
 end
 
-function Framework.Functions.IsWhitelisted(source)
+function Framework.IsWhitelisted(source)
     if not Config.Server.Whitelist then return true end
-    if Framework.Functions.HasPermission(source, Config.Server.WhitelistPermission) then return true end
+    if Framework.HasPermission(source, Config.Server.WhitelistPermission) then return true end
     return false
 end
 
-function Framework.Functions.HasPermission(source, permission)
+function Framework.HasPermission(source, permission)
     if IsPlayerAceAllowed(source, permission) then return true end
     return false
 end
 
-function Framework.Functions.Kick(source, reason, setKickReason, deferrals)
+function Framework.Kick(source, reason, setKickReason, deferrals)
     reason = '\n' .. reason .. '\n🔸 Check our Discord for further information: ' .. Config.Server.Discord
     if setKickReason then
         setKickReason(reason)
@@ -86,17 +79,41 @@ function Framework.Functions.Kick(source, reason, setKickReason, deferrals)
     end)
 end
 
-function Framework.Functions.IsPlayerAdmin(source)
+function Core.IsPlayerAdmin(source)
 	if IsPlayerAceAllowed(source, 'command') or GetConvar('sv_lan', '') == 'true' and true or false then
 		return true
 	end
 	
-	local xPlayer = Framework.Functions.GetPlayerFromId(source)
+	local xPlayer = Framework.GetPlayerFromId(source)
 	if xPlayer then
 		for i, rank in pairs(Config.Server.AdminGroups) do
 			if xPlayer.group == rank then
 				return true
 			end
+		end
+	end
+
+	return false
+end
+
+function Framework.DoesJobExist(job, grade)
+	grade = tostring(grade)
+
+	if job and grade then
+		if Framework.Jobs[job] and Framework.Jobs[job].grades[grade] then
+			return true
+		end
+	end
+
+	return false
+end
+
+function Framework.DoesGangExist(gang, grade)
+	grade = tostring(grade)
+
+	if gang and grade then
+		if Framework.Gangs[gang] and Framework.Gangs[gang].grades[grade] then
+			return true
 		end
 	end
 

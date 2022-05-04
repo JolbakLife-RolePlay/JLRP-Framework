@@ -3,7 +3,7 @@ Config.Locale = 'en'
 
 Config.DefaultSpawn = {x = -269.4, y = -955.3, z = 31.2, heading = 205.8} -- Default spawn point
 Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaultDuty | false: set duty state from database last saved
-
+Config.DefaultDuty = false
 
 Config.Accounts = {}
 Config.Accounts.MoneyTypes = {['bank'] = 5000, ['cash'] = 500, ['black_money'] = 0, ['crypto'] = 0,} -- ['type'] = startamount - Add or remove money types for your server (for ex. ['bitcoin'] = 0)
