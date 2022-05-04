@@ -191,22 +191,27 @@ function Core.Player.CheckPlayerData(source, PlayerData)
     PlayerData.position = PlayerData.position or Config.DefaultSpawn
 
     -- firstname
-
+    PlayerData.firstname = PlayerData.firstname or ""
+    
     --lastname
+    PlayerData.lastname = PlayerData.lastname or ""
 
     -- dateofbirth
+    PlayerData.dateofbirth = PlayerData.dateofbirth or ""
 
     -- sex
+    PlayerData.sex = PlayerData.sex or ""
 
     -- height
-
+    PlayerData.height = PlayerData.height or ""
+    --[[
     -- charinfo
-    PlayerData.charinfo = PlayerData.charinfo or {}
+    PlayerData.charinfo = json.decode(PlayerData.charinfo) or {}
     PlayerData.charinfo.backstory = PlayerData.charinfo.backstory or 'placeholder backstory'
     PlayerData.charinfo.nationality = PlayerData.charinfo.nationality or 'CANADA'
-
+    ]]
     -- metadata
-    PlayerData.metadata = PlayerData.metadata or {}
+    PlayerData.metadata = json.decode(PlayerData.metadata) or {}
     PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
     PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
     PlayerData.metadata['stress'] = PlayerData.metadata['stress'] or 0
@@ -240,9 +245,10 @@ function Core.Player.CheckPlayerData(source, PlayerData)
     }
 
     -- skin
+    PlayerData.skin = json.decode(PlayerData.skin) or {}
 
     -- is_dead
-    
+    PlayerData.is_dead = PlayerData.is_dead or 0
 end
 
 function Core.Player.CreateCitizenId()
