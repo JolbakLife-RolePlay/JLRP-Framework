@@ -8,3 +8,4 @@ Framework.Players = {}
 Framework.Functions = {}
 
 Core = {} -- For Internal Usage
+Core.UsableItemsCallbacks = {}

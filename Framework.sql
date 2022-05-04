@@ -69,6 +69,16 @@ CREATE TABLE `gang_grades` (
   `skin_female` longtext NOT NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE `items` (
+	`name` VARCHAR(50) NOT NULL,
+	`label` VARCHAR(50) NOT NULL,
+	`weight` INT NOT NULL DEFAULT 1,
+	--`rare` TINYINT NOT NULL DEFAULT 0,
+	`can_remove` TINYINT NOT NULL DEFAULT 1,
+
+	PRIMARY KEY (`name`)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS `bans` (
 	`identifier` VARCHAR(255) NOT NULL,
 	`name` varchar(255) DEFAULT NULL,
@@ -85,3 +95,6 @@ CREATE TABLE IF NOT EXISTS `bans` (
 	KEY `discord` (`discord`),
 	KEY `ip` (`ip`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
+
+INSERT INTO `jobs` VALUES ('unemployed','Unemployed');
+INSERT INTO `job_grades` VALUES (1, 'unemployed', 0, 'unemployed', 'Unemployed', 0, 200, '{}', '{}');

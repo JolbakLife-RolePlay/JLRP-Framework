@@ -13,8 +13,9 @@ shared_scripts {
 	'locales/*.lua',
 
 	'config.lua',
+	'config.weapons.lua',
 
-	'shared/functions/table.lua',
+	'shared/functions/*.lua',
 	
 	'shared/framework.lua',
 }

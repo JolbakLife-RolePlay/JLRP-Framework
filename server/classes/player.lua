@@ -5,6 +5,7 @@ function Framework.Player.Login(source, citizenid, newData)
             --local PlayerData = MySQL.Sync.prepare('SELECT * FROM users where citizenid = ?', { citizenid })
             local PlayerData = MySQL.prepare.await(QUERIES.LOAD_PLAYER, { citizenid })
             if PlayerData and identifier == PlayerData.identifier then
+                --[[
                 PlayerData.accounts = json.decode(PlayerData.accounts)
                 PlayerData.position = json.decode(PlayerData.position)               
                 PlayerData.charinfo = json.decode(PlayerData.charinfo)
@@ -17,6 +18,7 @@ function Framework.Player.Login(source, citizenid, newData)
                     PlayerData.gang = {}
                 end
                 PlayerData.position = json.decode(PlayerData.position)
+                ]]
                 Framework.Player.CheckPlayerData(source, PlayerData)
             else
                 Framework.Kick(source, 'You Have Been Kicked For Exploitation', nil, nil)
@@ -33,9 +35,6 @@ function Framework.Player.Login(source, citizenid, newData)
 end
 
 function Framework.Player.CheckPlayerData(source, PlayerData)
-
-	local foundAccounts, foundItems = {}, {}
-
     PlayerData = PlayerData or {}
     -- source
     PlayerData.source = source
@@ -105,8 +104,9 @@ function Framework.Player.CheckPlayerData(source, PlayerData)
 	--if gangGradeObject.skin_female then PlayerData.job.skin_female = json.decode(gangGradeObject.skin_female) end
 
     -- accounts
-    if PlayerData.accounts then
-		local accounts = json.decode(result.accounts)
+    local foundAccounts = {}
+    if PlayerData.accounts and PlayerData.accounts ~= '' then
+		local accounts = json.decode(PlayerData.accounts)
 
 		for account, money in pairs(accounts) do
 			foundAccounts[account] = money
@@ -120,6 +120,111 @@ function Framework.Player.CheckPlayerData(source, PlayerData)
 		})
 	end
 
+    -- inventory 
+    local foundAccounts, foundItems = {}, {}
+    if not Config.OxInventory then
+		if PlayerData.inventory and PlayerData.inventory ~= '' then
+			local inventory = json.decode(PlayerData.inventory)
+            
+			for name, count in pairs(inventory) do
+				local item = Framework.Items[name]
+
+				if item then
+					foundItems[name] = count
+				else
+					print(('[^3WARNING^7] Ignoring invalid item "%s" for "%s"'):format(name, identifier))
+				end
+			end
+		end
+        PlayerData.inventory = {}
+		for name, item in pairs(Framework.Items) do
+			local count = foundItems[name] or 0
+			if count > 0 then PlayerData.weight = PlayerData.weight + (item.weight * count) end
+
+			table.insert(PlayerData.inventory, {
+				name = name,
+				count = count,
+				label = item.label,
+				weight = item.weight,
+				usable = Core.UsableItemsCallbacks[name] ~= nil,
+				--rare = item.rare,
+				canRemove = item.canRemove
+			})
+		end
+
+		table.sort(PlayerData.inventory, function(a, b)
+			return a.label < b.label
+		end)
+	else
+		if PlayerData.inventory and PlayerData.inventory ~= '' then
+			PlayerData.inventory = json.decode(PlayerData.inventory)
+        else 
+            PlayerData.inventory = {}
+        end
+	end
+
+    -- loadout
+    if not Config.OxInventory then
+		if PlayerData.loadout and PlayerData.loadout ~= '' then
+			local loadout = json.decode(PlayerData.loadout)
+            PlayerData.loadout = {}
+			for name, weapon in pairs(loadout) do
+				local label = Framework.GetWeaponLabel(name)
+
+				if label then
+					if not weapon.components then weapon.components = {} end
+					if not weapon.tintIndex then weapon.tintIndex = 0 end
+
+					table.insert(PlayerData.loadout, {
+						name = name,
+						ammo = weapon.ammo,
+						label = label,
+						components = weapon.components,
+						tintIndex = weapon.tintIndex
+					})
+				end
+			end
+		end
+	end
+
+    -- Charinfo
+    PlayerData.charinfo = PlayerData.charinfo or {}
+    PlayerData.charinfo.backstory = PlayerData.charinfo.backstory or 'placeholder backstory'
+    PlayerData.charinfo.nationality = PlayerData.charinfo.nationality or 'CANADA'
+    -- Metadata
+    PlayerData.metadata = PlayerData.metadata or {}
+    PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
+    PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
+    PlayerData.metadata['stress'] = PlayerData.metadata['stress'] or 0
+    PlayerData.metadata['isdead'] = PlayerData.metadata['isdead'] or false
+    PlayerData.metadata['armor'] = PlayerData.metadata['armor'] or 0
+    PlayerData.metadata['ishandcuffed'] = PlayerData.metadata['ishandcuffed'] or false
+    PlayerData.metadata['injail'] = PlayerData.metadata['injail'] or 0
+    PlayerData.metadata['jailtime'] = PlayerData.metadata['jailtime'] or 0
+    PlayerData.metadata['jailitems'] = PlayerData.metadata['jailitems'] or {}
+    PlayerData.metadata['status'] = PlayerData.metadata['status'] or {}
+    PlayerData.metadata['bloodtype'] = PlayerData.metadata['bloodtype'] or Config.Player.Bloodtypes[math.random(1, #Config.Player.Bloodtypes)]
+    PlayerData.metadata['callsign'] = PlayerData.metadata['callsign'] or 'NO CALLSIGN'
+    PlayerData.metadata['fingerprint'] = PlayerData.metadata['fingerprint'] or Framework.Player.CreateFingerId()
+    PlayerData.metadata['criminalrecord'] = PlayerData.metadata['criminalrecord'] or {
+        ['hasRecord'] = false,
+        ['date'] = nil
+    }
+    PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
+        ['car'] = false,
+        ['truck'] = false,
+        ['motorcycle'] = false,
+        ['business'] = false,
+        ['weapon'] = false
+    }
+    PlayerData.metadata['inside'] = PlayerData.metadata['inside'] or {
+        house = nil,
+        apartment = {
+            apartmentType = nil,
+            apartmentId = nil,
+        }
+    }
+
     -- Other
     PlayerData.position = PlayerData.position or Config.DefaultSpawn
 end
@@ -128,8 +233,8 @@ function Framework.Player.CreateCitizenId()
     local UniqueFound = false
     local CitizenId = nil
     while not UniqueFound do
-        CitizenId = tostring(Framework.Shared.RandomStr(3) .. Framework.Shared.RandomInt(5)):upper()
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM players WHERE citizenid = ?', { CitizenId })
+        CitizenId = tostring(Framework.String.Random(3) .. Framework.Integer.Random(5)):upper()
+        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM users WHERE citizenid = ?', { CitizenId })
         if result == 0 then
             UniqueFound = true
         end
@@ -141,9 +246,9 @@ function Framework.Player.CreateAccountNumber()
     local UniqueFound = false
     local AccountNumber = nil
     while not UniqueFound do
-        AccountNumber = 'US0' .. math.random(1, 9) .. 'Framework' .. math.random(1111, 9999) .. math.random(1111, 9999) .. math.random(11, 99)
+        AccountNumber = 'CA0' .. math.random(1, 9) .. 'Framework' .. math.random(1111, 9999) .. math.random(1111, 9999) .. math.random(11, 99)
         local query = '%' .. AccountNumber .. '%'
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM players WHERE charinfo LIKE ?', { query })
+        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM users WHERE charinfo LIKE ?', { query })
         if result == 0 then
             UniqueFound = true
         end
@@ -155,9 +260,9 @@ function Framework.Player.CreateFingerId()
     local UniqueFound = false
     local FingerId = nil
     while not UniqueFound do
-        FingerId = tostring(Framework.Shared.RandomStr(2) .. Framework.Shared.RandomInt(3) .. Framework.Shared.RandomStr(1) .. Framework.Shared.RandomInt(2) .. Framework.Shared.RandomStr(3) .. Framework.Shared.RandomInt(4))
+        FingerId = tostring(Framework.String.Random(2) .. Framework.Integer.Random(3) .. Framework.String.Random(1) .. Framework.Shared.RandomInt(2) .. Framework.Shared.RandomStr(3) .. Framework.Shared.RandomInt(4))
         local query = '%' .. FingerId .. '%'
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM `players` WHERE `metadata` LIKE ?', { query })
+        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM `users` WHERE `metadata` LIKE ?', { query })
         if result == 0 then
             UniqueFound = true
         end

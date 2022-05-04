@@ -5,7 +5,7 @@ MySQL.ready(function()
 			Framework.Items[v.name] = {
 				label = v.label,
 				weight = v.weight,
-				rare = v.rare,
+				--rare = v.rare,
 				canRemove = v.can_remove
 			}
 		end
