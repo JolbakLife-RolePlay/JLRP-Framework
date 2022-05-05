@@ -6,23 +6,23 @@ Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaul
 Config.DefaultDuty = false
 
 Config.Accounts = {}
-Config.Accounts.MoneyTypes = {['bank'] = 5000, ['cash'] = 500, ['black_money'] = 0, ['crypto'] = 0,} -- ['type'] = startamount - Add or remove money types for your server (for ex. ['bitcoin'] = 0)
+Config.Accounts.MoneyTypes = {['bank'] = 5000, ['money'] = 500, ['black_money'] = 0, ['crypto'] = 0,} -- ['type'] = startamount - Add or remove money types for your server (for ex. ['bitcoin'] = 0)
 Config.Accounts.DontAllowMinus = {'cash', 'black_money', 'crypto'} -- Money that is not allowed going in minus
 Config.Accounts.PayCheckTimeOut = 15 -- The time in minutes that it will give the paycheck
 Config.Accounts.PayCheckSociety = false -- If true paycheck will come from the society account that the player is employed at, requires qb-bossmenu
 
 Config.Player = {}
+Config.Player.PVP = true -- Enable or disable pvp on the server (Ability to shoot other players)
+Config.Player.MaxWeight = 30   -- The max inventory weight in KG
 Config.Player.HungerRate = 4.2 -- Rate at which hunger goes down.
 Config.Player.ThirstRate = 3.8 -- Rate at which thirst goes down.
 Config.Player.Bloodtypes = {
     "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
 }
 
-Config.MaxWeight = 30   -- The max inventory weight in KG
-Config.EnablePVP = true -- Enable or disable pvp on the server (Ability to shoot other players)
-
+Config.NativeNotify = false
+Config.EnableHud = false -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
 Config.MultiCharacter = false -- Enabling support for players having multiple characters - would not be implemented for now
-
 Config.OxInventory = true -- Enabling ox_inventory integration with the framework
 
 Config.Server = {} -- General server config

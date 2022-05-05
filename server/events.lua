@@ -92,3 +92,48 @@ local function onPlayerJoined(source)
         Framework.Functions.Kick(source, _Locale('no_valid_license'), nil, nil)
 	end
 end
+
+RegisterNetEvent('Framework:updateCoords')
+AddEventHandler('Framework:updateCoords', function(coords)
+	local xPlayer = Framework.GetPlayerFromId(source)
+
+	if xPlayer then
+		xPlayer.updatePosition(coords)
+	end
+end)
+
+RegisterNetEvent('Framework:setJob')
+AddEventHandler('Framework:setJob', function(source, newJob, lastJob)
+    
+end)
+
+RegisterNetEvent('Framework:setGang')
+AddEventHandler('Framework:setGang', function(source, newGang, lastGang)
+    
+end)
+
+RegisterNetEvent('Framework:onAddInventoryItem')
+AddEventHandler('Framework:onAddInventoryItem', function(source, itemName, itemCount)
+    
+end)
+
+RegisterNetEvent('Framework:onRemoveInventoryItem')
+AddEventHandler('Framework:onRemoveInventoryItem', function(source, itemName, itemCount)
+    
+end)
+
+RegisterNetEvent('Framework:setDuty')
+AddEventHandler('Framework:setDuty', function(bool)
+    local xPlayer = Framework.GetPlayerFromId(source)
+    if xPlayer.job.onDuty == bool then return end
+    
+    if bool then
+        xPlayer.setDuty(true)
+        xPlayer.triggerEvent('Framework:showNotification', _U('started_duty'))
+    else
+        xPlayer.setDuty(false)
+        xPlayer.triggerEvent('Framework:showNotification', _U('stopped_duty'))
+    end
+    TriggerClientEvent('Framework:setJob', xPlayer.source, xPlayer.job)
+end)
+
