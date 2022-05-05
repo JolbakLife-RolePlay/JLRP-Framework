@@ -14,10 +14,6 @@ shared_scripts {
 
 	'config.lua',
 	'config.weapons.lua',
-
-	'shared/functions/*.lua',
-	
-	'shared/framework.lua',
 }
 
 server_scripts {
@@ -34,6 +30,10 @@ server_scripts {
 	'server/events.lua',
 
 	'server/main.lua',
+
+	-- for Framework table injection we remove them from shared_scripts
+	'shared/functions/*.lua',	
+	'shared/framework.lua',
 }
 
 client_scripts {
@@ -41,6 +41,10 @@ client_scripts {
 	'client/functions.lua',
 	'client/events.lua',
 	'client/main.lua',
+
+	-- for Framework table injection we remove them from shared_scripts
+	'shared/functions/*.lua',	
+	'shared/framework.lua',
 }
 
 ui_page {
