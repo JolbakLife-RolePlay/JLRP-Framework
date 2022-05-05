@@ -131,3 +131,72 @@ RegisterNetEvent('Framework:showHelpNotification')
 AddEventHandler('Framework:showHelpNotification', function(msg, thisFrame, beep, duration)
 	Framework.ShowHelpNotification(msg, thisFrame, beep, duration)
 end)
+
+RegisterNetEvent('Framework:playerLoaded')
+AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
+	Framework.PlayerLoaded = true
+	Framework.PlayerData = xPlayer
+
+	FreezeEntityPosition(PlayerPedId(), true)
+
+	if Config.Multichar then
+		Wait(3000)
+	else
+		exports.spawnmanager:spawnPlayer({
+			x = Framework.PlayerData.coords.x,
+			y = Framework.PlayerData.coords.y,
+			z = Framework.PlayerData.coords.z + 0.25,
+			heading = Framework.PlayerData.coords.heading,
+			model = GetHashKey("mp_m_freemode_01"),
+			skipFade = false
+		}, function()
+			TriggerServerEvent('Framework:onPlayerSpawn')
+			TriggerEvent('Framework:onPlayerSpawn')
+			TriggerEvent('Framework:restoreLoadout')
+
+			if isNew then
+				TriggerEvent('skinchanger:loadDefaultModel', skin.sex == 0)
+			elseif skin then
+				TriggerEvent('skinchanger:loadSkin', skin)
+			end
+
+			TriggerEvent('Framework:loadingScreenOff')
+			ShutdownLoadingScreen()
+			ShutdownLoadingScreenNui()
+			FreezeEntityPosition(Framework.PlayerData.ped, false)
+		end)
+	end
+
+	while Framework.PlayerData.ped == nil do Wait(20) end
+	-- enable PVP
+	if Config.Player.PVP then
+		SetCanAttackFriendly(Framework.PlayerData.ped, true, false)
+		NetworkSetFriendlyFireOption(true)
+	end
+
+	if Config.DisableHealthRegen then
+		SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
+	end
+
+	if Config.EnableHud then
+		for k,v in ipairs(Framework.PlayerData.accounts) do
+			local accountTpl = '<div><img src="img/accounts/' .. v.name .. '.png"/>&nbsp;{{money}}</div>'
+			Framework.UI.HUD.RegisterElement('account_' .. v.name, k, 0, accountTpl, {money = Framework.Math.GroupDigits(v.money)})
+		end
+
+		local jobTpl = '<div>{{job_label}}{{grade_label}}</div>'
+
+		local gradeLabel = Framework.PlayerData.job.grade_label ~= Framework.PlayerData.job.label and Framework.PlayerData.job.grade_label or ''
+		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
+
+		Framework.UI.HUD.RegisterElement('job', #Framework.PlayerData.accounts, 0, jobTpl, {
+			job_label = Framework.PlayerData.job.label,
+			grade_label = gradeLabel
+		})
+	end
+	StartServerSyncLoops()
+end)
+
+AddEventHandler('Framework:loadingScreenOff', function()
+	Framework.UI.HUD.SetDisplay(1.0)
+end)

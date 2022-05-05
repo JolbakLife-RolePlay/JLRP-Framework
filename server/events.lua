@@ -1,5 +1,5 @@
 QUERIES = {
-    NEW_PLAYER = 'INSERT INTO `users` SET `citizenid` = ?, `identifier` = ?, `name` = ?, `group` = ?, `accounts` = ?, `position` = ?, `metadata` = ?',
+    NEW_PLAYER = 'INSERT INTO `users` SET `citizenid` = ?, `identifier` = ?, `name` = ?, `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `position` = ?, `metadata` = ?',
     LOAD_PLAYER = 'SELECT * FROM users where citizenid = ?',
 }
 
@@ -82,14 +82,14 @@ local function onPlayerJoined(source)
         else
 			local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', { identifier })
 			if result then
-                
+                Core.Player.Login(source, result.citizenid, {})
 			else
 				-- Create Player
-                Framework.Player.Login(source, nil, {})
+                Core.Player.Login(source, nil, {})
 			end
 		end
 	else
-        Framework.Functions.Kick(source, _Locale('no_valid_license'), nil, nil)
+        Framework.Kick(source, _Locale('no_valid_license'), nil, nil)
 	end
 end
 
@@ -129,11 +129,15 @@ AddEventHandler('Framework:setDuty', function(bool)
     
     if bool then
         xPlayer.setDuty(true)
-        xPlayer.triggerEvent('Framework:showNotification', _U('started_duty'))
+        xPlayer.triggerEvent('Framework:showNotification', _Locale('started_duty'))
     else
         xPlayer.setDuty(false)
-        xPlayer.triggerEvent('Framework:showNotification', _U('stopped_duty'))
+        xPlayer.triggerEvent('Framework:showNotification', _Locale('stopped_duty'))
     end
     TriggerClientEvent('Framework:setJob', xPlayer.source, xPlayer.job)
 end)
 
+RegisterNetEvent('Framework:playerLoaded')
+AddEventHandler('Framework:playerLoaded', function(source, xPlayer, isNew)
+    Framework.Players[source] = xPlayer
+end)

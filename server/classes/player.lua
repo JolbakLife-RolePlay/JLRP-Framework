@@ -5,10 +5,10 @@ function Core.Player.Login(source, citizenid, newData)
             --local PlayerData = MySQL.Sync.prepare('SELECT * FROM users where citizenid = ?', { citizenid })
             local PlayerData = MySQL.prepare.await(QUERIES.LOAD_PLAYER, { citizenid })
             if PlayerData and identifier == PlayerData.identifier then
-                --[[
+
                 PlayerData.accounts = json.decode(PlayerData.accounts)
                 PlayerData.position = json.decode(PlayerData.position)               
-                PlayerData.charinfo = json.decode(PlayerData.charinfo)
+                --PlayerData.charinfo = json.decode(PlayerData.charinfo)
                 PlayerData.metadata = json.decode(PlayerData.metadata)         
                 PlayerData.skin = json.decode(PlayerData.skin)         
                 PlayerData.job = json.decode(PlayerData.job)
@@ -18,14 +18,16 @@ function Core.Player.Login(source, citizenid, newData)
                     PlayerData.gang = {}
                 end
                 PlayerData.position = json.decode(PlayerData.position)
-                ]]
-                Core.Player.CheckPlayerData(source, PlayerData)
+                PlayerData.inventory = json.decode(PlayerData.inventory)
+                PlayerData.loadout = json.decode(PlayerData.loadout)
+                
+                Core.Player.CheckPlayerData(source, PlayerData, false)
             else
                 Framework.Kick(source, 'You Have Been Kicked For Exploitation', nil, nil)
                 --TODO Add Anticheat?!
             end
         else
-            Core.Player.CheckPlayerData(source, newData)
+            Core.Player.CheckPlayerData(source, newData, true)
         end
         return true
     else
@@ -34,7 +36,7 @@ function Core.Player.Login(source, citizenid, newData)
     end
 end
 
-function Core.Player.CheckPlayerData(source, PlayerData)
+function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData = PlayerData or {}
     -- source
     PlayerData.source = source
@@ -250,7 +252,55 @@ function Core.Player.CheckPlayerData(source, PlayerData)
     -- is_dead
     PlayerData.is_dead = PlayerData.is_dead or 0
 
-    Core.Player.CreatePlayer(PlayerData)
+    local xPlayer = Core.Player.CreatePlayer(PlayerData)
+    --Framework.Players[source] = xPlayer -- using in server-side 'Framework:playerLoaded'
+
+    if PlayerData.firstname and PlayerData.firstname ~= '' then
+        xPlayer.setFirstname(PlayerData.firstname)
+		xPlayer.set('firstName', PlayerData.firstname) -- for compatibility with esx
+        xPlayer.setLastname(PlayerData.lastname)
+		xPlayer.set('lastName', PlayerData.lastname) -- for compatibility with esx
+		if PlayerData.dateofbirth then
+            xPlayer.setDateofbirth(PlayerData.dateofbirth)
+            xPlayer.set('dateofbirth', PlayerData.dateofbirth) -- for compatibility with esx
+        end
+		if PlayerData.sex then
+            xPlayer.setSex(PlayerData.sex)
+            xPlayer.set('sex', PlayerData.sex) -- for compatibility with esx
+        end
+		if PlayerData.height then
+            xPlayer.setHeight(PlayerData.height)
+            xPlayer.set('height', PlayerData.height) -- for compatibility with esx
+        end
+	end
+
+    TriggerEvent('Framework:playerLoaded', source, xPlayer, isNew)
+
+	xPlayer.triggerEvent('Framework:playerLoaded', {
+		accounts = xPlayer.getAccounts(),
+		coords = xPlayer.getPosition(),
+		identifier = xPlayer.getIdentifier(),
+		inventory = xPlayer.getInventory(),
+		job = xPlayer.getJob(),
+        gang = xPlayer.getGang(),
+		loadout = xPlayer.getLoadout(),
+		maxWeight = xPlayer.getMaxWeight(),
+		money = xPlayer.getMoney(),
+        metadata = xPlayer.getMetadata(),
+		dead = false
+	}, isNew, PlayerData.skin)
+
+    if not Config.OxInventory then
+		-- TODO
+	else
+		exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
+	end
+
+    if isNew then
+        MySQL.prepare(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata)})
+    end
+
+    print(('[^2INFO^0] Player ^5"%s" ^0has connected to the server. ID: ^5%s^7'):format(xPlayer.getName(), source))
 end
 
 function Core.Player.CreateCitizenId()
@@ -298,6 +348,7 @@ function Core.Player.CreatePlayer(PlayerData)
     self.citizenid = PlayerData.citizenid
     self.identifier = PlayerData.identifier
     self.name = PlayerData.name
+    self.rpname = PlayerData.firstname .. ' ' .. PlayerData.lastname
     self.group = PlayerData.group
     self.job = PlayerData.job
     self.gang = PlayerData.gang
@@ -320,7 +371,7 @@ function Core.Player.CreatePlayer(PlayerData)
 	self.maxWeight = Config.Player.MaxWeight
 
 	if Config.MultiCharacter then 
-
+        --[[would not be implemeneted for now]]
     else 
         self.license = self.identifier
     end
@@ -905,6 +956,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- firstname
     function self.setFirstname(newName)
 		self.firstname = newName
+        self.rpname = self.getFirstname() .. ' ' .. self.getLastname()
 	end
 
     function self.getFirstname()
@@ -914,6 +966,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- lastname
     function self.setLastname(newName)
 		self.lastname = newName
+        self.rpname = self.getFirstname() .. ' ' .. self.getLastname()
 	end
 
     function self.getLastname()
@@ -926,8 +979,12 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     function self.getName()
-		--return self.name
-        return self.getFirstname() .. ' ' .. self.getLastname()
+		return self.name
+	end
+
+    -- rpname
+    function self.getRPName()
+		return self.rpname
 	end
 
     -- dateofbirth
@@ -937,6 +994,15 @@ function Core.Player.CreatePlayer(PlayerData)
 
     function self.getDateofbirth()
         return self.dateofbirth
+	end
+
+    -- sex
+    function self.setSex(newValue)
+		self.sex = newValue
+	end
+
+    function self.getSex()
+        return self.sex
 	end
 
     -- height

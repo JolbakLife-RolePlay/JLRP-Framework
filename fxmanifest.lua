@@ -39,6 +39,7 @@ server_scripts {
 client_scripts {
 	'client/tables.lua',
 	'client/functions.lua',
+	'client/events.lua',
 	'client/main.lua',
 }
 

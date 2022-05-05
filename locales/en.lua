@@ -5,7 +5,7 @@ Locales["en"] = {
     ["no_valid_license"] = "No Valid Rockstar License Found",
     ["duplicate_license"] = "Duplicate Rockstar License Found",
     ["not_whitelisted"] = "You're not whitelisted for this server",
-
+    
     -- WEAPONS
     -- Melee
     ["weapon_dagger"] = "Dagger",
@@ -218,5 +218,9 @@ Locales["en"] = {
     ["tint_army"] = "army skin",
     ["tint_lspd"] = "blue skin",
     ["tint_orange"] = "orange skin",
-    ["tint_platinum"] = "platinum skin"
+    ["tint_platinum"] = "platinum skin",
+
+    -- Duty related
+    ["stopped_duty"] = "You've stopped your duty.",
+    ["started_duty"] = "You've started your duty."
 }
