@@ -31,6 +31,8 @@ server_scripts {
 
 	'server/main.lua',
 
+	'server/loops.lua',
+
 	-- for Framework table injection we remove them from shared_scripts
 	'shared/functions/*.lua',	
 	'shared/framework.lua',
@@ -41,6 +43,7 @@ client_scripts {
 	'client/functions.lua',
 	'client/events.lua',
 	'client/main.lua',
+	'client/loops.lua',
 
 	-- for Framework table injection we remove them from shared_scripts
 	'shared/functions/*.lua',	

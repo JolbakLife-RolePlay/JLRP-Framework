@@ -2,8 +2,8 @@ function Core.Player.Login(source, citizenid, newData)
     if source and source ~= '' then
         if citizenid then
             local identifier = Framework.GetIdentifier(source)
-            --local PlayerData = MySQL.Sync.prepare('SELECT * FROM users where citizenid = ?', { citizenid })
-            local PlayerData = MySQL.prepare.await(QUERIES.LOAD_PLAYER, { citizenid })
+            local PlayerData = MySQL.Sync.prepare(QUERIES.LOAD_PLAYER, { citizenid })
+            --local PlayerData = MySQL.prepare.await(QUERIES.LOAD_PLAYER, { citizenid })
             if PlayerData and identifier == PlayerData.identifier then
 
                 PlayerData.accounts = json.decode(PlayerData.accounts)
@@ -65,7 +65,9 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     if Framework.DoesJobExist(job.name, job.grade) then
 		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[job.grade]
 	else
-		print(('[^3WARNING^7] Ignoring invalid job for %s [job: %s, grade: %s]'):format(identifier, job.name, job.grade))
+		if not isNew then
+			print(('[^3WARNING^7] Ignoring invalid job for %s [job: %s, grade: %s]'):format(identifier, job.name, job.grade))
+		end		
 		job.name, job.grade = 'unemployed', '0'
 		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[job.grade]
 	end
@@ -86,11 +88,13 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     -- gang
     local gang, gangObject, gangGradeObject = json.decode(PlayerData.gang) or {}, nil, nil
     if Framework.DoesGangExist(gang.name, gang.grade) then
-		gangObject, jobGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
+		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
 	else
-		print(('[^3WARNING^7] Ignoring invalid gang for %s [gang: %s, grade: %s]'):format(identifier, gang.name, gang.grade))
+		if not isNew then
+			print(('[^3WARNING^7] Ignoring invalid gang for %s [gang: %s, grade: %s]'):format(identifier, gang.name, gang.grade))
+		end			
 		gang.name, gang.grade = 'nogang', '0'
-		gangObject, gradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
+		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
 	end
     PlayerData.gang = {}
     PlayerData.gang.id = gangObject.id
@@ -291,13 +295,13 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	}, isNew, PlayerData.skin)
 
     if not Config.OxInventory then
-		-- TODO
+		xPlayer.triggerEvent('esx:createMissingPickups', Core.Pickups)
 	else
 		exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
 	end
 
     if isNew then
-        MySQL.prepare(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata)})
+        MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata)})
     end
 
     print(('[^2INFO^0] Player ^5"%s" ^0has connected to the server. ID: ^5%s^7'):format(xPlayer.getName(), source))
@@ -353,8 +357,8 @@ function Core.Player.CreatePlayer(PlayerData)
     self.job = PlayerData.job
     self.gang = PlayerData.gang
     self.accounts = PlayerData.accounts
-    self.inventory = PlayerData.inventory
-    self.loadout = PlayerData.loadout
+    self.inventory = PlayerData.inventory or {}
+    self.loadout = PlayerData.loadout or {}
 	self.position = PlayerData.position
     self.coords = self.position -- for compatibility with esx
 	self.firstname = PlayerData.firstname
@@ -608,6 +612,41 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- inventory
+	function self.getInventory(minimal)
+		if minimal then
+			local minimalInventory = {}
+
+			if not Inventory then
+				for k, v in ipairs(self.inventory) do
+					if v.count > 0 then
+						minimalInventory[v.name] = v.count
+					end
+				end
+			else
+				for k, v in pairs(self.inventory) do
+					if v.count and v.count > 0 then
+						local metadata = v.metadata
+
+						if v.metadata and next(v.metadata) == nil then
+							metadata = nil
+						end
+
+						minimalInventory[#minimalInventory+1] = {
+							name = v.name,
+							count = v.count,
+							slot = k,
+							metadata = metadata
+						}
+					end
+				end
+			end
+
+			return minimalInventory
+		end
+
+		return self.inventory
+	end
+
     function self.getInventoryItem(name, metadata)
 		if Inventory then
 			return Inventory.GetItem(self.source, name, metadata)
@@ -727,7 +766,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			return Inventory.GetItem(self.source, name, metadata)
 		end
 
-		for k,v in ipairs(self.inventory) do
+		for k, v in ipairs(self.inventory) do
 			if (v.name == name) and (v.count >= 1) then
 				return v, v.count
 			end
@@ -737,6 +776,36 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- loadout
+	function self.getLoadout(minimal)
+		if Inventory then return {} end
+		if minimal then
+			local minimalLoadout = {}
+
+			for k, v in ipairs(self.loadout) do
+				minimalLoadout[v.name] = {ammo = v.ammo}
+				if v.tintIndex > 0 then minimalLoadout[v.name].tintIndex = v.tintIndex end
+
+				if #v.components > 0 then
+					local components = {}
+
+					for k2,component in ipairs(v.components) do
+						if component ~= 'clip_default' then
+							components[#components + 1] = component
+						end
+					end
+
+					if #components > 0 then
+						minimalLoadout[v.name].components = components
+					end
+				end
+			end
+
+			return minimalLoadout
+		else
+			return self.loadout
+		end
+	end
+
     function self.addWeapon(weaponName, ammo)
 		if Inventory then return end
 

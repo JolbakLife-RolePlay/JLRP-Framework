@@ -4,7 +4,7 @@ QUERIES = {
 }
 
 
-local function onPlayerConnecting(name, setKickReason, deferrals)
+function onPlayerConnecting(name, setKickReason, deferrals)
     local src = source
     local license = Framework.GetIdentifier(src)
     deferrals.defer()
@@ -53,7 +53,7 @@ end
 
 AddEventHandler('playerConnecting', onPlayerConnecting) -- Default FiveM Event
 
-local function RemoveCommmandPermissionForPlayer(source)
+function RemoveCommmandPermissionForPlayer(source)
 	local identifiers = GetPlayerIdentifiers(source)
     for i in ipairs(identifiers) do
         ExecuteCommand(('remove_ace identifier.%s command allow'):format(identifiers[i]))
@@ -67,14 +67,13 @@ else
 	RegisterNetEvent('Framework:onPlayerJoined')
 	AddEventHandler('Framework:onPlayerJoined', function()
 		while not next(Framework.Jobs) do Wait(50) end
-
 		if not Framework.Players[source] then
 			onPlayerJoined(source)
 		end
 	end)
 end
 
-local function onPlayerJoined(source)
+function onPlayerJoined(source)
 	local identifier = Framework.GetIdentifier(source)
 	if identifier then
 		if Framework.IsLicenseInUse(identifier) then

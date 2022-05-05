@@ -97,7 +97,7 @@ MySQL.ready(function()
 			grades = {
 				['0'] = {
 					grade = 0,
-					label = 'No Gang Affiliation',
+					label = 'No Affiliation',
 					salary = 0,
 					skin_male = {},
 					skin_female = {}
@@ -107,4 +107,8 @@ MySQL.ready(function()
 	else
 		Framework.Gangs = Gangs
 	end
+
+	print('[^2INFO^7] ^5FRAMEWORK^0 INITIALIZED')
+	DBSync()
 end)
+

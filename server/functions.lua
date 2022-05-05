@@ -119,3 +119,50 @@ function Framework.DoesGangExist(gang, grade)
 
 	return false
 end
+
+function Framework.GetPlayers(key, val)
+	local xPlayers = {}
+	for k, v in pairs(Framework.Players) do
+		if key then
+			if (key == 'job' and v.job.name == val) or v[key] == val then
+				xPlayers[#xPlayers + 1] = v
+			end
+		else
+			xPlayers[#xPlayers + 1] = v
+		end
+	end
+	return xPlayers
+end
+
+function Framework.GetExtendedPlayers(key, val) -- for campatibility with esx
+	return Framework.GetPlayers(key, val)
+end
+
+function Core.SavePlayers(cb)
+	local xPlayers = Framework.GetPlayers()
+	local count = #xPlayers
+	if count > 0 then
+		local parameters = {}
+		local time = os.time()
+		for i=1, count do
+			local xPlayer = xPlayers[i]
+			parameters[#parameters+1] = {
+                xPlayer.group,
+                xPlayer.job,
+				xPlayer.gang,
+				json.encode(xPlayer.getAccounts(true)),
+				json.encode(xPlayer.getInventory(true)),
+				json.encode(xPlayer.getLoadout(true)),				
+				json.encode(xPlayer.getPosition()),
+				json.encode(xPlayer.getMetadata()),
+				xPlayer.getCitizenid()
+			}
+		end
+		MySQL.prepare("UPDATE `users` SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `loadout` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", parameters,
+		function(results)
+			if results then
+				if type(cb) == 'function' then cb() else print(('[^2INFO^7] Saved %s %s over %s ms'):format(count, count > 1 and 'players' or 'player', (os.time() - time) / 1000000)) end
+			end
+		end)
+	end
+end

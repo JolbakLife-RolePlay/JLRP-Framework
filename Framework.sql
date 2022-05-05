@@ -15,8 +15,8 @@ CREATE TABLE `users` (
 	`job` TEXT NOT NULL,
 	`gang` TEXT DEFAULT NULL,
 	`accounts` LONGTEXT NULL DEFAULT NULL,
-	`inventory` LONGTEXT NULL DEFAULT NULL,
-	`loadout` LONGTEXT NULL DEFAULT NULL,
+	`inventory` LONGTEXT NULL DEFAULT '{}',
+	`loadout` LONGTEXT NULL DEFAULT '{}',
 	`position` VARCHAR(255) NOT NULL,
 	`firstname` varchar(16) DEFAULT NULL,
   	`lastname` varchar(16) DEFAULT NULL,
@@ -52,8 +52,7 @@ CREATE TABLE `job_grades` (
 
 CREATE TABLE `gangs` (
   `name` varchar(50) NOT NULL,
-  `label` varchar(50) DEFAULT NULL,
-  `whitelisted` tinyint(1) NOT NULL DEFAULT 0
+  `label` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE `gang_grades` (
@@ -95,3 +94,6 @@ CREATE TABLE IF NOT EXISTS `bans` (
 
 INSERT INTO `jobs` VALUES ('unemployed', 'Unemployed', 0);
 INSERT INTO `job_grades` VALUES (1, 'unemployed', 0, 'unemployed', 'Unemployed', 0, 200, '{}', '{}');
+
+INSERT INTO `gangs` VALUES ('nogang', 'NoGang');
+INSERT INTO `gang_grades` VALUES (1, 'nogang', 0, 'nogang', 'No Affiliation', 0, 0, '{}', '{}');

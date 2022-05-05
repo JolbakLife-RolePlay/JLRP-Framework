@@ -1,6 +1,6 @@
-ESX = {}
+Framework = {}
 Core = {}
 
-ESX.PlayerData = {}
-ESX.PlayerLoaded = false
-ESX.Game = {}
+Framework.PlayerData = {}
+Framework.PlayerLoaded = false
+Framework.Game = {}

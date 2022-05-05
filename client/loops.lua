@@ -15,7 +15,7 @@ function StartServerSyncLoops()
 					previousCoords = playerCoords
 					local playerHeading = Framework.Math.Round(GetEntityHeading(Framework.PlayerData.ped), 1)
 					local formattedCoords = {x = Framework.Math.Round(playerCoords.x, 1), y = Framework.Math.Round(playerCoords.y, 1), z = Framework.Math.Round(playerCoords.z, 1), heading = playerHeading}
-					--TriggerServerEvent('Framework:updateCoords', formattedCoords)
+					TriggerServerEvent('Framework:updateCoords', formattedCoords)
 				end
 			end
 			Wait(2000)
