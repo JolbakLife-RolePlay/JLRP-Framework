@@ -16,3 +16,8 @@ Core.CancelledTimeouts = {}
 Core.RegisteredCommands = {}
 Core.Pickups = {}
 Core.PickupId = 0
+
+QUERIES = {
+    NEW_PLAYER = 'INSERT INTO `users` SET `citizenid` = ?, `identifier` = ?, `name` = ?, `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `position` = ?, `metadata` = ?',
+    LOAD_PLAYER = 'SELECT * FROM users where identifier = ?',
+}

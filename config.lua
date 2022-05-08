@@ -6,7 +6,8 @@ Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaul
 Config.DefaultDuty = false
 
 Config.Accounts = {}
-Config.Accounts.MoneyTypes = {['bank'] = 5000, ['money'] = 500, ['black_money'] = 0, ['crypto'] = 0,} -- ['type'] = startamount - Add or remove money types for your server (for ex. ['bitcoin'] = 0)
+Config.Accounts.MoneyTypes = {bank = 'bank', money = 'money', black_money = 'black_money'}
+Config.Accounts.StartingMoney = {bank = 5000, money = 500, black_money = 0}
 Config.Accounts.DontAllowMinus = {'cash', 'black_money', 'crypto'} -- Money that is not allowed going in minus
 Config.Accounts.PayCheckTimeOut = 15 -- The time in minutes that it will give the paycheck
 Config.Accounts.PayCheckSociety = false -- If true paycheck will come from the society account that the player is employed at, requires qb-bossmenu

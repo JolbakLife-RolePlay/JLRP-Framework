@@ -109,6 +109,7 @@ MySQL.ready(function()
 	end
 
 	print('[^2INFO^7] ^5FRAMEWORK^0 INITIALIZED')
+	PositionSync()
 	DBSync()
 end)
 

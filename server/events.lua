@@ -1,9 +1,3 @@
-QUERIES = {
-    NEW_PLAYER = 'INSERT INTO `users` SET `citizenid` = ?, `identifier` = ?, `name` = ?, `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `position` = ?, `metadata` = ?',
-    LOAD_PLAYER = 'SELECT * FROM users where citizenid = ?',
-}
-
-
 function onPlayerConnecting(name, setKickReason, deferrals)
     local src = source
     local license = Framework.GetIdentifier(src)
@@ -79,13 +73,7 @@ function onPlayerJoined(source)
 		if Framework.IsLicenseInUse(identifier) then
             Framework.Kick(source, _Locale('duplicate_license'), nil, nil)
         else
-			local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', { identifier })
-			if result then
-                Core.Player.Login(source, result.citizenid, {})
-			else
-				-- Create Player
-                Core.Player.Login(source, nil, {})
-			end
+            Core.Player.Login(source, identifier)
 		end
 	else
         Framework.Kick(source, _Locale('no_valid_license'), nil, nil)
@@ -93,9 +81,9 @@ function onPlayerJoined(source)
 end
 
 RegisterNetEvent('Framework:updateCoords')
-AddEventHandler('Framework:updateCoords', function(coords)
-	local xPlayer = Framework.GetPlayerFromId(source)
-
+AddEventHandler('Framework:updateCoords', function(coords, src)
+    local _source = src or source
+	local xPlayer = Framework.GetPlayerFromId(_source)
 	if xPlayer then
 		xPlayer.updatePosition(coords)
 	end
@@ -139,4 +127,22 @@ end)
 RegisterNetEvent('Framework:playerLoaded')
 AddEventHandler('Framework:playerLoaded', function(source, xPlayer, isNew)
     Framework.Players[source] = xPlayer
+end)
+
+AddEventHandler('playerDropped', function(reason)
+	local _source = source
+	local xPlayer = Framework.GetPlayerFromId(_source)
+
+	if xPlayer then
+		TriggerEvent('Framework:playerDropped', _source, reason)
+
+		Core.SavePlayer(xPlayer, function()
+			Framework.Players[_source] = nil
+		end)
+	end
+end)
+
+RegisterNetEvent('Framework:playerDropped')
+AddEventHandler('Framework:playerDropped', function(source, reason)
+    
 end)

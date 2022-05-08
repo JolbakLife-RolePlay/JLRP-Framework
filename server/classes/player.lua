@@ -1,35 +1,32 @@
-function Core.Player.Login(source, citizenid, newData)
+function Core.Player.Login(source, identifier)
     if source and source ~= '' then
-        if citizenid then
-            local identifier = Framework.GetIdentifier(source)
-            local PlayerData = MySQL.Sync.prepare(QUERIES.LOAD_PLAYER, { citizenid })
-            --local PlayerData = MySQL.prepare.await(QUERIES.LOAD_PLAYER, { citizenid })
-            if PlayerData and identifier == PlayerData.identifier then
-
-                PlayerData.accounts = json.decode(PlayerData.accounts)
-                PlayerData.position = json.decode(PlayerData.position)               
-                --PlayerData.charinfo = json.decode(PlayerData.charinfo)
-                PlayerData.metadata = json.decode(PlayerData.metadata)         
-                PlayerData.skin = json.decode(PlayerData.skin)         
-                PlayerData.job = json.decode(PlayerData.job)
-                if PlayerData.gang then
-                    PlayerData.gang = json.decode(PlayerData.gang)
-                else
-                    PlayerData.gang = {}
-                end
-                PlayerData.position = json.decode(PlayerData.position)
-                PlayerData.inventory = json.decode(PlayerData.inventory)
-                PlayerData.loadout = json.decode(PlayerData.loadout)
-                
-                Core.Player.CheckPlayerData(source, PlayerData, false)
-            else
-                Framework.Kick(source, 'You Have Been Kicked For Exploitation', nil, nil)
-                --TODO Add Anticheat?!
-            end
-        else
-            Core.Player.CheckPlayerData(source, newData, true)
-        end
-        return true
+		local PlayerData = MySQL.Sync.prepare(QUERIES.LOAD_PLAYER, { identifier })
+		if PlayerData then
+			if not Framework.String.IsNull(PlayerData.citizenid) then
+				--[[
+				PlayerData.accounts = (PlayerData.accounts and PlayerData.accounts ~= '') == true and json.decode(PlayerData.accounts)
+				PlayerData.inventory = (PlayerData.inventory and PlayerData.inventory ~= '') == true and json.decode(PlayerData.inventory)
+				PlayerData.loadout = (PlayerData.loadout and PlayerData.loadout ~= '') == true and json.decode(PlayerData.loadout)
+				PlayerData.position = (PlayerData.position and PlayerData.position ~= '') == true and json.decode(PlayerData.position)
+				PlayerData.metadata = (PlayerData.metadata and PlayerData.metadata ~= '') == true and json.decode(PlayerData.metadata)
+				PlayerData.skin = (PlayerData.skin and PlayerData.skin ~= '') == true and json.decode(PlayerData.skin)
+				PlayerData.job = (PlayerData.job and PlayerData.job ~= '') == true and json.decode(PlayerData.job)
+				PlayerData.gang = (PlayerData.gang and PlayerData.gang ~= '') == true and json.decode(PlayerData.gang) or {}
+				]]
+				PlayerData.accounts = json.decode(PlayerData.accounts)
+				PlayerData.inventory = json.decode(PlayerData.inventory)
+				PlayerData.loadout = json.decode(PlayerData.loadout)
+				PlayerData.position = json.decode(PlayerData.position)
+				PlayerData.metadata = json.decode(PlayerData.metadata)
+				PlayerData.skin = json.decode(PlayerData.skin)
+				PlayerData.job = json.decode(PlayerData.job)
+				PlayerData.gang = json.decode(PlayerData.gang)
+				Core.Player.CheckPlayerData(source, PlayerData, false)
+				return true
+			end			
+		end
+		Core.Player.CheckPlayerData(source, {}, true)
+		return true
     else
         Framework.ShowError(GetCurrentResourceName(), 'Error At Framework.Player.Login() - NO SOURCE GIVEN!')
         return false
@@ -61,15 +58,15 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.group = PlayerData.group or defaultGroup
     
     -- job
-    local job, jobObject, jobGradeObject = json.decode(PlayerData.job) or {}, nil, nil
+    local job, jobObject, jobGradeObject = PlayerData.job or {}, nil, nil
     if Framework.DoesJobExist(job.name, job.grade) then
-		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[job.grade]
+		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[tostring(job.grade)]
 	else
 		if not isNew then
 			print(('[^3WARNING^7] Ignoring invalid job for %s [job: %s, grade: %s]'):format(identifier, job.name, job.grade))
 		end		
 		job.name, job.grade = 'unemployed', '0'
-		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[job.grade]
+		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[tostring(job.grade)]
 	end
     PlayerData.job = {}
 	PlayerData.job.id = jobObject.id
@@ -82,19 +79,17 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.job.onDuty = Config.ForceJobDefaultDutyAtLogin and Config.DefaultDuty or PlayerData.job.onDuty or false
 	PlayerData.job.skin_male = json.decode(jobGradeObject.skin_male) or {}
 	PlayerData.job.skin_female = json.decode(jobGradeObject.skin_female) or {}
-	--if jobGradeObject.skin_male then PlayerData.job.skin_male = json.decode(jobGradeObject.skin_male) end
-	--if jobGradeObject.skin_female then PlayerData.job.skin_female = json.decode(jobGradeObject.skin_female) end
 
     -- gang
-    local gang, gangObject, gangGradeObject = json.decode(PlayerData.gang) or {}, nil, nil
+    local gang, gangObject, gangGradeObject = PlayerData.gang or {}, nil, nil
     if Framework.DoesGangExist(gang.name, gang.grade) then
-		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
+		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[tostring(gang.grade)]
 	else
 		if not isNew then
 			print(('[^3WARNING^7] Ignoring invalid gang for %s [gang: %s, grade: %s]'):format(identifier, gang.name, gang.grade))
 		end			
 		gang.name, gang.grade = 'nogang', '0'
-		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[gang.grade]
+		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[tostring(gang.grade)]
 	end
     PlayerData.gang = {}
     PlayerData.gang.id = gangObject.id
@@ -106,13 +101,18 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.gang.grade_salary = gangGradeObject.salary
     PlayerData.gang.skin_male = json.decode(gangGradeObject.skin_male) or {}
     PlayerData.gang.skin_female = json.decode(gangGradeObject.skin_female) or {}
-    --if gangGradeObject.skin_male then PlayerData.job.skin_male = json.decode(gangGradeObject.skin_male) end
-    --if gangGradeObject.skin_female then PlayerData.job.skin_female = json.decode(gangGradeObject.skin_female) end
 
     -- accounts
+	if isNew then
+		PlayerData.accounts = {}
+		for account, money in pairs(Config.Accounts.StartingMoney) do
+			PlayerData.accounts[account] = money
+		end
+	end
+
     local foundAccounts = {}
     if PlayerData.accounts and PlayerData.accounts ~= '' then
-        local accounts = json.decode(PlayerData.accounts)
+        local accounts = PlayerData.accounts
         
         for account, money in pairs(accounts) do
             foundAccounts[account] = money
@@ -122,15 +122,18 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     for account, label in pairs(Config.Accounts.MoneyTypes) do
 		table.insert(PlayerData.accounts, {
 			name = account,
-			amount = foundAccounts[account] or Config.Accounts.MoneyTypes[account] or 0
+			amount = foundAccounts[account] or Config.Accounts.StartingMoney[account] or 0,
+			label = label
 		})
 	end
 
+	print(Framework.Table.Dump(PlayerData.accounts))
+
     -- inventory 
-    local foundAccounts, foundItems = {}, {}
+    local foundItems = {}
     if not Config.OxInventory then
 		if PlayerData.inventory and PlayerData.inventory ~= '' then
-			local inventory = json.decode(PlayerData.inventory)
+			local inventory = PlayerData.inventory
             
 			for name, count in pairs(inventory) do
 				local item = Framework.Items[name]
@@ -163,7 +166,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		end)
 	else
 		if PlayerData.inventory and PlayerData.inventory ~= '' then
-			PlayerData.inventory = json.decode(PlayerData.inventory)
+			PlayerData.inventory = PlayerData.inventory
         else 
             PlayerData.inventory = {}
         end
@@ -172,7 +175,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     -- loadout
     if not Config.OxInventory then
 		if PlayerData.loadout and PlayerData.loadout ~= '' then
-			local loadout = json.decode(PlayerData.loadout)
+			local loadout = PlayerData.loadout
             PlayerData.loadout = {}
 			for name, weapon in pairs(loadout) do
 				local label = Framework.GetWeaponLabel(name)
@@ -210,14 +213,9 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 
     -- height
     PlayerData.height = PlayerData.height or ""
-    --[[
-    -- charinfo
-    PlayerData.charinfo = json.decode(PlayerData.charinfo) or {}
-    PlayerData.charinfo.backstory = PlayerData.charinfo.backstory or 'placeholder backstory'
-    PlayerData.charinfo.nationality = PlayerData.charinfo.nationality or 'CANADA'
-    ]]
+
     -- metadata
-    PlayerData.metadata = json.decode(PlayerData.metadata) or {}
+    PlayerData.metadata = PlayerData.metadata or {}
     PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
     PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
     PlayerData.metadata['stress'] = PlayerData.metadata['stress'] or 0
@@ -251,7 +249,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     }
 
     -- skin
-    PlayerData.skin = json.decode(PlayerData.skin) or {}
+    PlayerData.skin = PlayerData.skin or {}
 
     -- is_dead
     PlayerData.is_dead = PlayerData.is_dead or 0
@@ -295,13 +293,13 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	}, isNew, PlayerData.skin)
 
     if not Config.OxInventory then
-		xPlayer.triggerEvent('esx:createMissingPickups', Core.Pickups)
+		xPlayer.triggerEvent('Framework:createMissingPickups', Core.Pickups)
 	else
 		exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
 	end
 
     if isNew then
-        MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata)})
+        MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata) })
     end
 
     print(('[^2INFO^0] Player ^5"%s" ^0has connected to the server. ID: ^5%s^7'):format(xPlayer.getName(), source))
