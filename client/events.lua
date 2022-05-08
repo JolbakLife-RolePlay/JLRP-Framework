@@ -139,7 +139,7 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 
 	FreezeEntityPosition(PlayerPedId(), true)
 
-	if Config.Multichar then
+	if Config.MultiCharacter then
 		Wait(3000)
 	else
 		exports.spawnmanager:spawnPlayer({
@@ -163,7 +163,7 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 			TriggerEvent('Framework:loadingScreenOff')
 			ShutdownLoadingScreen()
 			ShutdownLoadingScreenNui()
-			FreezeEntityPosition(Framework.PlayerData.ped, false)
+			FreezeEntityPosition(PlayerPedId(), false)
 		end)
 	end
 
@@ -174,7 +174,7 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 		NetworkSetFriendlyFireOption(true)
 	end
 
-	if Config.DisableHealthRegen then
+	if Config.Player.HealthRegenerator then
 		SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
 	end
 

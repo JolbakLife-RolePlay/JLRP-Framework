@@ -146,3 +146,12 @@ RegisterNetEvent('Framework:playerDropped')
 AddEventHandler('Framework:playerDropped', function(source, reason)
     
 end)
+
+RegisterServerEvent('Framework:triggerServerCallback')
+AddEventHandler('Framework:triggerServerCallback', function(name, requestId, ...)
+	local _source = source
+
+	Framework.TriggerServerCallback(name, requestId, _source, function(...)
+		TriggerClientEvent('Framework:serverCallback', _source, requestId, ...)
+	end, ...)
+end)

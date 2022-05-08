@@ -14,6 +14,7 @@ Config.Accounts.PayCheckSociety = false -- If true paycheck will come from the s
 
 Config.Player = {}
 Config.Player.PVP = true -- Enable or disable pvp on the server (Ability to shoot other players)
+Config.Player.HealthRegenerator = true -- Re-generate health up to %50 if it goes below %50
 Config.Player.MaxWeight = 30   -- The max inventory weight in KG
 Config.Player.HungerRate = 4.2 -- Rate at which hunger goes down.
 Config.Player.ThirstRate = 3.8 -- Rate at which thirst goes down.
