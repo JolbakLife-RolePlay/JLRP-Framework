@@ -203,6 +203,10 @@ function Framework.SetTimeout(msec, cb)
 	return id
 end
 
+function Framework.ClearTimeout(id)
+	Core.CancelledTimeouts[id] = true
+end
+
 function Framework.RegisterCommand(name, group, cb, allowConsole, suggestion)
 	if type(name) == 'table' then
 		for _, v in ipairs(name) do
@@ -327,5 +331,39 @@ function Framework.RegisterCommand(name, group, cb, allowConsole, suggestion)
 		end
 	else
 		ExecuteCommand(('add_ace group.%s command.%s allow'):format(group, name))
+	end
+end
+
+function Framework.RegisterServerCallback(name, cb)
+	Core.ServerCallbacks[name] = cb
+end
+
+function Framework.TriggerServerCallback(name, requestId, source, cb, ...)
+	if Core.ServerCallbacks[name] then
+		Core.ServerCallbacks[name](source, cb, ...)
+	else
+		print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
+	end
+end
+
+if not Config.OxInventory then
+	function Framework.CreatePickup(type, name, count, label, playerId, components, tintIndex)
+		local pickupId = (Core.PickupId == 65635 and 0 or Core.PickupId + 1)
+		local xPlayer = Framework.GetPlayerFromId(playerId)
+		local coords = xPlayer.getCoords()
+
+		Core.Pickups[pickupId] = {
+			type = type, name = name,
+			count = count, label = label,
+			coords = coords
+		}
+
+		if type == 'item_weapon' then
+			Core.Pickups[pickupId].components = components
+			Core.Pickups[pickupId].tintIndex = tintIndex
+		end
+
+		TriggerClientEvent('Framework:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
+		Core.PickupId = pickupId
 	end
 end

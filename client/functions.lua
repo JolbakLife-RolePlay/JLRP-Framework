@@ -70,3 +70,15 @@ function Framework.ShowFloatingHelpNotification(msg, coords)
 	BeginTextCommandDisplayHelp('FrameworkFloatingHelpNotification')
 	EndTextCommandDisplayHelp(2, false, false, -1)
 end
+
+function Framework.TriggerServerCallback(name, cb, ...)
+	Core.ServerCallbacks[Core.CurrentRequestId] = cb
+
+	TriggerServerEvent('Framework:triggerServerCallback', name, Core.CurrentRequestId, ...)
+
+	if Core.CurrentRequestId < 65535 then
+		Core.CurrentRequestId = Core.CurrentRequestId + 1
+	else
+		Core.CurrentRequestId = 0
+	end
+end
