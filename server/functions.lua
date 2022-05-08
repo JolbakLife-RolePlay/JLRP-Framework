@@ -170,7 +170,7 @@ function Core.SavePlayers(cb)
                 xPlayer.group,
                 json.encode(xPlayer.job),
 				json.encode(xPlayer.gang),
-				json.encode(xPlayer.getAccounts()),
+				json.encode(xPlayer.getAccounts(true)),
 				json.encode(xPlayer.getInventory(true)),
 				json.encode(xPlayer.getLoadout(true)),				
 				json.encode(xPlayer.getPosition()),

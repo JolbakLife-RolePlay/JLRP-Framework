@@ -122,12 +122,10 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     for account, label in pairs(Config.Accounts.MoneyTypes) do
 		table.insert(PlayerData.accounts, {
 			name = account,
-			amount = foundAccounts[account] or Config.Accounts.StartingMoney[account] or 0,
+			money = foundAccounts[account] or Config.Accounts.StartingMoney[account] or 0,
 			label = label
 		})
 	end
-
-	print(Framework.Table.Dump(PlayerData.accounts))
 
     -- inventory 
     local foundItems = {}
@@ -521,7 +519,7 @@ function Core.Player.CreatePlayer(PlayerData)
 		if minimal then
 			local minimalAccounts = {}
 
-			for k,v in ipairs(self.accounts) do
+			for _, v in ipairs(self.accounts) do
 				minimalAccounts[v.name] = v.money
 			end
 
