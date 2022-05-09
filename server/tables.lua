@@ -4,11 +4,11 @@ Framework.Gangs = {}
 Framework.Items = {}
 Framework.Shared = {}
 Framework.Player = {}
-Framework.Players = {}
 Framework.Functions = {}
 
 Core = {} -- For Internal Usage
 Core.Player = {}
+Core.Players = {}
 Core.UsableItemsCallbacks = {}
 Core.ServerCallbacks = {}
 Core.TimeoutCount = -1

@@ -61,7 +61,7 @@ else
 	RegisterNetEvent('Framework:onPlayerJoined')
 	AddEventHandler('Framework:onPlayerJoined', function()
 		while not next(Framework.Jobs) do Wait(50) end
-		if not Framework.Players[source] then
+		if not Core.Players[source] then
 			onPlayerJoined(source)
 		end
 	end)
@@ -126,7 +126,7 @@ end)
 
 RegisterNetEvent('Framework:playerLoaded')
 AddEventHandler('Framework:playerLoaded', function(source, xPlayer, isNew)
-    Framework.Players[source] = xPlayer
+    Core.Players[source] = xPlayer
 end)
 
 AddEventHandler('playerDropped', function(reason)
@@ -137,7 +137,7 @@ AddEventHandler('playerDropped', function(reason)
 		TriggerEvent('Framework:playerDropped', _source, reason)
 
 		Core.SavePlayer(xPlayer, function()
-			Framework.Players[_source] = nil
+			Core.Players[_source] = nil
 		end)
 	end
 end)

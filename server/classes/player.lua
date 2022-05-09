@@ -253,7 +253,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.is_dead = PlayerData.is_dead or 0
 
     local xPlayer = Core.Player.CreatePlayer(PlayerData)
-    --Framework.Players[source] = xPlayer -- using in server-side 'Framework:playerLoaded'
+    --Core.Players[source] = xPlayer -- using in server-side 'Framework:playerLoaded'
 
     if PlayerData.firstname and PlayerData.firstname ~= '' then
         xPlayer.setFirstname(PlayerData.firstname)

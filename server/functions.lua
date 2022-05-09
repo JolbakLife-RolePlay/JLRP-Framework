@@ -1,9 +1,9 @@
 function Framework.GetPlayerFromId(source)
-    return Framework.Players[tonumber(source)]	
+    return Core.Players[tonumber(source)]	
 end
 
 function Framework.GetPlayerFromIdentifier(identifier)
-	for _, v in pairs(Framework.Players) do
+	for _, v in pairs(Core.Players) do
 		if v.identifier == identifier then
 			return v
 		end
@@ -122,7 +122,7 @@ end
 
 function Framework.GetPlayers(key, val)
 	local xPlayers = {}
-	for k, v in pairs(Framework.Players) do
+	for k, v in pairs(Core.Players) do
 		if key then
 			if (key == 'job' and v.job.name == val) or v[key] == val then
 				xPlayers[#xPlayers + 1] = v
