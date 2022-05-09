@@ -134,7 +134,7 @@ function Framework.GetPlayers(key, val)
 	return xPlayers
 end
 
-function Framework.GetExtendedPlayers(key, val) -- for campatibility with Framework
+function Framework.GetExtendedPlayers(key, val) -- for compatibility with esx
 	return Framework.GetPlayers(key, val)
 end
 

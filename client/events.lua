@@ -190,15 +190,15 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 	end
 
 	if Config.EnableHud then
-		print('setting HUD')
 		-- accounts
 		for k, v in ipairs(Framework.PlayerData.accounts) do
-			local accountTpl = '<div><img src="img/accounts/' .. v.name .. '.png"/>&nbsp;{{money}}</div>'
-			Framework.UI.HUD.RegisterElement('account_' .. v.name, k, 0, accountTpl, {money = Framework.Math.GroupDigits(v.money)})
+			local accountTpl = '<div>{{money}}&nbsp;<img src="images/accounts/' .. v.name .. '.png"/></div>'
+			local index = v.name == "money" and 0 or v.name == "black_money" and 1 or v.name == "bank" and 2
+			Framework.UI.HUD.RegisterElement('account_' .. v.name, index, 0, accountTpl, {money = Framework.Math.GroupDigits(v.money)})
 		end
 
 		-- job
-		local jobTpl = '<div>{{job_label}}{{grade_label}}</div>'
+		local jobTpl = '<div>{{job_label}}{{grade_label}}&nbsp;<img src="images/job.png"/></div>'
 
 		local jobGradeLabel = Framework.PlayerData.job.grade_label ~= Framework.PlayerData.job.label and Framework.PlayerData.job.grade_label or ''
 		if jobGradeLabel ~= '' then jobGradeLabel = ' - '..jobGradeLabel end
@@ -209,7 +209,7 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 		})
 
 		-- gang
-		local gangTpl = '<div>{{gang_label}}{{grade_label}}</div>'
+		local gangTpl = '<div>{{gang_label}}{{grade_label}}&nbsp;<img src="images/gang.png"/></div>'
 
 		local gangFradeLabel = Framework.PlayerData.gang.grade_label ~= Framework.PlayerData.gang.label and Framework.PlayerData.gang.grade_label or ''
 		if gangFradeLabel ~= '' then gangFradeLabel = ' - '..gangFradeLabel end
@@ -220,6 +220,21 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 		})
 	end
 	StartServerSyncLoops()
+end)
+
+local function onPlayerSpawn()
+	if Framework.PlayerLoaded then
+		Framework.SetPlayerData('ped', PlayerPedId())
+		Framework.SetPlayerData('dead', false)
+	end
+end
+
+AddEventHandler('playerSpawned', onPlayerSpawn)
+AddEventHandler('Framework:onPlayerSpawn', onPlayerSpawn)
+
+AddEventHandler('Framework:onPlayerDeath', function()
+	Framework.SetPlayerData('ped', PlayerPedId())
+	Framework.SetPlayerData('dead', true)
 end)
 
 if Config.EnableHud then

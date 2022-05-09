@@ -457,7 +457,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			TriggerEvent('Framework:setJob', self.source, self.job, lastJob)
 			self.triggerEvent('Framework:setJob', self.job)
 		else
-			print(('[Framework] [^3WARNING^7] Ignoring invalid .setJob() usage for "%s"'):format(self.identifier))
+			print(('[Framework] [^3WARNING^7] Ignoring invalid .setJob() usage for "%s"'):format(self.name))
 		end
 	end
 

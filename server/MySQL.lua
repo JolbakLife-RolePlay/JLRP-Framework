@@ -97,7 +97,7 @@ MySQL.ready(function()
 			grades = {
 				['0'] = {
 					grade = 0,
-					label = 'No Affiliation',
+					label = 'NoGang',
 					salary = 0,
 					skin_male = {},
 					skin_female = {}

@@ -96,4 +96,4 @@ INSERT INTO `jobs` VALUES ('unemployed', 'Unemployed', 0);
 INSERT INTO `job_grades` VALUES (1, 'unemployed', 0, 'unemployed', 'Unemployed', 0, 200, '{}', '{}');
 
 INSERT INTO `gangs` VALUES ('nogang', 'NoGang');
-INSERT INTO `gang_grades` VALUES (1, 'nogang', 0, 'nogang', 'No Affiliation', 0, 0, '{}', '{}');
+INSERT INTO `gang_grades` VALUES (1, 'nogang', 0, 'nogang', 'NoGang', 0, 0, '{}', '{}');

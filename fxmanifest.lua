@@ -13,7 +13,7 @@ shared_scripts {
 	'locales/*.lua',
 
 	'config.lua',
-	'config.weapons.lua',
+	'config.weapon.lua'
 }
 
 server_scripts {
@@ -35,7 +35,7 @@ server_scripts {
 
 	-- for Framework table injection we remove them from shared_scripts
 	'shared/functions/*.lua',	
-	'shared/framework.lua',
+	'shared/framework.lua'
 }
 
 client_scripts {
@@ -47,7 +47,7 @@ client_scripts {
 
 	-- for Framework table injection we remove them from shared_scripts
 	'shared/functions/*.lua',	
-	'shared/framework.lua',
+	'shared/framework.lua'
 }
 
 ui_page {
@@ -66,6 +66,7 @@ files {
 	'html/fonts/*.ttf',
 
 	'html/images/accounts/*.png',
+	'html/images/*.png'
 }
 
 dependencies {
