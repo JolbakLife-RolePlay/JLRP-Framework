@@ -51,11 +51,26 @@ client_scripts {
 }
 
 ui_page {
-
+	'html/ui.html'
 }
 
 files {
 	'imports.lua',
+
+	'html/ui.html',
+
+	'html/css/app.css',
+
+	'html/javascript/mustache.min.js',
+	'html/javascript/wrapper.js',
+	'html/javascript/app.js',
+
+	'html/fonts/pdown.ttf',
+	'html/fonts/bankgothic.ttf',
+
+	'html/images/accounts/bank.png',
+	'html/images/accounts/black_money.png',
+	'html/images/accounts/money.png'
 }
 
 dependencies {
