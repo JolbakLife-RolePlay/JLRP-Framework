@@ -4,19 +4,29 @@ AddEventHandler('Framework:teleport', function(coords)
 end)
 
 RegisterNetEvent('Framework:setJob')
-AddEventHandler('Framework:setJob', function(Job)
+AddEventHandler('Framework:setJob', function(job)
 	if Config.EnableHud then
-		-- TODO
+		local gradeLabel = job.grade_label ~= job.label and job.grade_label or ''
+		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
+		Framework.UI.HUD.UpdateElement('job', {
+			job_label = job.label,
+			grade_label = gradeLabel
+		})
 	end
-	Framework.SetPlayerData('job', Job)
+	Framework.SetPlayerData('job', job)
 end)
 
 RegisterNetEvent('Framework:setGang')
-AddEventHandler('Framework:setGang', function(Gang)
+AddEventHandler('Framework:setGang', function(gang)
 	if Config.EnableHud then
-		-- TODO
+		local gradeLabel = gang.grade_label ~= gang.label and gang.grade_label or ''
+		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
+		Framework.UI.HUD.UpdateElement('gang', {
+			gang_label = gang.label,
+			grade_label = gradeLabel
+		})
 	end
-	Framework.SetPlayerData('gang', Gang)
+	Framework.SetPlayerData('gang', gang)
 end)
 
 RegisterNetEvent('Framework:setAccountMoney')
@@ -31,7 +41,9 @@ AddEventHandler('Framework:setAccountMoney', function(account)
 	Framework.SetPlayerData('accounts', Framework.PlayerData.accounts)
 
 	if Config.EnableHud then
-		-- TODO
+		Framework.UI.HUD.UpdateElement('account_' .. account.name, {
+			money = Framework.Math.GroupDigits(account.money)
+		})
 	end
 end)
 
@@ -118,8 +130,8 @@ AddEventHandler('Framework:progressBar', function(message, length, options)
 end)
 
 RegisterNetEvent('Framework:showNotification')
-AddEventHandler('Framework:showNotification', function(msg)
-	Framework.ShowNotification(msg)
+AddEventHandler('Framework:showNotification', function(message, type, length)
+	Framework.ShowNotification(message, type, length)
 end)
 
 RegisterNetEvent('Framework:showAdvancedNotification')
@@ -161,42 +173,59 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 			end
 
 			TriggerEvent('Framework:loadingScreenOff')
-			ShutdownLoadingScreen()
-			ShutdownLoadingScreenNui()
+			
 			FreezeEntityPosition(PlayerPedId(), false)
 		end)
 	end
 
 	while Framework.PlayerData.ped == nil do Wait(20) end
-	-- enable PVP
+
 	if Config.Player.PVP then
 		SetCanAttackFriendly(Framework.PlayerData.ped, true, false)
 		NetworkSetFriendlyFireOption(true)
 	end
 
-	if Config.Player.HealthRegenerator then
+	if not Config.Player.HealthRegenerator then
 		SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
 	end
 
 	if Config.EnableHud then
-		for k,v in ipairs(Framework.PlayerData.accounts) do
+		print('setting HUD')
+		-- accounts
+		for k, v in ipairs(Framework.PlayerData.accounts) do
 			local accountTpl = '<div><img src="img/accounts/' .. v.name .. '.png"/>&nbsp;{{money}}</div>'
 			Framework.UI.HUD.RegisterElement('account_' .. v.name, k, 0, accountTpl, {money = Framework.Math.GroupDigits(v.money)})
 		end
 
+		-- job
 		local jobTpl = '<div>{{job_label}}{{grade_label}}</div>'
 
-		local gradeLabel = Framework.PlayerData.job.grade_label ~= Framework.PlayerData.job.label and Framework.PlayerData.job.grade_label or ''
-		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
+		local jobGradeLabel = Framework.PlayerData.job.grade_label ~= Framework.PlayerData.job.label and Framework.PlayerData.job.grade_label or ''
+		if jobGradeLabel ~= '' then jobGradeLabel = ' - '..jobGradeLabel end
 
 		Framework.UI.HUD.RegisterElement('job', #Framework.PlayerData.accounts, 0, jobTpl, {
 			job_label = Framework.PlayerData.job.label,
-			grade_label = gradeLabel
+			grade_label = jobGradeLabel
+		})
+
+		-- gang
+		local gangTpl = '<div>{{gang_label}}{{grade_label}}</div>'
+
+		local gangFradeLabel = Framework.PlayerData.gang.grade_label ~= Framework.PlayerData.gang.label and Framework.PlayerData.gang.grade_label or ''
+		if gangFradeLabel ~= '' then gangFradeLabel = ' - '..gangFradeLabel end
+
+		Framework.UI.HUD.RegisterElement('gang', #Framework.PlayerData.accounts + 1, 0, gangTpl, {
+			gang_label = Framework.PlayerData.gang.label,
+			grade_label = gangFradeLabel
 		})
 	end
 	StartServerSyncLoops()
 end)
 
-AddEventHandler('Framework:loadingScreenOff', function()
-	Framework.UI.HUD.SetDisplay(1.0)
-end)
+if Config.EnableHud then
+	AddEventHandler('Framework:loadingScreenOff', function()
+		ShutdownLoadingScreen()
+		ShutdownLoadingScreenNui()
+		Framework.UI.HUD.SetDisplay(1.0)
+	end)
+end

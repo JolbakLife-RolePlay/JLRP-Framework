@@ -1083,7 +1083,7 @@ function Core.Player.CreatePlayer(PlayerData)
     function self.setMetadata(meta, value)
         if not meta then return end
         meta = meta:lower()
-		self.metadata[key] = value
+		self.metadata[meta] = value
 	end
 
     function self.getMetadata()

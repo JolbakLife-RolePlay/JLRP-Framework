@@ -4,6 +4,7 @@ Config.Locale = 'en'
 Config.DefaultSpawn = {x = -269.4, y = -955.3, z = 31.2, heading = 205.8} -- Default spawn point
 Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaultDuty | false: set duty state from database last saved
 Config.DefaultDuty = false
+Config.DistanceGive = 4.0 -- Max distance when giving items, weapons etc.
 
 Config.Accounts = {}
 Config.Accounts.MoneyTypes = {bank = 'bank', money = 'money', black_money = 'black_money'}
@@ -22,8 +23,8 @@ Config.Player.Bloodtypes = {
     "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
 }
 
-Config.NativeNotify = false
-Config.EnableHud = false -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
+Config.NativeNotify = true
+Config.EnableHud = true -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
 Config.MultiCharacter = false -- Enabling support for players having multiple characters - would not be implemented for now
 Config.OxInventory = false -- Enabling ox_inventory integration with the framework
 
@@ -38,3 +39,4 @@ Config.Server.WhitelistPermission = 'admin' -- Permission that's able to enter t
 Config.Server.Discord = "" -- Discord invite link
 Config.Server.CheckDuplicateLicense = true -- Check for duplicate rockstar license on join
 Config.Server.AdminGroups = {'developer', 'god', 'superadmin', 'admin', 'mod'} -- Add as many groups as you want here after creating them in your server.cfg
+

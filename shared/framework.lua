@@ -2,6 +2,14 @@ AddEventHandler('GetFrameworkObjects', function(cb)
 	cb(Framework)
 end)
 
+AddEventHandler('Framework:GetFrameworkObjects', function(cb)
+	cb(Framework)
+end)
+
+AddEventHandler('Framework:getFrameworkObjects', function(cb)
+	cb(Framework)
+end)
+
 exports('GetFrameworkObjects', function()
 	return Framework
 end)
