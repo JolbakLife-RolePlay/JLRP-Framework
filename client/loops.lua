@@ -83,3 +83,21 @@ if Config.EnableHud then
 		end
 	)
 end
+
+-- SetTimeout
+CreateThread(function()
+	while true do
+		local sleep = 100
+		if #Core.TimeoutCallbacks > 0 then
+			local currTime = GetGameTimer()
+			sleep = 0
+			for i = 1, #Core.TimeoutCallbacks, 1 do
+				if currTime >= Core.TimeoutCallbacks[i].time then
+					Core.TimeoutCallbacks[i].cb()
+					Core.TimeoutCallbacks[i] = nil
+				end
+			end
+		end
+		Wait(sleep)
+	end
+end)

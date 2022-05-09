@@ -27,8 +27,7 @@ function DBSync()
 	CreateThread(
 		function()
 			while true do
-				--Wait(10 * 60 * 1000) -- every 10 mins
-				Wait(5000)
+				Wait(5 * 60 * 1000) -- every 5 mins
 				Core.SavePlayers()
 			end
 		end

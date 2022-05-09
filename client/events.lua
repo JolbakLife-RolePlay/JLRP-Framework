@@ -229,3 +229,10 @@ if Config.EnableHud then
 		Framework.UI.HUD.SetDisplay(1.0)
 	end)
 end
+
+RegisterNetEvent('Framework:serverCallback')
+AddEventHandler('Framework:serverCallback', function(requestId, ...)
+	Core.ServerCallbacks[requestId](...)
+	Core.ServerCallbacks[requestId] = nil
+end)
+
