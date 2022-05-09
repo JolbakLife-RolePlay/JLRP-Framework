@@ -59,18 +59,13 @@ files {
 
 	'html/ui.html',
 
-	'html/css/app.css',
+	'html/css/*.css',
 
-	'html/javascript/mustache.min.js',
-	'html/javascript/wrapper.js',
-	'html/javascript/app.js',
+	'html/javascript/*.js',
 
-	'html/fonts/pdown.ttf',
-	'html/fonts/bankgothic.ttf',
+	'html/fonts/*.ttf',
 
-	'html/images/accounts/bank.png',
-	'html/images/accounts/black_money.png',
-	'html/images/accounts/money.png'
+	'html/images/accounts/*.png',
 }
 
 dependencies {
