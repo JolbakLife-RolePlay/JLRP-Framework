@@ -2,9 +2,10 @@ fx_version 'cerulean'
 
 game 'gta5'
 
-name 'Framework'
+name 'JLRP-Framework'
 author 'Mahan Moulaei'
-description 'RolePlay Framework'
+discord 'Mahan#8183'
+description 'JolbakLifeRP Framework'
 
 version '0.0'
 
