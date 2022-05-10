@@ -18,7 +18,7 @@ function StartServerSyncLoops()
 							else
 								if ammoCount ~= currentWeapon.Ammo then
 									currentWeapon.Ammo = ammoCount
-									TriggerServerEvent("Framework:updateWeaponAmmo", weapon.name, ammoCount)
+									TriggerServerEvent("JLRP-Framework:updateWeaponAmmo", weapon.name, ammoCount)
 								end
 							end
 						end

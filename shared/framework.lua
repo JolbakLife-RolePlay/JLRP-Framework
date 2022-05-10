@@ -2,11 +2,11 @@ AddEventHandler('GetFrameworkObjects', function(cb)
 	cb(Framework)
 end)
 
-AddEventHandler('Framework:GetFrameworkObjects', function(cb)
+AddEventHandler('JLRP-Framework:GetFrameworkObjects', function(cb)
 	cb(Framework)
 end)
 
-AddEventHandler('Framework:getFrameworkObjects', function(cb)
+AddEventHandler('JLRP-Framework:getFrameworkObjects', function(cb)
 	cb(Framework)
 end)
 

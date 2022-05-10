@@ -363,7 +363,7 @@ if not Config.OxInventory then
 			Core.Pickups[pickupId].tintIndex = tintIndex
 		end
 
-		TriggerClientEvent('Framework:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
+		TriggerClientEvent('JLRP-Framework:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
 		Core.PickupId = pickupId
 	end
 end

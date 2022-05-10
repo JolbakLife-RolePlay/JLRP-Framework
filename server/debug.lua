@@ -25,7 +25,7 @@ local function tPrint(tbl, indent)
     end
 end
 
-RegisterServerEvent('Framework:DebugSomething', function(tbl, indent)
+RegisterServerEvent('JLRP-Framework:DebugSomething', function(tbl, indent)
     local resource = GetInvokingResource() or "Framework"
     print(('\x1b[4m\x1b[36m[ %s : DEBUG]\x1b[0m'):format(resource))
     tPrint(tbl, indent)
@@ -33,7 +33,7 @@ RegisterServerEvent('Framework:DebugSomething', function(tbl, indent)
 end)
 
 function Framework.Debug(tbl, indent)
-    TriggerEvent('Framework:DebugSomething', tbl, indent)
+    TriggerEvent('JLRP-Framework:DebugSomething', tbl, indent)
 end
 
 function Framework.ShowError(resource, msg)

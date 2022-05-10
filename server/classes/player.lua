@@ -253,7 +253,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.is_dead = PlayerData.is_dead or 0
 
     local xPlayer = Core.Player.CreatePlayer(PlayerData)
-    --Core.Players[source] = xPlayer -- using in server-side 'Framework:playerLoaded'
+    --Core.Players[source] = xPlayer -- using in server-side 'JLRP-Framework:playerLoaded'
 
     if PlayerData.firstname and PlayerData.firstname ~= '' then
         xPlayer.setFirstname(PlayerData.firstname)
@@ -274,9 +274,9 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
         end
 	end
 
-    TriggerEvent('Framework:playerLoaded', source, xPlayer, isNew)
+    TriggerEvent('JLRP-Framework:playerLoaded', source, xPlayer, isNew)
 
-	xPlayer.triggerEvent('Framework:playerLoaded', {
+	xPlayer.triggerEvent('JLRP-Framework:playerLoaded', {
 		accounts = xPlayer.getAccounts(),
 		coords = xPlayer.getPosition(),
 		identifier = xPlayer.getIdentifier(),
@@ -291,7 +291,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	}, isNew, PlayerData.skin)
 
     if not Config.OxInventory then
-		xPlayer.triggerEvent('Framework:createMissingPickups', Core.Pickups)
+		xPlayer.triggerEvent('JLRP-Framework:createMissingPickups', Core.Pickups)
 	else
 		exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
 	end
@@ -454,8 +454,8 @@ function Core.Player.CreatePlayer(PlayerData)
 				self.job.skin_female = {}
 			end
 
-			TriggerEvent('Framework:setJob', self.source, self.job, lastJob)
-			self.triggerEvent('Framework:setJob', self.job)
+			TriggerEvent('JLRP-Framework:setJob', self.source, self.job, lastJob)
+			self.triggerEvent('JLRP-Framework:setJob', self.job)
 		else
 			print(('[Framework] [^3WARNING^7] Ignoring invalid .setJob() usage for "%s"'):format(self.name))
 		end
@@ -467,7 +467,7 @@ function Core.Player.CreatePlayer(PlayerData)
 
     function self.setDuty(bool)
         self.job.onDuty = bool
-        self.triggerEvent('Framework:setJob', self.job)
+        self.triggerEvent('JLRP-Framework:setJob', self.job)
     end
 
     function self.getDuty()
@@ -503,8 +503,8 @@ function Core.Player.CreatePlayer(PlayerData)
 				self.gang.skin_female = {}
 			end
 
-			TriggerEvent('Framework:setGang', self.source, self.gang, lastGang)
-			self.triggerEvent('Framework:setGang', self.gang)
+			TriggerEvent('JLRP-Framework:setGang', self.source, self.gang, lastGang)
+			self.triggerEvent('JLRP-Framework:setGang', self.gang)
 		else
 			print(('[Framework] [^3WARNING^7] Ignoring invalid .setGang() usage for "%s"'):format(self.identifier))
 		end
@@ -545,7 +545,7 @@ function Core.Player.CreatePlayer(PlayerData)
 				local newMoney = Framework.Math.Round(money)
 				account.money = newMoney
 
-				self.triggerEvent('Framework:setAccountMoney', account)
+				self.triggerEvent('JLRP-Framework:setAccountMoney', account)
 
 				if Inventory and Inventory.accounts[accountName] then
 					Inventory.SetItem(self.source, accountName, money)
@@ -562,7 +562,7 @@ function Core.Player.CreatePlayer(PlayerData)
 				local newMoney = account.money + Framework.Math.Round(money)
 				account.money = newMoney
 
-				self.triggerEvent('Framework:setAccountMoney', account)
+				self.triggerEvent('JLRP-Framework:setAccountMoney', account)
 
 				if Inventory and Inventory.accounts[accountName] then
 					Inventory.AddItem(self.source, accountName, money)
@@ -579,7 +579,7 @@ function Core.Player.CreatePlayer(PlayerData)
 				local newMoney = account.money - Framework.Math.Round(money)
 				account.money = newMoney
 
-				self.triggerEvent('Framework:setAccountMoney', account)
+				self.triggerEvent('JLRP-Framework:setAccountMoney', account)
 
 				if Inventory and Inventory.accounts[accountName] then
 					Inventory.RemoveItem(self.source, accountName, money)
@@ -667,8 +667,8 @@ function Core.Player.CreatePlayer(PlayerData)
 			item.count = item.count + count
 			self.weight = self.weight + (item.weight * count)
 
-			TriggerEvent('Framework:onAddInventoryItem', self.source, item.name, item.count)
-			self.triggerEvent('Framework:addInventoryItem', item.name, item.count)
+			TriggerEvent('JLRP-Framework:onAddInventoryItem', self.source, item.name, item.count)
+			self.triggerEvent('JLRP-Framework:addInventoryItem', item.name, item.count)
 		end
 	end
 
@@ -687,8 +687,8 @@ function Core.Player.CreatePlayer(PlayerData)
 				item.count = newCount
 				self.weight = self.weight - (item.weight * count)
 
-				TriggerEvent('Framework:onRemoveInventoryItem', self.source, item.name, item.count)
-				self.triggerEvent('Framework:removeInventoryItem', item.name, item.count)
+				TriggerEvent('JLRP-Framework:onRemoveInventoryItem', self.source, item.name, item.count)
+				self.triggerEvent('JLRP-Framework:removeInventoryItem', item.name, item.count)
 			end
 		end
 	end
@@ -750,7 +750,7 @@ function Core.Player.CreatePlayer(PlayerData)
 
 	function self.setMaxWeight(newWeight)
 		self.maxWeight = newWeight
-		self.triggerEvent('Framework:setMaxWeight', self.maxWeight)
+		self.triggerEvent('JLRP-Framework:setMaxWeight', self.maxWeight)
 
 		if Inventory then
 			return Inventory.Set(self.source, 'maxWeight', newWeight)
@@ -816,8 +816,8 @@ function Core.Player.CreatePlayer(PlayerData)
 				tintIndex = 0
 			})
 
-			self.triggerEvent('Framework:addWeapon', weaponName, ammo)
-			self.triggerEvent('Framework:addInventoryItem', weaponLabel, false, true)
+			self.triggerEvent('JLRP-Framework:addWeapon', weaponName, ammo)
+			self.triggerEvent('JLRP-Framework:addInventoryItem', weaponLabel, false, true)
 		end
 	end
 
@@ -832,8 +832,8 @@ function Core.Player.CreatePlayer(PlayerData)
 			if component then
 				if not self.hasWeaponComponent(weaponName, weaponComponent) then
 					self.loadout[loadoutNum].components[#self.loadout[loadoutNum].components + 1] = weaponComponent
-					self.triggerEvent('Framework:addWeaponComponent', weaponName, weaponComponent)
-					self.triggerEvent('Framework:addInventoryItem', component.label, false, true)
+					self.triggerEvent('JLRP-Framework:addWeaponComponent', weaponName, weaponComponent)
+					self.triggerEvent('JLRP-Framework:addInventoryItem', component.label, false, true)
 				end
 			end
 		end
@@ -846,7 +846,7 @@ function Core.Player.CreatePlayer(PlayerData)
 
 		if weapon then
 			weapon.ammo = weapon.ammo + ammoCount
-			self.triggerEvent('Framework:setWeaponAmmo', weaponName, weapon.ammo)
+			self.triggerEvent('JLRP-Framework:setWeaponAmmo', weaponName, weapon.ammo)
 		end
 	end
 
@@ -870,8 +870,8 @@ function Core.Player.CreatePlayer(PlayerData)
 
 			if weaponObject.tints and weaponObject.tints[weaponTintIndex] then
 				self.loadout[loadoutNum].tintIndex = weaponTintIndex
-				self.triggerEvent('Framework:setWeaponTint', weaponName, weaponTintIndex)
-				self.triggerEvent('Framework:addInventoryItem', weaponObject.tints[weaponTintIndex], false, true)
+				self.triggerEvent('JLRP-Framework:setWeaponTint', weaponName, weaponTintIndex)
+				self.triggerEvent('JLRP-Framework:addInventoryItem', weaponObject.tints[weaponTintIndex], false, true)
 			end
 		end
 	end
@@ -907,8 +907,8 @@ function Core.Player.CreatePlayer(PlayerData)
 		end
 
 		if weaponLabel then
-			self.triggerEvent('Framework:removeWeapon', weaponName)
-			self.triggerEvent('Framework:removeInventoryItem', weaponLabel, false, true)
+			self.triggerEvent('JLRP-Framework:removeWeapon', weaponName)
+			self.triggerEvent('JLRP-Framework:removeInventoryItem', weaponLabel, false, true)
 		end
 	end
 
@@ -929,8 +929,8 @@ function Core.Player.CreatePlayer(PlayerData)
 						end
 					end
 
-					self.triggerEvent('Framework:removeWeaponComponent', weaponName, weaponComponent)
-					self.triggerEvent('Framework:removeInventoryItem', component.label, false, true)
+					self.triggerEvent('JLRP-Framework:removeWeaponComponent', weaponName, weaponComponent)
+					self.triggerEvent('JLRP-Framework:removeInventoryItem', component.label, false, true)
 				end
 			end
 		end
@@ -943,7 +943,7 @@ function Core.Player.CreatePlayer(PlayerData)
 
 		if weapon then
 			weapon.ammo = weapon.ammo - ammoCount
-			self.triggerEvent('Framework:setWeaponAmmo', weaponName, weapon.ammo)
+			self.triggerEvent('JLRP-Framework:setWeaponAmmo', weaponName, weapon.ammo)
 		end
 	end
 
@@ -999,7 +999,7 @@ function Core.Player.CreatePlayer(PlayerData)
 
     function self.setPosition(coords)
 		self.updatePosition(coords)
-		self.triggerEvent('Framework:teleport', coords)
+		self.triggerEvent('JLRP-Framework:teleport', coords)
 	end
 
     function self.setCoords(coords) -- for compatibility with esx
@@ -1106,22 +1106,22 @@ function Core.Player.CreatePlayer(PlayerData)
 
     -- notification
     function self.showNotification(msg)
-		self.triggerEvent('Framework:showNotification', msg)
+		self.triggerEvent('JLRP-Framework:showNotification', msg)
 	end
 
     -- advanced notification
     function self.showAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
-		self.triggerEvent('Framework:showAdvancedNotification', sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
+		self.triggerEvent('JLRP-Framework:showAdvancedNotification', sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
 	end
 
     -- help notification
 	function self.showHelpNotification(msg, thisFrame, beep, duration)
-		self.triggerEvent('Framework:showHelpNotification', msg, thisFrame, beep, duration)
+		self.triggerEvent('JLRP-Framework:showHelpNotification', msg, thisFrame, beep, duration)
 	end
 
     -- progress bar
     function self.progressBar(message, length, options)
-		self.triggerEvent('Framework:progressBar', message, length, options)
+		self.triggerEvent('JLRP-Framework:progressBar', message, length, options)
 	end
 
 
@@ -1135,7 +1135,7 @@ function Core.Player.CreatePlayer(PlayerData)
 					local account = self.getAccount(k)
 					if Framework.Math.Round(account.money) ~= v then
 						account.money = v
-						self.triggerEvent('Framework:setAccountMoney', account)
+						self.triggerEvent('JLRP-Framework:setAccountMoney', account)
 					end
 				end
 			end

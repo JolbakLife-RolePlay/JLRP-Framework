@@ -6,7 +6,7 @@ if not Config.MultiCharacter then
 				exports.spawnmanager:setAutoSpawn(false)
 				DoScreenFadeOut(0)
 				Wait(1000)
-				TriggerServerEvent('Framework:onPlayerJoined')
+				TriggerServerEvent('JLRP-Framework:onPlayerJoined')
 				break
 			end
 		end

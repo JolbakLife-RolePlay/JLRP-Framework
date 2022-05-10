@@ -58,8 +58,8 @@ end
 if Config.MultiCharacter then
 	--[[Would not be implemented for now]]
 else
-	RegisterNetEvent('Framework:onPlayerJoined')
-	AddEventHandler('Framework:onPlayerJoined', function()
+	RegisterNetEvent('JLRP-Framework:onPlayerJoined')
+	AddEventHandler('JLRP-Framework:onPlayerJoined', function()
 		while not next(Framework.Jobs) do Wait(50) end
 		if not Core.Players[source] then
 			onPlayerJoined(source)
@@ -80,8 +80,8 @@ function onPlayerJoined(source)
 	end
 end
 
-RegisterNetEvent('Framework:updateCoords')
-AddEventHandler('Framework:updateCoords', function(coords, src)
+RegisterNetEvent('JLRP-Framework:updateCoords')
+AddEventHandler('JLRP-Framework:updateCoords', function(coords, src)
     local _source = src or source
 	local xPlayer = Framework.GetPlayerFromId(_source)
 	if xPlayer then
@@ -89,43 +89,43 @@ AddEventHandler('Framework:updateCoords', function(coords, src)
 	end
 end)
 
-RegisterNetEvent('Framework:setJob')
-AddEventHandler('Framework:setJob', function(source, newJob, lastJob)
+RegisterNetEvent('JLRP-Framework:setJob')
+AddEventHandler('JLRP-Framework:setJob', function(source, newJob, lastJob)
     
 end)
 
-RegisterNetEvent('Framework:setGang')
-AddEventHandler('Framework:setGang', function(source, newGang, lastGang)
+RegisterNetEvent('JLRP-Framework:setGang')
+AddEventHandler('JLRP-Framework:setGang', function(source, newGang, lastGang)
     
 end)
 
-RegisterNetEvent('Framework:onAddInventoryItem')
-AddEventHandler('Framework:onAddInventoryItem', function(source, itemName, itemCount)
+RegisterNetEvent('JLRP-Framework:onAddInventoryItem')
+AddEventHandler('JLRP-Framework:onAddInventoryItem', function(source, itemName, itemCount)
     
 end)
 
-RegisterNetEvent('Framework:onRemoveInventoryItem')
-AddEventHandler('Framework:onRemoveInventoryItem', function(source, itemName, itemCount)
+RegisterNetEvent('JLRP-Framework:onRemoveInventoryItem')
+AddEventHandler('JLRP-Framework:onRemoveInventoryItem', function(source, itemName, itemCount)
     
 end)
 
-RegisterNetEvent('Framework:setDuty')
-AddEventHandler('Framework:setDuty', function(bool)
+RegisterNetEvent('JLRP-Framework:setDuty')
+AddEventHandler('JLRP-Framework:setDuty', function(bool)
     local xPlayer = Framework.GetPlayerFromId(source)
     if xPlayer.job.onDuty == bool then return end
     
     if bool then
         xPlayer.setDuty(true)
-        xPlayer.triggerEvent('Framework:showNotification', _Locale('started_duty'))
+        xPlayer.triggerEvent('JLRP-Framework:showNotification', _Locale('started_duty'))
     else
         xPlayer.setDuty(false)
-        xPlayer.triggerEvent('Framework:showNotification', _Locale('stopped_duty'))
+        xPlayer.triggerEvent('JLRP-Framework:showNotification', _Locale('stopped_duty'))
     end
-    TriggerClientEvent('Framework:setJob', xPlayer.source, xPlayer.job)
+    TriggerClientEvent('JLRP-Framework:setJob', xPlayer.source, xPlayer.job)
 end)
 
-RegisterNetEvent('Framework:playerLoaded')
-AddEventHandler('Framework:playerLoaded', function(source, xPlayer, isNew)
+RegisterNetEvent('JLRP-Framework:playerLoaded')
+AddEventHandler('JLRP-Framework:playerLoaded', function(source, xPlayer, isNew)
     Core.Players[source] = xPlayer
 end)
 
@@ -134,7 +134,7 @@ AddEventHandler('playerDropped', function(reason)
 	local xPlayer = Framework.GetPlayerFromId(_source)
 
 	if xPlayer then
-		TriggerEvent('Framework:playerDropped', _source, reason)
+		TriggerEvent('JLRP-Framework:playerDropped', _source, reason)
 
 		Core.SavePlayer(xPlayer, function()
 			Core.Players[_source] = nil
@@ -142,23 +142,23 @@ AddEventHandler('playerDropped', function(reason)
 	end
 end)
 
-RegisterNetEvent('Framework:playerDropped')
-AddEventHandler('Framework:playerDropped', function(source, reason)
+RegisterNetEvent('JLRP-Framework:playerDropped')
+AddEventHandler('JLRP-Framework:playerDropped', function(source, reason)
     
 end)
 
-RegisterServerEvent('Framework:triggerServerCallback')
-AddEventHandler('Framework:triggerServerCallback', function(name, requestId, ...)
+RegisterServerEvent('JLRP-Framework:triggerServerCallback')
+AddEventHandler('JLRP-Framework:triggerServerCallback', function(name, requestId, ...)
 	local _source = source
 
 	Framework.TriggerServerCallback(name, requestId, _source, function(...)
-		TriggerClientEvent('Framework:serverCallback', _source, requestId, ...)
+		TriggerClientEvent('JLRP-Framework:serverCallback', _source, requestId, ...)
 	end, ...)
 end)
 
 if not Config.OxInventory then
-	RegisterNetEvent('Framework:updateWeaponAmmo')
-	AddEventHandler('Framework:updateWeaponAmmo', function(weaponName, ammoCount)
+	RegisterNetEvent('JLRP-Framework:updateWeaponAmmo')
+	AddEventHandler('JLRP-Framework:updateWeaponAmmo', function(weaponName, ammoCount)
 		local xPlayer = Framework.GetPlayerFromId(source)
 
 		if xPlayer then
@@ -166,8 +166,8 @@ if not Config.OxInventory then
 		end
 	end)
 
-	RegisterNetEvent('Framework:giveInventoryItem')
-	AddEventHandler('Framework:giveInventoryItem', function(target, type, itemName, itemCount)
+	RegisterNetEvent('JLRP-Framework:giveInventoryItem')
+	AddEventHandler('JLRP-Framework:giveInventoryItem', function(target, type, itemName, itemCount)
 		local playerId = source
 		local sourceXPlayer = Framework.GetPlayerFromId(playerId)
 		local targetXPlayer = Framework.GetPlayerFromId(target)
@@ -262,8 +262,8 @@ if not Config.OxInventory then
 		end
 	end)
 
-	RegisterNetEvent('Framework:removeInventoryItem')
-	AddEventHandler('Framework:removeInventoryItem', function(type, itemName, itemCount)
+	RegisterNetEvent('JLRP-Framework:removeInventoryItem')
+	AddEventHandler('JLRP-Framework:removeInventoryItem', function(type, itemName, itemCount)
 		local playerId = source
 		local xPlayer = Framework.GetPlayerFromId(source)
 
@@ -321,8 +321,8 @@ if not Config.OxInventory then
 	end)
 
 
-	RegisterNetEvent('Framework:useItem')
-	AddEventHandler('Framework:useItem', function(itemName)
+	RegisterNetEvent('JLRP-Framework:useItem')
+	AddEventHandler('JLRP-Framework:useItem', function(itemName)
 		local xPlayer = Framework.GetPlayerFromId(source)
 		local count = xPlayer.getInventoryItem(itemName).count
 
@@ -333,8 +333,8 @@ if not Config.OxInventory then
 		end
 	end)
 
-	RegisterNetEvent('Framework:onPickup')
-	AddEventHandler('Framework:onPickup', function(pickupId)
+	RegisterNetEvent('JLRP-Framework:onPickup')
+	AddEventHandler('JLRP-Framework:onPickup', function(pickupId)
 		local pickup, xPlayer, success = Core.Pickups[pickupId], Framework.GetPlayerFromId(source)
 
 		if pickup then
@@ -364,7 +364,7 @@ if not Config.OxInventory then
 
 			if success then
 				Core.Pickups[pickupId] = nil
-				TriggerClientEvent('Framework:removePickup', -1, pickupId)
+				TriggerClientEvent('JLRP-Framework:removePickup', -1, pickupId)
 			end
 		end
 	end)

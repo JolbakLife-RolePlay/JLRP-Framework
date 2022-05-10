@@ -12,7 +12,7 @@ function PositionSync()
 						local playerCoords = GetEntityCoords(playerPed)
 						local playerHeading = Framework.Math.Round(GetEntityHeading(playerPed), 1)
 						local formattedCoords = {x = Framework.Math.Round(playerCoords.x, 1), y = Framework.Math.Round(playerCoords.y, 1), z = Framework.Math.Round(playerCoords.z, 1), heading = playerHeading}
-						TriggerEvent('Framework:updateCoords', formattedCoords, xPlayer.source)
+						TriggerEvent('JLRP-Framework:updateCoords', formattedCoords, xPlayer.source)
 					end
 				else
 					Wait(3000)

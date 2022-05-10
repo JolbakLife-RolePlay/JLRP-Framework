@@ -1,10 +1,10 @@
-RegisterNetEvent('Framework:teleport')
-AddEventHandler('Framework:teleport', function(coords)
+RegisterNetEvent('JLRP-Framework:teleport')
+AddEventHandler('JLRP-Framework:teleport', function(coords)
 	Framework.Game.Teleport(Framework.PlayerData.ped, coords)
 end)
 
-RegisterNetEvent('Framework:setJob')
-AddEventHandler('Framework:setJob', function(job)
+RegisterNetEvent('JLRP-Framework:setJob')
+AddEventHandler('JLRP-Framework:setJob', function(job)
 	if Config.EnableHud then
 		local gradeLabel = job.grade_label ~= job.label and job.grade_label or ''
 		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
@@ -16,8 +16,8 @@ AddEventHandler('Framework:setJob', function(job)
 	Framework.SetPlayerData('job', job)
 end)
 
-RegisterNetEvent('Framework:setGang')
-AddEventHandler('Framework:setGang', function(gang)
+RegisterNetEvent('JLRP-Framework:setGang')
+AddEventHandler('JLRP-Framework:setGang', function(gang)
 	if Config.EnableHud then
 		local gradeLabel = gang.grade_label ~= gang.label and gang.grade_label or ''
 		if gradeLabel ~= '' then gradeLabel = ' - '..gradeLabel end
@@ -29,8 +29,8 @@ AddEventHandler('Framework:setGang', function(gang)
 	Framework.SetPlayerData('gang', gang)
 end)
 
-RegisterNetEvent('Framework:setAccountMoney')
-AddEventHandler('Framework:setAccountMoney', function(account)
+RegisterNetEvent('JLRP-Framework:setAccountMoney')
+AddEventHandler('JLRP-Framework:setAccountMoney', function(account)
 	for k, v in ipairs(Framework.PlayerData.accounts) do
 		if v.name == account.name then
 			Framework.PlayerData.accounts[k] = account
@@ -48,8 +48,8 @@ AddEventHandler('Framework:setAccountMoney', function(account)
 end)
 
 if not Config.OxInventory then
-	RegisterNetEvent('Framework:addInventoryItem')
-	AddEventHandler('Framework:addInventoryItem', function(item, count, showNotification)
+	RegisterNetEvent('JLRP-Framework:addInventoryItem')
+	AddEventHandler('JLRP-Framework:addInventoryItem', function(item, count, showNotification)
 		for k, v in ipairs(Framework.PlayerData.inventory) do
 			if v.name == item then
 				Framework.UI.ShowInventoryItemNotification(true, v.label, count - v.count)
@@ -67,8 +67,8 @@ if not Config.OxInventory then
 		end
 	end)
 
-	RegisterNetEvent('Framework:removeInventoryItem')
-	AddEventHandler('Framework:removeInventoryItem', function(item, count, showNotification)
+	RegisterNetEvent('JLRP-Framework:removeInventoryItem')
+	AddEventHandler('JLRP-Framework:removeInventoryItem', function(item, count, showNotification)
 		for k, v in ipairs(Framework.PlayerData.inventory) do
 			if v.name == item then
 				Framework.UI.ShowInventoryItemNotification(false, v.label, v.count - count)
@@ -86,66 +86,66 @@ if not Config.OxInventory then
 		end
 	end)
 
-	RegisterNetEvent('Framework:addWeapon')
-	AddEventHandler('Framework:addWeapon', function(weapon, ammo)
+	RegisterNetEvent('JLRP-Framework:addWeapon')
+	AddEventHandler('JLRP-Framework:addWeapon', function(weapon, ammo)
 		GiveWeaponToPed(Framework.PlayerData.ped, GetHashKey(weapon), ammo, false, false)
 	end)
 
-	RegisterNetEvent('Framework:addWeaponComponent')
-	AddEventHandler('Framework:addWeaponComponent', function(weapon, weaponComponent)
+	RegisterNetEvent('JLRP-Framework:addWeaponComponent')
+	AddEventHandler('JLRP-Framework:addWeaponComponent', function(weapon, weaponComponent)
 		local componentHash = Framework.GetWeaponComponent(weapon, weaponComponent).hash
 		GiveWeaponComponentToPed(Framework.PlayerData.ped, GetHashKey(weapon), componentHash)
 	end)
 
-	RegisterNetEvent('Framework:setWeaponAmmo')
-	AddEventHandler('Framework:setWeaponAmmo', function(weapon, weaponAmmo)
+	RegisterNetEvent('JLRP-Framework:setWeaponAmmo')
+	AddEventHandler('JLRP-Framework:setWeaponAmmo', function(weapon, weaponAmmo)
 		SetPedAmmo(Framework.PlayerData.ped, GetHashKey(weapon), weaponAmmo)
 	end)
 
-	RegisterNetEvent('Framework:setWeaponTint')
-	AddEventHandler('Framework:setWeaponTint', function(weapon, weaponTintIndex)
+	RegisterNetEvent('JLRP-Framework:setWeaponTint')
+	AddEventHandler('JLRP-Framework:setWeaponTint', function(weapon, weaponTintIndex)
 		SetPedWeaponTintIndex(Framework.PlayerData.ped, GetHashKey(weapon), weaponTintIndex)
 	end)
 
-	RegisterNetEvent('Framework:removeWeapon')
-	AddEventHandler('Framework:removeWeapon', function(weapon)
+	RegisterNetEvent('JLRP-Framework:removeWeapon')
+	AddEventHandler('JLRP-Framework:removeWeapon', function(weapon)
 		local playerPed = Framework.PlayerData.ped
 		RemoveWeaponFromPed(Framework.PlayerData.ped, GetHashKey(weapon))
 		SetPedAmmo(Framework.PlayerData.ped, GetHashKey(weapon), 0)
 	end)
 
-	RegisterNetEvent('Framework:removeWeaponComponent')
-	AddEventHandler('Framework:removeWeaponComponent', function(weapon, weaponComponent)
+	RegisterNetEvent('JLRP-Framework:removeWeaponComponent')
+	AddEventHandler('JLRP-Framework:removeWeaponComponent', function(weapon, weaponComponent)
 		local componentHash = Framework.GetWeaponComponent(weapon, weaponComponent).hash
 		RemoveWeaponComponentFromPed(Framework.PlayerData.ped, GetHashKey(weapon), componentHash)
 	end)
 end
 
-RegisterNetEvent('Framework:setMaxWeight')
-AddEventHandler('Framework:setMaxWeight', function(newMaxWeight) Framework.PlayerData.maxWeight = newMaxWeight end)
+RegisterNetEvent('JLRP-Framework:setMaxWeight')
+AddEventHandler('JLRP-Framework:setMaxWeight', function(newMaxWeight) Framework.PlayerData.maxWeight = newMaxWeight end)
 
-RegisterNetEvent('Framework:progressBar')
-AddEventHandler('Framework:progressBar', function(message, length, options)
+RegisterNetEvent('JLRP-Framework:progressBar')
+AddEventHandler('JLRP-Framework:progressBar', function(message, length, options)
 	Framework.ProgressBar(message, length, options)
 end)
 
-RegisterNetEvent('Framework:showNotification')
-AddEventHandler('Framework:showNotification', function(message, type, length)
+RegisterNetEvent('JLRP-Framework:showNotification')
+AddEventHandler('JLRP-Framework:showNotification', function(message, type, length)
 	Framework.ShowNotification(message, type, length)
 end)
 
-RegisterNetEvent('Framework:showAdvancedNotification')
-AddEventHandler('Framework:showAdvancedNotification', function(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
+RegisterNetEvent('JLRP-Framework:showAdvancedNotification')
+AddEventHandler('JLRP-Framework:showAdvancedNotification', function(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
 	Framework.ShowAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
 end)
 
-RegisterNetEvent('Framework:showHelpNotification')
-AddEventHandler('Framework:showHelpNotification', function(msg, thisFrame, beep, duration)
+RegisterNetEvent('JLRP-Framework:showHelpNotification')
+AddEventHandler('JLRP-Framework:showHelpNotification', function(msg, thisFrame, beep, duration)
 	Framework.ShowHelpNotification(msg, thisFrame, beep, duration)
 end)
 
-RegisterNetEvent('Framework:playerLoaded')
-AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
+RegisterNetEvent('JLRP-Framework:playerLoaded')
+AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 	Framework.PlayerLoaded = true
 	Framework.PlayerData = xPlayer
 
@@ -162,9 +162,9 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 			model = GetHashKey("mp_m_freemode_01"),
 			skipFade = false
 		}, function()
-			TriggerServerEvent('Framework:onPlayerSpawn')
-			TriggerEvent('Framework:onPlayerSpawn')
-			TriggerEvent('Framework:restoreLoadout')
+			TriggerServerEvent('JLRP-Framework:onPlayerSpawn')
+			TriggerEvent('JLRP-Framework:onPlayerSpawn')
+			TriggerEvent('JLRP-Framework:restoreLoadout')
 
 			if isNew then
 				TriggerEvent('skinchanger:loadDefaultModel', skin.sex == 0)
@@ -172,7 +172,7 @@ AddEventHandler('Framework:playerLoaded', function(xPlayer, isNew, skin)
 				TriggerEvent('skinchanger:loadSkin', skin)
 			end
 
-			TriggerEvent('Framework:loadingScreenOff')
+			TriggerEvent('JLRP-Framework:loadingScreenOff')
 			
 			FreezeEntityPosition(PlayerPedId(), false)
 		end)
@@ -230,23 +230,23 @@ local function onPlayerSpawn()
 end
 
 AddEventHandler('playerSpawned', onPlayerSpawn)
-AddEventHandler('Framework:onPlayerSpawn', onPlayerSpawn)
+AddEventHandler('JLRP-Framework:onPlayerSpawn', onPlayerSpawn)
 
-AddEventHandler('Framework:onPlayerDeath', function()
+AddEventHandler('JLRP-Framework:onPlayerDeath', function()
 	Framework.SetPlayerData('ped', PlayerPedId())
 	Framework.SetPlayerData('dead', true)
 end)
 
 if Config.EnableHud then
-	AddEventHandler('Framework:loadingScreenOff', function()
+	AddEventHandler('JLRP-Framework:loadingScreenOff', function()
 		ShutdownLoadingScreen()
 		ShutdownLoadingScreenNui()
 		Framework.UI.HUD.SetDisplay(1.0)
 	end)
 end
 
-RegisterNetEvent('Framework:serverCallback')
-AddEventHandler('Framework:serverCallback', function(requestId, ...)
+RegisterNetEvent('JLRP-Framework:serverCallback')
+AddEventHandler('JLRP-Framework:serverCallback', function(requestId, ...)
 	Core.ServerCallbacks[requestId](...)
 	Core.ServerCallbacks[requestId] = nil
 end)

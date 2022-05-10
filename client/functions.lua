@@ -74,7 +74,7 @@ function Framework.SetPlayerData(key, val)
 	Framework.PlayerData[key] = val
 	if key ~= "inventory" and key ~= "loadout" then
 		if type(val) == "table" or val ~= current then
-			TriggerEvent("Framework:setPlayerData", key, val, current)
+			TriggerEvent("JLRP-Framework:setPlayerData", key, val, current)
 		end
 	end
 end
@@ -139,7 +139,7 @@ end
 function Framework.TriggerServerCallback(name, cb, ...)
 	Core.ServerCallbacks[Core.CurrentRequestId] = cb
 
-	TriggerServerEvent("Framework:triggerServerCallback", name, Core.CurrentRequestId, ...)
+	TriggerServerEvent("JLRP-Framework:triggerServerCallback", name, Core.CurrentRequestId, ...)
 
 	if Core.CurrentRequestId < 65535 then
 		Core.CurrentRequestId = Core.CurrentRequestId + 1
