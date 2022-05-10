@@ -1,34 +1,4 @@
 function StartServerSyncLoops()
-	if not Config.OxInventory then
-		-- keep track of ammo
-		CreateThread(
-			function()
-				local currentWeapon = {Ammo = 0}
-				while Framework.PlayerLoaded do
-					local sleep = 300
-					if GetSelectedPedWeapon(Framework.PlayerData.ped) ~= -1569615261 then
-						sleep = 0
-						local _, weaponHash = GetCurrentPedWeapon(Framework.PlayerData.ped, true)
-						local weapon = Framework.GetWeaponFromHash(weaponHash)
-						if weapon then
-							local ammoCount = GetAmmoInPedWeapon(Framework.PlayerData.ped, weaponHash)
-							if weapon.name ~= currentWeapon.name then
-								currentWeapon.Ammo = ammoCount
-								currentWeapon.name = weapon.name
-							else
-								if ammoCount ~= currentWeapon.Ammo then
-									currentWeapon.Ammo = ammoCount
-									TriggerServerEvent("JLRP-Framework:updateWeaponAmmo", weapon.name, ammoCount)
-								end
-							end
-						end
-					end
-					Wait(sleep)
-				end
-			end
-		)
-	end
-
 	CreateThread(
 		function()
 			local previousCoords =

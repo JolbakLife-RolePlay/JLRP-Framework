@@ -23,5 +23,6 @@ exports('getSharedObject', function() -- for compatibility with esx
 end)
 
 function Framework.GetConfig()
+	Config.OxInventory = true -- for compatibility with esx
 	return Config
 end

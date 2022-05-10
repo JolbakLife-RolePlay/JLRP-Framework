@@ -26,7 +26,7 @@ local function tPrint(tbl, indent)
 end
 
 RegisterServerEvent('JLRP-Framework:DebugSomething', function(tbl, indent)
-    local resource = GetInvokingResource() or "Framework"
+    local resource = GetInvokingResource() or "JLRP-Framework"
     print(('\x1b[4m\x1b[36m[ %s : DEBUG]\x1b[0m'):format(resource))
     tPrint(tbl, indent)
     print('\x1b[4m\x1b[36m[ END DEBUG ]\x1b[0m')

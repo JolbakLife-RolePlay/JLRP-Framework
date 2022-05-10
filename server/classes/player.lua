@@ -3,19 +3,8 @@ function Core.Player.Login(source, identifier)
 		local PlayerData = MySQL.Sync.prepare(QUERIES.LOAD_PLAYER, { identifier })
 		if PlayerData then
 			if not Framework.String.IsNull(PlayerData.citizenid) then
-				--[[
-				PlayerData.accounts = (PlayerData.accounts and PlayerData.accounts ~= '') == true and json.decode(PlayerData.accounts)
-				PlayerData.inventory = (PlayerData.inventory and PlayerData.inventory ~= '') == true and json.decode(PlayerData.inventory)
-				PlayerData.loadout = (PlayerData.loadout and PlayerData.loadout ~= '') == true and json.decode(PlayerData.loadout)
-				PlayerData.position = (PlayerData.position and PlayerData.position ~= '') == true and json.decode(PlayerData.position)
-				PlayerData.metadata = (PlayerData.metadata and PlayerData.metadata ~= '') == true and json.decode(PlayerData.metadata)
-				PlayerData.skin = (PlayerData.skin and PlayerData.skin ~= '') == true and json.decode(PlayerData.skin)
-				PlayerData.job = (PlayerData.job and PlayerData.job ~= '') == true and json.decode(PlayerData.job)
-				PlayerData.gang = (PlayerData.gang and PlayerData.gang ~= '') == true and json.decode(PlayerData.gang) or {}
-				]]
 				PlayerData.accounts = json.decode(PlayerData.accounts)
 				PlayerData.inventory = json.decode(PlayerData.inventory)
-				PlayerData.loadout = json.decode(PlayerData.loadout)
 				PlayerData.position = json.decode(PlayerData.position)
 				PlayerData.metadata = json.decode(PlayerData.metadata)
 				PlayerData.skin = json.decode(PlayerData.skin)
@@ -129,70 +118,14 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 
     -- inventory 
     local foundItems = {}
-    if not Config.OxInventory then
-		if PlayerData.inventory and PlayerData.inventory ~= '' then
-			local inventory = PlayerData.inventory
-            
-			for name, count in pairs(inventory) do
-				local item = Framework.Items[name]
-
-				if item then
-					foundItems[name] = count
-				else
-					print(('[^3WARNING^7] Ignoring invalid item "%s" for "%s"'):format(name, identifier))
-				end
-			end
-		end
-        PlayerData.inventory = {}
-		for name, item in pairs(Framework.Items) do
-			local count = foundItems[name] or 0
-			if count > 0 then PlayerData.weight = PlayerData.weight + (item.weight * count) end
-
-			table.insert(PlayerData.inventory, {
-				name = name,
-				count = count,
-				label = item.label,
-				weight = item.weight,
-				usable = Core.UsableItemsCallbacks[name] ~= nil,
-				--rare = item.rare,
-				canRemove = item.canRemove
-			})
-		end
-
-		table.sort(PlayerData.inventory, function(a, b)
-			return a.label < b.label
-		end)
-	else
-		if PlayerData.inventory and PlayerData.inventory ~= '' then
-			PlayerData.inventory = PlayerData.inventory
-        else 
-            PlayerData.inventory = {}
-        end
+    if PlayerData.inventory and PlayerData.inventory ~= '' then
+		PlayerData.inventory = PlayerData.inventory
+	else 
+		PlayerData.inventory = {}
 	end
 
     -- loadout
-    if not Config.OxInventory then
-		if PlayerData.loadout and PlayerData.loadout ~= '' then
-			local loadout = PlayerData.loadout
-            PlayerData.loadout = {}
-			for name, weapon in pairs(loadout) do
-				local label = Framework.GetWeaponLabel(name)
-
-				if label then
-					if not weapon.components then weapon.components = {} end
-					if not weapon.tintIndex then weapon.tintIndex = 0 end
-
-					table.insert(PlayerData.loadout, {
-						name = name,
-						ammo = weapon.ammo,
-						label = label,
-						components = weapon.components,
-						tintIndex = weapon.tintIndex
-					})
-				end
-			end
-		end
-	end
+    -- handling loadout is moved to inventory
 
     -- position
     PlayerData.position = PlayerData.position or Config.DefaultSpawn
@@ -283,18 +216,13 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		inventory = xPlayer.getInventory(),
 		job = xPlayer.getJob(),
         gang = xPlayer.getGang(),
-		loadout = xPlayer.getLoadout(),
 		maxWeight = xPlayer.getMaxWeight(),
 		money = xPlayer.getMoney(),
         metadata = xPlayer.getMetadata(),
 		dead = false
 	}, isNew, PlayerData.skin)
 
-    if not Config.OxInventory then
-		xPlayer.triggerEvent('JLRP-Framework:createMissingPickups', Core.Pickups)
-	else
-		exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
-	end
+    exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
 
     if isNew then
         MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata) })
@@ -334,11 +262,9 @@ end
 
 local Inventory
 
-if Config.OxInventory then
-	AddEventHandler('ox_inventory:loadInventory', function(module)
-		Inventory = module
-	end)
-end
+AddEventHandler('ox_inventory:loadInventory', function(module)
+	Inventory = module
+end)
 
 function Core.Player.CreatePlayer(PlayerData)
     local self = {}
@@ -354,7 +280,6 @@ function Core.Player.CreatePlayer(PlayerData)
     self.gang = PlayerData.gang
     self.accounts = PlayerData.accounts
     self.inventory = PlayerData.inventory or {}
-    self.loadout = PlayerData.loadout or {}
 	self.position = PlayerData.position
     self.coords = self.position -- for compatibility with esx
 	self.firstname = PlayerData.firstname
@@ -457,7 +382,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			TriggerEvent('JLRP-Framework:setJob', self.source, self.job, lastJob)
 			self.triggerEvent('JLRP-Framework:setJob', self.job)
 		else
-			print(('[Framework] [^3WARNING^7] Ignoring invalid .setJob() usage for "%s"'):format(self.name))
+			print(('[JLRP-Framework] [^3WARNING^7] Ignoring invalid .setJob() usage for "%s"'):format(self.name))
 		end
 	end
 
@@ -506,7 +431,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			TriggerEvent('JLRP-Framework:setGang', self.source, self.gang, lastGang)
 			self.triggerEvent('JLRP-Framework:setGang', self.gang)
 		else
-			print(('[Framework] [^3WARNING^7] Ignoring invalid .setGang() usage for "%s"'):format(self.identifier))
+			print(('[JLRP-Framework] [^3WARNING^7] Ignoring invalid .setGang() usage for "%s"'):format(self.identifier))
 		end
 	end
 
@@ -772,220 +697,7 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- loadout
-	function self.getLoadout(minimal)
-		if Inventory then return {} end
-		if minimal then
-			local minimalLoadout = {}
-
-			for k, v in ipairs(self.loadout) do
-				minimalLoadout[v.name] = {ammo = v.ammo}
-				if v.tintIndex > 0 then minimalLoadout[v.name].tintIndex = v.tintIndex end
-
-				if #v.components > 0 then
-					local components = {}
-
-					for k2,component in ipairs(v.components) do
-						if component ~= 'clip_default' then
-							components[#components + 1] = component
-						end
-					end
-
-					if #components > 0 then
-						minimalLoadout[v.name].components = components
-					end
-				end
-			end
-
-			return minimalLoadout
-		else
-			return self.loadout
-		end
-	end
-
-    function self.addWeapon(weaponName, ammo)
-		if Inventory then return end
-
-		if not self.hasWeapon(weaponName) then
-			local weaponLabel = Framework.GetWeaponLabel(weaponName)
-
-			table.insert(self.loadout, {
-				name = weaponName,
-				ammo = ammo,
-				label = weaponLabel,
-				components = {},
-				tintIndex = 0
-			})
-
-			self.triggerEvent('JLRP-Framework:addWeapon', weaponName, ammo)
-			self.triggerEvent('JLRP-Framework:addInventoryItem', weaponLabel, false, true)
-		end
-	end
-
-	function self.addWeaponComponent(weaponName, weaponComponent)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local component = Framework.GetWeaponComponent(weaponName, weaponComponent)
-
-			if component then
-				if not self.hasWeaponComponent(weaponName, weaponComponent) then
-					self.loadout[loadoutNum].components[#self.loadout[loadoutNum].components + 1] = weaponComponent
-					self.triggerEvent('JLRP-Framework:addWeaponComponent', weaponName, weaponComponent)
-					self.triggerEvent('JLRP-Framework:addInventoryItem', component.label, false, true)
-				end
-			end
-		end
-	end
-
-	function self.addWeaponAmmo(weaponName, ammoCount)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = weapon.ammo + ammoCount
-			self.triggerEvent('JLRP-Framework:setWeaponAmmo', weaponName, weapon.ammo)
-		end
-	end
-
-	function self.updateWeaponAmmo(weaponName, ammoCount)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = ammoCount
-		end
-	end
-
-	function self.setWeaponTint(weaponName, weaponTintIndex)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local weaponNum, weaponObject = Framework.GetWeapon(weaponName)
-
-			if weaponObject.tints and weaponObject.tints[weaponTintIndex] then
-				self.loadout[loadoutNum].tintIndex = weaponTintIndex
-				self.triggerEvent('JLRP-Framework:setWeaponTint', weaponName, weaponTintIndex)
-				self.triggerEvent('JLRP-Framework:addInventoryItem', weaponObject.tints[weaponTintIndex], false, true)
-			end
-		end
-	end
-
-	function self.getWeaponTint(weaponName)
-		if Inventory then return 0 end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			return weapon.tintIndex
-		end
-
-		return 0
-	end
-
-	function self.removeWeapon(weaponName)
-		if Inventory then return end
-
-		local weaponLabel
-
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				weaponLabel = v.label
-
-				for k2,v2 in ipairs(v.components) do
-					self.removeWeaponComponent(weaponName, v2)
-				end
-
-				table.remove(self.loadout, k)
-				break
-			end
-		end
-
-		if weaponLabel then
-			self.triggerEvent('JLRP-Framework:removeWeapon', weaponName)
-			self.triggerEvent('JLRP-Framework:removeInventoryItem', weaponLabel, false, true)
-		end
-	end
-
-	function self.removeWeaponComponent(weaponName, weaponComponent)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local component = Framework.GetWeaponComponent(weaponName, weaponComponent)
-
-			if component then
-				if self.hasWeaponComponent(weaponName, weaponComponent) then
-					for k,v in ipairs(self.loadout[loadoutNum].components) do
-						if v == weaponComponent then
-							table.remove(self.loadout[loadoutNum].components, k)
-							break
-						end
-					end
-
-					self.triggerEvent('JLRP-Framework:removeWeaponComponent', weaponName, weaponComponent)
-					self.triggerEvent('JLRP-Framework:removeInventoryItem', component.label, false, true)
-				end
-			end
-		end
-	end
-
-	function self.removeWeaponAmmo(weaponName, ammoCount)
-		if Inventory then return end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = weapon.ammo - ammoCount
-			self.triggerEvent('JLRP-Framework:setWeaponAmmo', weaponName, weapon.ammo)
-		end
-	end
-
-	function self.hasWeaponComponent(weaponName, weaponComponent)
-		if Inventory then return false end
-
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			for k,v in ipairs(weapon.components) do
-				if v == weaponComponent then
-					return true
-				end
-			end
-
-			return false
-		else
-			return false
-		end
-	end
-
-	function self.hasWeapon(weaponName)
-		if Inventory then return false end
-
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				return true
-			end
-		end
-
-		return false
-	end
-
-    function self.getWeapon(weaponName)
-		if Inventory then return end
-
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				return k, v
-			end
-		end
-	end
+	-- handling loadout is moved to inventory
 
     -- position
     function self.updatePosition(coords)

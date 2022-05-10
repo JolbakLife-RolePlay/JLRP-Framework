@@ -13,8 +13,7 @@ shared_scripts {
 	'shared/locale.lua',
 	'locales/*.lua',
 
-	'config.lua',
-	'config.weapon.lua'
+	'config.lua'
 }
 
 server_scripts {

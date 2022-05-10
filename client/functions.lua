@@ -72,7 +72,7 @@ end
 function Framework.SetPlayerData(key, val)
 	local current = Framework.PlayerData[key]
 	Framework.PlayerData[key] = val
-	if key ~= "inventory" and key ~= "loadout" then
+	if key ~= "inventory" then
 		if type(val) == "table" or val ~= current then
 			TriggerEvent("JLRP-Framework:setPlayerData", key, val, current)
 		end
@@ -93,15 +93,7 @@ function Framework.ShowNotification(message, type, length)
 	end
 end
 
-function Framework.ShowAdvancedNotification(
-	sender,
-	subject,
-	msg,
-	textureDict,
-	iconType,
-	flash,
-	saveToBrief,
-	hudColorIndex)
+function Framework.ShowAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
 	if saveToBrief == nil then
 		saveToBrief = true
 	end

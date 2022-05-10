@@ -26,7 +26,6 @@ Config.Player.Bloodtypes = {
 Config.NativeNotify = true
 Config.EnableHud = true -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
 Config.MultiCharacter = false -- Enabling support for players having multiple characters - would not be implemented for now
-Config.OxInventory = false -- Enabling ox_inventory integration with the framework
 
 Config.Server = {} -- General server config
 Config.Server.Name = "FrameworkRP" -- Name of the RP server

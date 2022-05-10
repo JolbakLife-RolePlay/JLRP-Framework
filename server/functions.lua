@@ -139,13 +139,12 @@ function Framework.GetExtendedPlayers(key, val) -- for compatibility with esx
 end
 
 function Core.SavePlayer(xPlayer, cb)
-	MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `loadout` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", {
+	MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", {
 		xPlayer.group,
 		json.encode(xPlayer.job),
 		json.encode(xPlayer.gang),
 		json.encode(xPlayer.getAccounts(true)),
 		json.encode(xPlayer.getInventory(true)),
-		json.encode(xPlayer.getLoadout(true)),
 		json.encode(xPlayer.getPosition()),
 		json.encode(xPlayer.getMetadata()),
 		xPlayer.getCitizenid()
@@ -171,14 +170,13 @@ function Core.SavePlayers(cb)
                 json.encode(xPlayer.job),
 				json.encode(xPlayer.gang),
 				json.encode(xPlayer.getAccounts(true)),
-				json.encode(xPlayer.getInventory(true)),
-				json.encode(xPlayer.getLoadout(true)),				
+				json.encode(xPlayer.getInventory(true)),			
 				json.encode(xPlayer.getPosition()),
 				json.encode(xPlayer.getMetadata()),
 				xPlayer.getCitizenid()
 			}
 		end
-		MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `loadout` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", parameters,
+		MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", parameters,
 		function(results)
 			if results then
 				if type(cb) == 'function' then cb() else print(('[^2INFO^7] Saved %s %s over %s ms'):format(count, count > 1 and 'players' or 'player', (os.time() - time) / 1000000)) end
@@ -283,17 +281,11 @@ function Framework.RegisterCommand(name, group, cb, allowConsole, suggestion)
 								end
 							elseif v.type == 'string' then
 								newArgs[v.name] = args[k]
-							elseif v.type == 'item' then
+							elseif v.type == 'item' or v.type == 'weapon' then
 								if Framework.Items[args[k]] then
 									newArgs[v.name] = args[k]
 								else
 									error = _Locale('commanderror_invaliditem')
-								end
-							elseif v.type == 'weapon' then
-								if Framework.GetWeapon(args[k]) then
-									newArgs[v.name] = string.upper(args[k])
-								else
-									error = _Locale('commanderror_invalidweapon')
 								end
 							elseif v.type == 'any' then
 								newArgs[v.name] = args[k]
@@ -343,27 +335,5 @@ function Framework.TriggerServerCallback(name, requestId, source, cb, ...)
 		Core.ServerCallbacks[name](source, cb, ...)
 	else
 		print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
-	end
-end
-
-if not Config.OxInventory then
-	function Framework.CreatePickup(type, name, count, label, playerId, components, tintIndex)
-		local pickupId = (Core.PickupId == 65635 and 0 or Core.PickupId + 1)
-		local xPlayer = Framework.GetPlayerFromId(playerId)
-		local coords = xPlayer.getCoords()
-
-		Core.Pickups[pickupId] = {
-			type = type, name = name,
-			count = count, label = label,
-			coords = coords
-		}
-
-		if type == 'item_weapon' then
-			Core.Pickups[pickupId].components = components
-			Core.Pickups[pickupId].tintIndex = tintIndex
-		end
-
-		TriggerClientEvent('JLRP-Framework:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
-		Core.PickupId = pickupId
 	end
 end

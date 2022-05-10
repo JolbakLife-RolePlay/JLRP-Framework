@@ -47,80 +47,6 @@ AddEventHandler('JLRP-Framework:setAccountMoney', function(account)
 	end
 end)
 
-if not Config.OxInventory then
-	RegisterNetEvent('JLRP-Framework:addInventoryItem')
-	AddEventHandler('JLRP-Framework:addInventoryItem', function(item, count, showNotification)
-		for k, v in ipairs(Framework.PlayerData.inventory) do
-			if v.name == item then
-				Framework.UI.ShowInventoryItemNotification(true, v.label, count - v.count)
-				Framework.PlayerData.inventory[k].count = count
-				break
-			end
-		end
-
-		if showNotification then
-			Framework.UI.ShowInventoryItemNotification(true, item, count)
-		end
-
-		if Framework.UI.Menu.IsOpen('default', 'Framework', 'inventory') then
-			Framework.ShowInventory()
-		end
-	end)
-
-	RegisterNetEvent('JLRP-Framework:removeInventoryItem')
-	AddEventHandler('JLRP-Framework:removeInventoryItem', function(item, count, showNotification)
-		for k, v in ipairs(Framework.PlayerData.inventory) do
-			if v.name == item then
-				Framework.UI.ShowInventoryItemNotification(false, v.label, v.count - count)
-				Framework.PlayerData.inventory[k].count = count
-				break
-			end
-		end
-
-		if showNotification then
-			Framework.UI.ShowInventoryItemNotification(false, item, count)
-		end
-
-		if Framework.UI.Menu.IsOpen('default', 'Framework', 'inventory') then
-			Framework.ShowInventory()
-		end
-	end)
-
-	RegisterNetEvent('JLRP-Framework:addWeapon')
-	AddEventHandler('JLRP-Framework:addWeapon', function(weapon, ammo)
-		GiveWeaponToPed(Framework.PlayerData.ped, GetHashKey(weapon), ammo, false, false)
-	end)
-
-	RegisterNetEvent('JLRP-Framework:addWeaponComponent')
-	AddEventHandler('JLRP-Framework:addWeaponComponent', function(weapon, weaponComponent)
-		local componentHash = Framework.GetWeaponComponent(weapon, weaponComponent).hash
-		GiveWeaponComponentToPed(Framework.PlayerData.ped, GetHashKey(weapon), componentHash)
-	end)
-
-	RegisterNetEvent('JLRP-Framework:setWeaponAmmo')
-	AddEventHandler('JLRP-Framework:setWeaponAmmo', function(weapon, weaponAmmo)
-		SetPedAmmo(Framework.PlayerData.ped, GetHashKey(weapon), weaponAmmo)
-	end)
-
-	RegisterNetEvent('JLRP-Framework:setWeaponTint')
-	AddEventHandler('JLRP-Framework:setWeaponTint', function(weapon, weaponTintIndex)
-		SetPedWeaponTintIndex(Framework.PlayerData.ped, GetHashKey(weapon), weaponTintIndex)
-	end)
-
-	RegisterNetEvent('JLRP-Framework:removeWeapon')
-	AddEventHandler('JLRP-Framework:removeWeapon', function(weapon)
-		local playerPed = Framework.PlayerData.ped
-		RemoveWeaponFromPed(Framework.PlayerData.ped, GetHashKey(weapon))
-		SetPedAmmo(Framework.PlayerData.ped, GetHashKey(weapon), 0)
-	end)
-
-	RegisterNetEvent('JLRP-Framework:removeWeaponComponent')
-	AddEventHandler('JLRP-Framework:removeWeaponComponent', function(weapon, weaponComponent)
-		local componentHash = Framework.GetWeaponComponent(weapon, weaponComponent).hash
-		RemoveWeaponComponentFromPed(Framework.PlayerData.ped, GetHashKey(weapon), componentHash)
-	end)
-end
-
 RegisterNetEvent('JLRP-Framework:setMaxWeight')
 AddEventHandler('JLRP-Framework:setMaxWeight', function(newMaxWeight) Framework.PlayerData.maxWeight = newMaxWeight end)
 
@@ -164,7 +90,6 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 		}, function()
 			TriggerServerEvent('JLRP-Framework:onPlayerSpawn')
 			TriggerEvent('JLRP-Framework:onPlayerSpawn')
-			TriggerEvent('JLRP-Framework:restoreLoadout')
 
 			if isNew then
 				TriggerEvent('skinchanger:loadDefaultModel', skin.sex == 0)

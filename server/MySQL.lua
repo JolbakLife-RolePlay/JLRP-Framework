@@ -1,27 +1,15 @@
 MySQL.ready(function()
-	if not Config.OxInventory then
-		local items = MySQL.query.await('SELECT * FROM items')
-		for k, v in ipairs(items) do
-			Framework.Items[v.name] = {
-				label = v.label,
-				weight = v.weight,
-				--rare = v.rare,
-				canRemove = v.can_remove
-			}
+	TriggerEvent('__cfx_export_ox_inventory_Items', function(ref)
+		if ref then
+			Framework.Items = ref()
 		end
-	else
-		TriggerEvent('__cfx_export_ox_inventory_Items', function(ref)
-			if ref then
-				Framework.Items = ref()
-			end
-		end)
+	end)
 
-		AddEventHandler('ox_inventory:itemList', function(items)
-			Framework.Items = items
-		end)
+	AddEventHandler('ox_inventory:itemList', function(items)
+		Framework.Items = items
+	end)
 
-		while not next(Framework.Items) do Wait(50) end
-	end
+	while not next(Framework.Items) do Wait(50) end
 
 	local Jobs = {}
 	local jobs = MySQL.query.await('SELECT * FROM jobs')

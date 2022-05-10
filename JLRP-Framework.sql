@@ -16,7 +16,6 @@ CREATE TABLE `users` (
 	`gang` TEXT DEFAULT NULL,
 	`accounts` LONGTEXT NULL DEFAULT NULL,
 	`inventory` LONGTEXT NULL DEFAULT '{}',
-	`loadout` LONGTEXT NULL DEFAULT '{}',
 	`position` VARCHAR(255) NOT NULL,
 	`firstname` varchar(16) DEFAULT NULL,
   	`lastname` varchar(16) DEFAULT NULL,
