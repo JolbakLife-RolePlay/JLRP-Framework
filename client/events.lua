@@ -47,6 +47,12 @@ AddEventHandler('JLRP-Framework:setAccountMoney', function(account)
 	end
 end)
 
+RegisterNetEvent('JLRP-Framework:onPlayerLogout')
+AddEventHandler('JLRP-Framework:onPlayerLogout', function()
+	Framework.PlayerLoaded = false
+	if Config.EnableHud then Framework.UI.HUD.Reset() end
+end)
+
 RegisterNetEvent('JLRP-Framework:setMaxWeight')
 AddEventHandler('JLRP-Framework:setMaxWeight', function(newMaxWeight) Framework.PlayerData.maxWeight = newMaxWeight end)
 
