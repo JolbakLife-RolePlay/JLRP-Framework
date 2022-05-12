@@ -473,7 +473,9 @@ function Framework.OneSync.SpawnObject(model, coords, heading, cb)
 	CreateThread(function()
 		local entity = CreateObject(model, coords, true, true)
 		while not DoesEntityExist(entity) do Wait(50) end
-		SetEntityHeading(entity, heading)
+		if heading then
+			SetEntityHeading(entity, heading)
+		end
 		cb(entity)
 	end)
 end
@@ -512,7 +514,7 @@ function Framework.OneSync.GetClosestVehicle(coords, modelFilter)
 	return getClosestEntity(GetAllVehicles(), coords, modelFilter)
 end
 
-function ESX.OneSync.Delete(entity, cb)
+function Framework.OneSync.Delete(entity, cb)
 	if DoesEntityExist(entity) then
 		DeleteEntity(entity)
 		if cb then
@@ -530,25 +532,25 @@ function ESX.OneSync.Delete(entity, cb)
 	end
 end
 
-Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnVehicle', function(source, cb, model, coords, heading)
+Framework.RegisterServerCallback('JLRP-Framework:Framework.OneSync.SpawnVehicle', function(source, cb, model, coords, heading)
 	Framework.OneSync.SpawnVehicle(model, coords, heading, function(vehicle)
 		cb(NetworkGetNetworkIdFromEntity(vehicle))
 	end)
 end)
 
-Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnObject', function(source, cb, model, coords, heading)
+Framework.RegisterServerCallback('JLRP-Framework:Framework.OneSync.SpawnObject', function(source, cb, model, coords, heading)
 	Framework.OneSync.SpawnObject(model, coords, heading, function(object)
 		cb(NetworkGetNetworkIdFromEntity(object))
 	end)
 end)
 
-Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnPed', function(source, cb, model, coords, heading)
+Framework.RegisterServerCallback('JLRP-Framework:Framework.OneSync.SpawnPed', function(source, cb, model, coords, heading)
 	Framework.OneSync.SpawnPed(model, coords, heading, function(ped)
 		cb(NetworkGetNetworkIdFromEntity(ped))
 	end)
 end)
 
-Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.Delete', function(source, cb, netID)
+Framework.RegisterServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(source, cb, netID)
 	Framework.OneSync.Delete(NetworkGetEntityFromNetworkId(netID), function(response)
 		if cb then
 			cb(response)
