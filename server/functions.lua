@@ -185,6 +185,10 @@ function Core.SavePlayers(cb)
 	end
 end
 
+function Framework.Trace(msg)
+	print(('[^2TRACE^7] %s^7'):format(msg))
+end
+
 function Framework.SetTimeout(msec, cb)
 	local id = Core.TimeoutCount + 1
 
@@ -337,3 +341,217 @@ function Framework.TriggerServerCallback(name, requestId, source, cb, ...)
 		print(('[^3WARNING^7] Server callback ^5"%s"^0 does not exist. ^1Please Check The Server File for Errors!'):format(name))
 	end
 end
+
+function Framework.RegisterUsableItem(item, cb)
+	Core.UsableItemsCallbacks[item] = cb
+end
+
+function Framework.GetUsableItems()
+	local Usables = {}
+	for k in pairs(Core.UsableItemsCallbacks) do
+		Usables[k] = true
+	end
+	return Usables
+end
+
+function Framework.UseItem(source, item, data)
+	Core.UsableItemsCallbacks[item](source, item, data)
+end
+
+function Framework.GetItemLabel(item)
+	item = OX_INVENTORY:Items(item)
+		if item then return item.label end
+end
+
+function Framework.GetJobs()
+	return Framework.Jobs
+end
+
+-- OneSync
+local function getNearbyPlayers(source, closest, distance, ignore)
+	local result = {}
+	local count = 0
+	if not distance then distance = 100 end
+	if type(source) == 'number' then
+		source = GetPlayerPed(source)
+
+		if not source then
+			error("Received invalid first argument (source); should be playerId or vector3 coordinates")
+		end
+
+		source = GetEntityCoords(GetPlayerPed(source))
+	end
+
+	for _, xPlayer in pairs(Core.Players) do
+		if not ignore or not ignore[xPlayer.source] then
+			local entity = GetPlayerPed(xPlayer.source)
+			local coords = GetEntityCoords(entity)
+
+			if not closest then
+				local dist = #(source - coords)
+				if dist <= distance then
+					count = count + 1
+					result[count] = {id = xPlayer.source, ped = entity, coords = coords, dist = dist}
+				end
+			else
+				local dist = #(source - coords)
+				if dist <= (result.dist or distance) then
+					result = {id = xPlayer.source, ped = entity, coords = coords, dist = dist}
+				end
+			end
+		end
+	end
+
+	return result
+end
+
+local function getNearbyEntities(entities, coords, modelFilter, maxDistance, isPed)
+	local nearbyEntities = {}
+	coords = type(coords) == 'number' and GetEntityCoords(GetPlayerPed(coords)) or vector3(coords.x, coords.y, coords.z)
+	for _, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				if not maxDistance or #(coords - entityCoords) <= maxDistance then
+					nearbyEntities[#nearbyEntities+1] = {entity=entity, coords=entityCoords}
+				end
+			end
+		end
+	end
+
+	return nearbyEntities
+end
+
+local function getClosestEntity(entities, coords, modelFilter, isPed)
+	local distance, closestEntity, closestCoords = maxDistance or 100, nil, nil
+	coords = type(coords) == 'number' and GetEntityCoords(GetPlayerPed(coords)) or vector3(coords.x, coords.y, coords.z)
+
+	for _, entity in pairs(entities) do
+		if not isPed or (isPed and not IsPedAPlayer(entity)) then
+			if not modelFilter or modelFilter[GetEntityModel(entity)] then
+				local entityCoords = GetEntityCoords(entity)
+				local dist = #(coords - entityCoords)
+				if dist < distance then
+					closestEntity, distance, closestCoords = entity, dist, entityCoords
+				end
+			end
+		end
+	end
+	return closestEntity, distance, closestCoords
+end
+
+function Framework.OneSync.GetPlayersInArea(source, maxDistance, ignore)
+	return getNearbyPlayers(source, false, maxDistance, ignore)
+end
+
+function Framework.OneSync.GetClosestPlayer(source, maxDistance, ignore)
+	return getNearbyPlayers(source, true, maxDistance, ignore)
+end
+
+function Framework.OneSync.SpawnVehicle(model, coords, heading, cb)
+	model = type(model) == "number" and model or GetHashKey(model)
+	coords = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
+	CreateThread(function()
+		local entity = Citizen.InvokeNative(`CREATE_AUTOMOBILE`, model, coords.x, coords.y, coords.z, heading)
+		while not DoesEntityExist(entity) do Wait(50) end
+
+		for i = -1, 6 do
+			ped = GetPedInVehicleSeat(entity, i)
+			local popType = GetEntityPopulationType(ped)
+			if popType >= 1 or popType <= 5 then
+				DeleteEntity(ped)
+			end
+		end
+
+		cb(entity)
+	end)
+end
+
+function Framework.OneSync.SpawnObject(model, coords, heading, cb)
+	model = type(model) == "number" and model or GetHashKey(model)
+	coords = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
+	CreateThread(function()
+		local entity = CreateObject(model, coords, true, true)
+		while not DoesEntityExist(entity) do Wait(50) end
+		SetEntityHeading(entity, heading)
+		cb(entity)
+	end)
+end
+
+function Framework.OneSync.SpawnPed(model, coords, heading, cb)
+	model = type(model) == "number" and model or GetHashKey(model)
+	coords = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
+	CreateThread(function()
+		local entity = CreatePed(0, model, coords.x, coords.y, coords.z, heading, true, true)
+		while not DoesEntityExist(entity) do Wait(50) end
+		cb(entity)
+	end)
+end
+
+function Framework.OneSync.GetPedsInArea(coords, maxDistance, modelFilter)
+	return getNearbyEntities(GetAllPeds(), coords, modelFilter, maxDistance, true)
+end
+
+function Framework.OneSync.GetObjectsInArea(coords, maxDistance, modelFilter)
+	return getNearbyEntities(GetAllObjects(), coords, modelFilter, maxDistance)
+end
+
+function Framework.OneSync.GetVehiclesInArea(coords, maxDistance, modelFilter)
+	return getNearbyEntities(GetAllVehicles(), coords, modelFilter, maxDistance)
+end
+
+function Framework.OneSync.GetClosestPed(coords, modelFilter)
+	return getClosestEntity(GetAllPeds(), coords, modelFilter, true)
+end
+
+function Framework.OneSync.GetClosestObject(coords, modelFilter)
+	return getClosestEntity(GetAllObjects(), coords, modelFilter)
+end
+
+function Framework.OneSync.GetClosestVehicle(coords, modelFilter)
+	return getClosestEntity(GetAllVehicles(), coords, modelFilter)
+end
+
+function ESX.OneSync.Delete(entity, cb)
+	if DoesEntityExist(entity) then
+		DeleteEntity(entity)
+		if cb then
+			cb(true)
+		end
+	elseif NetworkGetEntityFromNetworkId(entity) then
+		DeleteEntity(NetworkGetEntityFromNetworkId(entity))
+		if cb then
+			cb(true)
+		end
+	else
+		if cb then
+			cb(false)
+		end
+	end
+end
+
+Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnVehicle', function(source, cb, model, coords, heading)
+	Framework.OneSync.SpawnVehicle(model, coords, heading, function(vehicle)
+		cb(NetworkGetNetworkIdFromEntity(vehicle))
+	end)
+end)
+
+Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnObject', function(source, cb, model, coords, heading)
+	Framework.OneSync.SpawnObject(model, coords, heading, function(object)
+		cb(NetworkGetNetworkIdFromEntity(object))
+	end)
+end)
+
+Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.SpawnPed', function(source, cb, model, coords, heading)
+	Framework.OneSync.SpawnPed(model, coords, heading, function(ped)
+		cb(NetworkGetNetworkIdFromEntity(ped))
+	end)
+end)
+
+Framework.RegisterServerCallback('JLRP-Framework:ESX.OneSync.Delete', function(source, cb, netID)
+	Framework.OneSync.Delete(NetworkGetEntityFromNetworkId(netID), function(response)
+		if cb then
+			cb(response)
+		end
+	end)
+end)

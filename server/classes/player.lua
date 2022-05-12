@@ -17,7 +17,7 @@ function Core.Player.Login(source, identifier)
 		Core.Player.CheckPlayerData(source, {}, true)
 		return true
     else
-        Framework.ShowError(GetCurrentResourceName(), 'Error At Framework.Player.Login() - NO SOURCE GIVEN!')
+        Framework.ShowError(GetCurrentResourceName(), 'Error At Core.Player.Login() - NO SOURCE GIVEN!')
         return false
     end
 end
@@ -222,7 +222,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		dead = false
 	}, isNew, PlayerData.skin)
 
-    exports.ox_inventory:setPlayerInventory(xPlayer, PlayerData.inventory)
+    OX_INVENTORY:setPlayerInventory(xPlayer, PlayerData.inventory)
 
     if isNew then
         MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata) })

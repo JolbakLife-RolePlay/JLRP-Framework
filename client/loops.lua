@@ -41,11 +41,11 @@ if Config.EnableHud then
 				Wait(time)
 
 				if IsPauseMenuActive() and not isPaused then
-					time = 100
+					--time = 100
 					isPaused = true
 					Framework.UI.HUD.SetDisplay(0.0)
 				elseif not IsPauseMenuActive() and isPaused then
-					time = 100
+					--time = 100
 					isPaused = false
 					Framework.UI.HUD.SetDisplay(1.0)
 				end

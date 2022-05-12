@@ -80,7 +80,7 @@ function Framework.SetPlayerData(key, val)
 end
 
 function Framework.Progressbar(message, length, options)
-	exports["Framework_progressbar"]:Progressbar(message, length, options)
+	-- TODO
 end
 
 function Framework.ShowNotification(message, type, length)
@@ -89,8 +89,16 @@ function Framework.ShowNotification(message, type, length)
 		AddTextComponentSubstringPlayerName(message)
 		EndTextCommandThefeedPostTicker(0, 1)
 	else
-		exports["Framework_notify"]:Notify(type, length, message)
+		-- TODO
 	end
+end
+
+function Framework.TextUI(message, type)
+	-- TODO
+end
+
+function Framework.HideUI()
+	-- TODO
 end
 
 function Framework.ShowAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
@@ -341,4 +349,58 @@ function Framework.UI.ShowInventoryItemNotification(add, item, count)
 		item   = item,
 		count  = count
 	})
+end
+
+function Framework.Game.GetPedMugshot(ped, transparent)
+	if DoesEntityExist(ped) then
+		local mugshot
+
+		if transparent then
+			mugshot = RegisterPedheadshotTransparent(ped)
+		else
+			mugshot = RegisterPedheadshot(ped)
+		end
+
+		while not IsPedheadshotReady(mugshot) do
+			Wait(0)
+		end
+
+		return mugshot, GetPedheadshotTxdString(mugshot)
+	else
+		return
+	end
+end
+
+function Framework.Game.SpawnObject(object, coords, cb, networked)
+	networked = networked == nil and true or networked
+	if networked then		
+		local model = type(object) == 'number' and object or GetHashKey(object)
+		local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
+		
+		CreateThread(function()
+			Framework.Streaming.RequestModel(model)
+
+			local obj = CreateObject(model, vector.xyz, networked, false, true)
+			if cb then
+				cb(obj)
+			end
+		end)
+	else
+		Framework.Game.SpawnLocalObject(object, coords, cb)
+	end
+end
+
+function Framework.Game.SpawnLocalObject(object, coords, cb)
+	local model = type(object) == 'number' and object or GetHashKey(object)
+	local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
+	local networked = false
+
+	CreateThread(function()
+		Framework.Streaming.RequestModel(model)
+
+		local obj = CreateObject(model, vector.xyz, networked, false, true)
+		if cb then
+			cb(obj)
+		end
+	end)
 end

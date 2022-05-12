@@ -184,24 +184,28 @@ end)
 
 RegisterNetEvent('JLRP-Framework:addInventoryItem')
 AddEventHandler('JLRP-Framework:addInventoryItem', function(item, count, showNotification)
-	for k, v in ipairs(Framework.PlayerData.inventory) do
-		if v.name == item then
-			Framework.UI.ShowInventoryItemNotification(true, v.label, count - v.count)
-			Framework.PlayerData.inventory[k].count = count
-			Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
-			break
+	if GetInvokingResource() == 'ox_inventory' then
+		for k, v in ipairs(Framework.PlayerData.inventory) do
+			if v.name == item then
+				Framework.UI.ShowInventoryItemNotification(true, v.label, count - v.count)
+				Framework.PlayerData.inventory[k].count = count
+				Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
+				break
+			end
 		end
 	end
 end)
 
 RegisterNetEvent('JLRP-Framework:removeInventoryItem')
 AddEventHandler('JLRP-Framework:removeInventoryItem', function(item, count)
-	for k, v in ipairs(Framework.PlayerData.inventory) do
-		if v.name == item then
-			Framework.UI.ShowInventoryItemNotification(false, v.label, v.count - count)
-			Framework.PlayerData.inventory[k].count = count
-			Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
-			break
+	if GetInvokingResource() == 'ox_inventory' then
+		for k, v in ipairs(Framework.PlayerData.inventory) do
+			if v.name == item then
+				Framework.UI.ShowInventoryItemNotification(false, v.label, v.count - count)
+				Framework.PlayerData.inventory[k].count = count
+				Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
+				break
+			end
 		end
 	end
 end)

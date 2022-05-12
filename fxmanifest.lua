@@ -1,6 +1,7 @@
 fx_version 'cerulean'
 
 game 'gta5'
+lua54 'yes'
 
 name 'JLRP-Framework'
 author 'Mahan Moulaei'
