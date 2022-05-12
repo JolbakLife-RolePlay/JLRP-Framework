@@ -182,6 +182,9 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     -- skin
     PlayerData.skin = PlayerData.skin or {}
 
+	-- phone_number
+	PlayerData.phone_number = PlayerData.phone_number or Config.NPWD and Core.GeneratePhoneNumber(PlayerData.citizenid)
+
     -- is_dead
     PlayerData.is_dead = PlayerData.is_dead or 0
 
@@ -190,22 +193,19 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 
     if PlayerData.firstname and PlayerData.firstname ~= '' then
         xPlayer.setFirstname(PlayerData.firstname)
-		xPlayer.set('firstName', PlayerData.firstname) -- for compatibility with esx
         xPlayer.setLastname(PlayerData.lastname)
-		xPlayer.set('lastName', PlayerData.lastname) -- for compatibility with esx
 		if PlayerData.dateofbirth then
             xPlayer.setDateofbirth(PlayerData.dateofbirth)
-            xPlayer.set('dateofbirth', PlayerData.dateofbirth) -- for compatibility with esx
         end
 		if PlayerData.sex then
             xPlayer.setSex(PlayerData.sex)
-            xPlayer.set('sex', PlayerData.sex) -- for compatibility with esx
         end
 		if PlayerData.height then
             xPlayer.setHeight(PlayerData.height)
-            xPlayer.set('height', PlayerData.height) -- for compatibility with esx
         end
 	end
+
+	xPlayer.set('phoneNumber', PlayerData.phone_number)
 
     TriggerEvent('JLRP-Framework:playerLoaded', source, xPlayer, isNew)
 
@@ -637,6 +637,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- firstname
     function self.setFirstname(newName)
 		self.firstname = newName
+		self.set('firstName', newName) -- for compatibility with esx
         self.rpname = self.getFirstname() .. ' ' .. self.getLastname()
 	end
 
@@ -647,6 +648,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- lastname
     function self.setLastname(newName)
 		self.lastname = newName
+		self.set('lastName', newName) -- for compatibility with esx
         self.rpname = self.getFirstname() .. ' ' .. self.getLastname()
 	end
 
@@ -671,6 +673,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- dateofbirth
     function self.setDateofbirth(newValue)
 		self.dateofbirth = newValue
+		self.set('dateofbirth', newValue) -- for compatibility with esx
 	end
 
     function self.getDateofbirth()
@@ -680,6 +683,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- sex
     function self.setSex(newValue)
 		self.sex = newValue
+		self.set('sex', newValue) -- for compatibility with esx
 	end
 
     function self.getSex()
@@ -689,6 +693,7 @@ function Core.Player.CreatePlayer(PlayerData)
     -- height
     function self.setHeight(newValue)
 		self.height = newValue
+		self.set('height', newValue) -- for compatibility with esx
 	end
 
     function self.getHeight()

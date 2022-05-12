@@ -19,20 +19,14 @@ shared_scripts {
 
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-
 	'server/tables.lua',
-
-	'server/MySQL.lua',
-	
+	'server/MySQL.lua',	
 	'server/functions.lua',
-
 	'server/classes/player.lua',
-
 	'server/events.lua',
-
 	'server/main.lua',
-
 	'server/loops.lua',
+	'server/npwd.lua',
 
 	-- for Framework table injection we remove them from shared_scripts
 	'shared/functions/*.lua',	

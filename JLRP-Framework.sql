@@ -24,6 +24,7 @@ CREATE TABLE `users` (
   	`height` int(11) DEFAULT NULL,
 	`metadata` TEXT NULL DEFAULT NULL,
 	`skin` LONGTEXT DEFAULT NULL,
+	`phone_number` VARCHAR(20) DEFAULT NULL,
 	`is_dead` tinyint(1) DEFAULT 0,
 	`last_updated` TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
 	PRIMARY KEY (`citizenid`),

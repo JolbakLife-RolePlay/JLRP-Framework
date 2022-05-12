@@ -155,3 +155,12 @@ AddEventHandler('JLRP-Framework:triggerServerCallback', function(name, requestId
 		TriggerClientEvent('JLRP-Framework:serverCallback', _source, requestId, ...)
 	end, ...)
 end)
+
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+	if eventData.secondsRemaining == 60 then
+		CreateThread(function()
+			Wait(50000)
+			Core.SavePlayers()
+		end)
+	end
+end)

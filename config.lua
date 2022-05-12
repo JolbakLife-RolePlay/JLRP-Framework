@@ -4,7 +4,6 @@ Config.Locale = 'en'
 Config.DefaultSpawn = {x = -269.4, y = -955.3, z = 31.2, heading = 205.8} -- Default spawn point
 Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaultDuty | false: set duty state from database last saved
 Config.DefaultDuty = false
-Config.DistanceGive = 4.0 -- Max distance when giving items, weapons etc.
 
 Config.Accounts = {}
 Config.Accounts.MoneyTypes = {bank = 'bank', money = 'money', black_money = 'black_money'}
@@ -25,7 +24,7 @@ Config.Player.Bloodtypes = {
 
 Config.NativeNotify = true
 Config.EnableHud = true -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
-Config.MultiCharacter = false -- Enabling support for players having multiple characters - would not be implemented for now
+Config.MultiCharacter = false -- Enabling support for players having multiple characters - WOULD NOT BE IMPLEMENTED FOR NOW
 
 Config.Server = {} -- General server config
 Config.Server.Name = "FrameworkRP" -- Name of the RP server
