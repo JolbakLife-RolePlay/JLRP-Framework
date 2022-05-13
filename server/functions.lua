@@ -139,7 +139,7 @@ function Framework.GetExtendedPlayers(key, val) -- for compatibility with esx
 end
 
 function Core.SavePlayer(xPlayer, cb)
-	MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", {
+	MySQL.prepare(QUERIES.SAVE_PLAYER, {
 		xPlayer.group,
 		json.encode(xPlayer.job),
 		json.encode(xPlayer.gang),
@@ -176,7 +176,7 @@ function Core.SavePlayers(cb)
 				xPlayer.getCitizenid()
 			}
 		end
-		MySQL.prepare("UPDATE users SET `group` = ?, `job` = ?, `gang` = ?, `accounts` = ?, `inventory` = ?, `position` = ?, `metadata` = ? WHERE `citizenid` = ?", parameters,
+		MySQL.prepare(QUERIES.SAVE_PLAYER, parameters,
 		function(results)
 			if results then
 				if type(cb) == 'function' then cb() else print(('[^2INFO^7] Saved %s %s over %s ms'):format(count, count > 1 and 'players' or 'player', (os.time() - time) / 1000000)) end

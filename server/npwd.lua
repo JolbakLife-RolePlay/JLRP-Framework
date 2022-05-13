@@ -24,7 +24,7 @@ if GetResourceState('npwd') ~= 'missing' then
         while GetResourceState('npwd') ~= 'started' do Wait(0) end
 
         local phoneNumber = NPWD:generatePhoneNumber()
-        MySQL.update('UPDATE users SET phone_number = ? WHERE citizenid = ?', { phoneNumber, citizenid })
+        MySQL.update(QUERIES.SET_PHONENUMBER, { phoneNumber, citizenid })
         return phoneNumber
     end
 

@@ -241,7 +241,7 @@ function Core.Player.CreateCitizenId()
     local CitizenId = nil
     while not UniqueFound do
         CitizenId = tostring(Framework.String.Random(3) .. Framework.Integer.Random(5)):upper()
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM users WHERE citizenid = ?', { CitizenId })
+        local result = MySQL.Sync.prepare(QUERIES.CREATE_CITIZENID, { CitizenId })
         if result == 0 then
             UniqueFound = true
         end
@@ -256,7 +256,7 @@ function Core.Player.CreateFingerId()
     while not UniqueFound do
         FingerId = tostring(Framework.String.Random(2) .. Framework.Integer.Random(3) .. Framework.String.Random(1) .. Framework.Integer.Random(2) .. Framework.String.Random(3) .. Framework.Integer.Random(4))
         local query = '%' .. FingerId .. '%'
-        local result = MySQL.Sync.prepare('SELECT COUNT(*) as count FROM `users` WHERE `metadata` LIKE ?', { query })
+        local result = MySQL.Sync.prepare(QUERIES.CREATE_FINGERID, { query })
         if result == 0 then
             UniqueFound = true
         end
@@ -706,14 +706,21 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- metadata
-    function self.setMetadata(meta, value)
+    function self.setMetadata(meta, value, syncWithClient)
         if not meta then return end
-        meta = meta:lower()
+		meta = meta:lower()
 		self.metadata[meta] = value
+		if syncWithClient then
+			self.syncMetadata()
+		end
 	end
 
     function self.getMetadata()
         return self.metadata
+	end
+
+	function self.syncMetadata()
+		self.triggerEvent('JLRP-Framework:onMetadataChange', self.metadata)
 	end
 
     -- variables

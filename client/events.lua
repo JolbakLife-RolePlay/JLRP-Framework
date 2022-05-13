@@ -153,18 +153,20 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 	StartServerSyncLoops()
 end)
 
-local function onPlayerSpawn()
+AddEventHandler('playerSpawned', onPlayerSpawn)
+AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
 	if Framework.PlayerLoaded then
 		Framework.SetPlayerData('ped', PlayerPedId())
+		Framework.SetPlayerData('isdead', false)
+		Framework.SetPlayerData('is_dead', false)
 		Framework.SetPlayerData('dead', false)
 	end
-end
-
-AddEventHandler('playerSpawned', onPlayerSpawn)
-AddEventHandler('JLRP-Framework:onPlayerSpawn', onPlayerSpawn)
+end)
 
 AddEventHandler('JLRP-Framework:onPlayerDeath', function()
 	Framework.SetPlayerData('ped', PlayerPedId())
+	Framework.SetPlayerData('isdead', true)
+	Framework.SetPlayerData('is_dead', true)
 	Framework.SetPlayerData('dead', true)
 end)
 
@@ -201,7 +203,7 @@ AddEventHandler('JLRP-Framework:spawnVehicle', function(vehicle)
 				local playerCoords, playerHeading = GetEntityCoords(Framework.PlayerData.ped), GetEntityHeading(Framework.PlayerData.ped)
 				local vehicle = GetVehiclePedIsIn(Framework.PlayerData.ped)
 				if vehicle ~= 0 then
-					Framework.Game.Delete(vehicle)
+					Framework.Game.DeleteVehicle(vehicle)
 				end
 				Framework.Game.SpawnVehicle(model, playerCoords, playerHeading, function(vehicle)
 					TaskWarpPedIntoVehicle(Framework.PlayerData.ped, vehicle, -1)
@@ -345,4 +347,9 @@ AddEventHandler("JLRP-Framework:freezePlayer", function(input)
 	    FreezeEntityPosition(Framework.PlayerData.ped, false)
         SetPlayerInvincible(player, false)
     end
+end)
+
+RegisterNetEvent("JLRP-Framework:onMetadataChange")
+AddEventHandler("JLRP-Framework:onMetadataChange", function(newMetadata)
+	Framework.SetPlayerData('metadata', newMetadata)
 end)

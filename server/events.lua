@@ -156,6 +156,41 @@ AddEventHandler('JLRP-Framework:triggerServerCallback', function(name, requestId
 	end, ...)
 end)
 
+RegisterNetEvent('JLRP-Framework:onPlayerSpawn')
+AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
+	local _source = source
+    local xPlayer = Framework.GetPlayerFromId(_source)
+    if xPlayer then
+        if xPlayer.getMetadata('dead') then
+            MySQL.update(QUERIES.MODIFY_DEATH, { 0, xPlayer.citizenid })
+        end    
+    end
+end)
+
+RegisterNetEvent('JLRP-Framework:onPlayerDeath')
+AddEventHandler('JLRP-Framework:onPlayerDeath', function(xPlayer, isNew)
+    --print(data.victimCoords)
+    --print(data.killedByPlayer)
+    --print(data.deathCause)
+    local _source = source
+    local xPlayer = Framework.GetPlayerFromId(_source)
+    if xPlayer then
+        MySQL.update(QUERIES.MODIFY_DEATH, { 1, xPlayer.citizenid })
+        xPlayer.setMetadata('isdead', true, false)
+        xPlayer.setMetadata('is_dead', true, false)
+        xPlayer.setMetadata('dead', true, true)
+    end
+end)
+
+RegisterNetEvent("JLRP-Framework:onMetadataChange")
+AddEventHandler("JLRP-Framework:onMetadataChange", function(newMetadata)
+    local _source = source
+    local xPlayer = Framework.GetPlayerFromId(_source)
+    if xPlayer then
+        xPlayer.metadata = newMetadata
+    end
+end)
+
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
 		CreateThread(function()

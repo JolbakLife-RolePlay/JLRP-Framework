@@ -12,14 +12,14 @@ MySQL.ready(function()
 	while not next(Framework.Items) do Wait(50) end
 
 	local Jobs = {}
-	local jobs = MySQL.query.await('SELECT * FROM jobs')
+	local jobs = MySQL.query.await(QUERIES.GET_JOBS)
 
 	for _, v in ipairs(jobs) do
 		Jobs[v.name] = v
 		Jobs[v.name].grades = {}
 	end
 
-	local jobGrades = MySQL.query.await('SELECT * FROM job_grades')
+	local jobGrades = MySQL.query.await(QUERIES.GET_JOBGRADES)
 
 	for _, v in ipairs(jobGrades) do
 		if Jobs[v.job_name] then
@@ -55,14 +55,14 @@ MySQL.ready(function()
 	end
 
 	local Gangs = {}
-	local gangs = MySQL.query.await('SELECT * FROM gangs')
+	local gangs = MySQL.query.await(QUERIES.GET_GANGS)
 
 	for _, v in ipairs(gangs) do
 		Gangs[v.name] = v
 		Gangs[v.name].grades = {}
 	end
 
-	local gangGrades = MySQL.query.await('SELECT * FROM gang_grades')
+	local gangGrades = MySQL.query.await(QUERIES.GET_GANGGRADES)
 
 	for _, v in ipairs(gangGrades) do
 		if Gangs[v.gang_name] then
