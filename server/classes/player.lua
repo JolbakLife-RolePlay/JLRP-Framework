@@ -183,7 +183,11 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.skin = PlayerData.skin or {}
 
 	-- phone_number
-	PlayerData.phone_number = PlayerData.phone_number or Config.NPWD and Core.GeneratePhoneNumber(PlayerData.citizenid)
+	if PlayerData.phone_number and PlayerData.phone_number == '' then
+		if Config.NPWD then
+			PlayerData.phone_number = Core.GeneratePhoneNumber(PlayerData.citizenid)
+		end
+	end
 
     -- is_dead
     PlayerData.is_dead = PlayerData.is_dead or 0
