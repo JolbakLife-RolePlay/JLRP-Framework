@@ -12,3 +12,6 @@ if not Config.MultiCharacter then
 		end
 	end)
 end
+
+ClearPlayerWantedLevel(PlayerId())
+SetMaxWantedLevel(0)

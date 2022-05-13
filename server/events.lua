@@ -147,7 +147,7 @@ AddEventHandler('JLRP-Framework:playerDropped', function(source, reason)
     
 end)
 
-RegisterServerEvent('JLRP-Framework:triggerServerCallback')
+RegisterNetEvent('JLRP-Framework:triggerServerCallback')
 AddEventHandler('JLRP-Framework:triggerServerCallback', function(name, requestId, ...)
 	local _source = source
 

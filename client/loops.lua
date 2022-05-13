@@ -55,19 +55,64 @@ if Config.EnableHud then
 end
 
 -- SetTimeout
-CreateThread(function()
-	while true do
-		local sleep = 100
-		if #Core.TimeoutCallbacks > 0 then
-			local currTime = GetGameTimer()
-			sleep = 0
-			for i = 1, #Core.TimeoutCallbacks, 1 do
-				if currTime >= Core.TimeoutCallbacks[i].time then
-					Core.TimeoutCallbacks[i].cb()
-					Core.TimeoutCallbacks[i] = nil
+CreateThread(
+	function()
+		while true do
+			local sleep = 100
+			if #Core.TimeoutCallbacks > 0 then
+				local currTime = GetGameTimer()
+				sleep = 0
+				for i = 1, #Core.TimeoutCallbacks, 1 do
+					if currTime >= Core.TimeoutCallbacks[i].time then
+						Core.TimeoutCallbacks[i].cb()
+						Core.TimeoutCallbacks[i] = nil
+					end
 				end
 			end
+			Wait(sleep)
 		end
-		Wait(sleep)
 	end
-end)
+)
+
+local heading = 0
+CreateThread(
+	function()
+		while noclip do
+			SetEntityCoordsNoOffset(Framework.PlayerData.ped, noclip_pos.x, noclip_pos.y, noclip_pos.z, 0, 0, 0)
+			if IsControlPressed(1, 34) then
+				heading = heading + 1.5
+				if heading > 360 then
+					heading = 0
+				end
+
+				SetEntityHeading(Framework.PlayerData.ped, heading)
+			end
+
+			if IsControlPressed(1, 9) then
+				heading = heading - 1.5
+				if heading < 0 then
+					heading = 360
+				end
+
+				SetEntityHeading(Framework.PlayerData.ped, heading)
+			end
+
+			if IsControlPressed(1, 8) then
+				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 1.0, 0.0)
+			end
+
+			if IsControlPressed(1, 32) then
+				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, -1.0, 0.0)
+			end
+
+			if IsControlPressed(1, 27) then
+				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, 1.0)
+			end
+
+			if IsControlPressed(1, 173) then
+				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, -1.0)
+			end
+			Wait(0)
+		end
+	end
+)
