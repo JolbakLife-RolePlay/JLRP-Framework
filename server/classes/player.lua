@@ -228,6 +228,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
         MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata) })
     end
 
+	xPlayer.triggerEvent('JLRP-Framework:registerSuggestions', Core.RegisteredCommands)
     print(('[^2INFO^0] Player ^5"%s" ^0has connected to the server. ID: ^5%s^7'):format(xPlayer.getName(), source))
 end
 

@@ -24,7 +24,7 @@ end, true, {help = _Locale('command_removejob'), validate = true, arguments = {
 	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
 }})
 
-Framework.RegisterCommand('setgang', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('setgang', "superadmin", function(xPlayer, args, showError)
 	if Framework.DoesGangExist(args.gang, args.grade) then
 		args.playerId.setGang(args.gang, args.grade)
 	else
@@ -36,7 +36,7 @@ end, true, {help = _Locale('command_gangjob'), validate = true, arguments = {
 	{name = 'grade', help = _Locale('command_setgang_grade'), type = 'number'}
 }})
 
-Framework.RegisterCommand('removegang', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('removegang', "superadmin", function(xPlayer, args, showError)
     args.playerId.setGang('nogang', 0)
 end, true, {help = _Locale('command_removegang'), validate = true, arguments = {
 	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
@@ -49,7 +49,11 @@ end, false, {help = _Locale('command_car'), validate = false, arguments = {
 	{name = 'car', help = _Locale('command_car_car'), type = 'any'}
 }})
 
-Framework.RegisterCommand('dv', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('bf400', 'mod', function(xPlayer, args, showError)
+	xPlayer.triggerEvent('JLRP-Framework:spawnVehicle', "bf400")
+end, false, {help = "Spawn a bf400 motorcycle"})
+
+Framework.RegisterCommand('dv', 'mod', function(xPlayer, args, showError)
     local playerPed = GetPlayerPed(xPlayer.source)
     if not args.radius then
         local vehicle = GetVehiclePedIsIn(playerPed)
@@ -71,7 +75,7 @@ end, false, {help = _Locale('command_cardel'), validate = false, arguments = {
 	{name = 'radius', help = _Locale('command_cardel_radius'), type = 'any'}
 }})
 
-Framework.RegisterCommand('setaccountmoney', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('setaccountmoney', 'superadmin', function(xPlayer, args, showError)
 	if args.playerId.getAccount(args.account) then
 		args.playerId.setAccountMoney(args.account, args.amount)
 	else
@@ -83,7 +87,7 @@ end, true, {help = _Locale('command_setaccountmoney'), validate = true, argument
 	{name = 'amount', help = _Locale('command_setaccountmoney_amount'), type = 'number'}
 }})
 
-Framework.RegisterCommand('giveaccountmoney', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('giveaccountmoney', 'superadmin', function(xPlayer, args, showError)
 	if args.playerId.getAccount(args.account) then
 		args.playerId.addAccountMoney(args.account, args.amount)
 	else
@@ -99,11 +103,11 @@ Framework.RegisterCommand({'clear', 'clearchat'}, 'user', function(xPlayer, args
 	xPlayer.triggerEvent('chat:clear')
 end, false, {help = _Locale('command_clear')})
 
-Framework.RegisterCommand('clearallchats', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('clearallchats', 'superadmin', function(xPlayer, args, showError)
 	TriggerClientEvent('chat:clear', -1)
 end, false, {help = _Locale('command_clearall')})
 
-Framework.RegisterCommand('setgroup', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('setgroup', 'owner', function(xPlayer, args, showError)
 	if not args.playerId then args.playerId = xPlayer.source end
 	args.playerId.setGroup(args.group)
 end, true, {help = _Locale('command_setgroup'), validate = true, arguments = {
@@ -111,17 +115,17 @@ end, true, {help = _Locale('command_setgroup'), validate = true, arguments = {
 	{name = 'group', help = _Locale('command_setgroup_group'), type = 'string'},
 }})
 
-Framework.RegisterCommand('save', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('save', 'superadmin', function(xPlayer, args, showError)
 	Core.SavePlayer(args.playerId)
 end, true, {help = _Locale('command_save'), validate = true, arguments = {
 	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
 }})
 
-Framework.RegisterCommand('saveall', 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand('saveall', 'superadmin', function(xPlayer, args, showError)
 	Core.SavePlayers()
 end, true, {help = _Locale('command_saveall')})
 
-Framework.RegisterCommand('group', {"user", "admin"}, function(xPlayer, args, showError)
+Framework.RegisterCommand('group', "user", function(xPlayer, args, showError)
 	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getGroup() .. "^0")
 end, true)
 
@@ -130,9 +134,10 @@ Framework.RegisterCommand('job', "user", function(xPlayer, args, showError)
 end, true)
 
 Framework.RegisterCommand('info', "user", function(xPlayer, args, showError)
-	local job = xPlayer.getJob().name
+	local job = xPlayer.getJob().label
 	local jobgrade = xPlayer.getJob().grade_name
-	print("^2ID : ^5"..xPlayer.source.." ^0| ^2Name:^5"..xPlayer.getName().." ^0 | ^2Group:^5"..xPlayer.getGroup().."^0 | ^2Job:^5".. job.."^0")
+	local gang = xPlayer.getGang().label
+	print("^2ID : ^5"..xPlayer.source.." ^0| ^2Name:^5"..xPlayer.getName().." ^0 | ^2Group:^5"..xPlayer.getGroup().."^0 | ^2Job:^5".. job.."^0 | ^2Gang:^5".. gang.."^0")
 end, true)
 
 Framework.RegisterCommand('coords', "admin", function(xPlayer, args, showError)
@@ -142,7 +147,7 @@ Framework.RegisterCommand('coords', "admin", function(xPlayer, args, showError)
 	print("Coords - Vector4: ^5".. vector4(coords.x, coords.y, coords.z, heading) .. "^0")
 end, true)
 
-Framework.RegisterCommand('tpm', "admin", function(xPlayer, args, showError)
+Framework.RegisterCommand('tpm', "mod", function(xPlayer, args, showError)
 	xPlayer.triggerEvent("JLRP-Framework:tpm")
 end, true)
 
@@ -178,11 +183,11 @@ end, true, {help = _Locale('command_Localenfreeze'), validate = true, arguments 
 	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
 }})
 
-Framework.RegisterCommand("noclip", 'admin', function(xPlayer, args, showError)
+Framework.RegisterCommand("noclip", "mod", function(xPlayer, args, showError)
 	xPlayer.triggerEvent('JLRP-Framework:noclip')
 end, false)
 
-Framework.RegisterCommand('players', "admin", function(xPlayer, args, showError)
+Framework.RegisterCommand('players', "developer", function(xPlayer, args, showError)
 	local xPlayers = Framework.GetPlayers()
 	print("^5"..#xPlayers.." ^2online player(s)^0")
 	for _, xPlayer in pairs(xPlayers) do

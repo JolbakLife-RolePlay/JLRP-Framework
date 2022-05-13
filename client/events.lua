@@ -182,37 +182,9 @@ AddEventHandler('JLRP-Framework:serverCallback', function(requestId, ...)
 	Core.ServerCallbacks[requestId] = nil
 end)
 
-RegisterNetEvent('JLRP-Framework:addInventoryItem')
-AddEventHandler('JLRP-Framework:addInventoryItem', function(item, count, showNotification)
-	if GetInvokingResource() == 'ox_inventory' then
-		for k, v in ipairs(Framework.PlayerData.inventory) do
-			if v.name == item then
-				Framework.UI.ShowInventoryItemNotification(true, v.label, count - v.count)
-				Framework.PlayerData.inventory[k].count = count
-				Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
-				break
-			end
-		end
-	end
-end)
-
-RegisterNetEvent('JLRP-Framework:removeInventoryItem')
-AddEventHandler('JLRP-Framework:removeInventoryItem', function(item, count)
-	if GetInvokingResource() == 'ox_inventory' then
-		for k, v in ipairs(Framework.PlayerData.inventory) do
-			if v.name == item then
-				Framework.UI.ShowInventoryItemNotification(false, v.label, v.count - count)
-				Framework.PlayerData.inventory[k].count = count
-				Framework.SetPlayerData('inventory', Framework.PlayerData.inventory)
-				break
-			end
-		end
-	end
-end)
-
 RegisterNetEvent('JLRP-Framework:registerSuggestions')
 AddEventHandler('JLRP-Framework:registerSuggestions', function(registeredCommands)
-	for name,command in pairs(registeredCommands) do
+	for name, command in pairs(registeredCommands) do
 		if command.suggestion then
 			TriggerEvent('chat:addSuggestion', ('/%s'):format(name), command.suggestion.help, command.suggestion.arguments)
 		end
@@ -232,7 +204,7 @@ AddEventHandler('JLRP-Framework:spawnVehicle', function(vehicle)
 					TaskWarpPedIntoVehicle(Framework.PlayerData.ped, vehicle, -1)
 				end)
 			else
-				Framework.ShowNotification('Invalid vehicle model.')
+				Framework.ShowNotification('~o~Invalid vehicle model!')
 			end
 		end
 	end)
@@ -248,7 +220,7 @@ AddEventHandler("JLRP-Framework:tpm", function()
 		if admin then
 			local blipMarker = GetFirstBlipInfoId(8)
 			if not DoesBlipExist(blipMarker) then
-				Framework.ShowNotification('No Waypoint Set.', true, false, 140)
+				Framework.ShowNotification('~r~No Waypoint has been set!', true, false, 140)
 				return 'marker'
 			end
 	
@@ -318,12 +290,12 @@ AddEventHandler("JLRP-Framework:tpm", function()
 			if found then
 				-- If Z coord was found, set coords in found coords.
 				SetPedCoordsKeepVehicle(ped, x, y, groundZ)
-				Framework.ShowNotification('Successfully Teleported', true, false, 140)
+				Framework.ShowNotification('~g~Successfully Teleported!', true, false, 140)
 			else
 				-- If we can't find the coords, set the coords to the old ones.
 				-- We don't unpack them before since they aren't in a loop and only called once.
 				SetPedCoordsKeepVehicle(ped, oldCoords['x'], oldCoords['y'], oldCoords['z'] - 1.0)
-				Framework.ShowNotification('Successfully Teleported', true, false, 140)
+				Framework.ShowNotification('~o~You got teleported back to your previous position!', true, false, 140)
 			end		
 		end
 	end)
@@ -348,7 +320,7 @@ AddEventHandler("JLRP-Framework:noclip", function(input)
 				msg = "enabled"
 			end
 
-			Framework.ShowNotification("Noclip has been ^2^*" .. msg)
+			Framework.ShowNotification("Noclip has been " .. msg)
 		end
 	end)
 end)

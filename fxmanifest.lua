@@ -26,6 +26,7 @@ server_scripts {
 	'server/events.lua',
 	'server/main.lua',
 	'server/loops.lua',
+	'server/commands.lua',
 	'server/npwd.lua',
 
 	-- for Framework table injection we remove them from shared_scripts

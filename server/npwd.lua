@@ -31,14 +31,14 @@ if GetResourceState('npwd') ~= 'missing' then
     AddEventHandler('onServerResourceStart', function(resource)
         if resource == 'npwd' then
             while GetResourceState('npwd') ~= 'started' do Wait(500) end 
-            local xPlayers = ESX.GetPlayers()
+            local xPlayers = Framework.GetPlayers()
             if next(xPlayers) then
                 Wait(100)
 			    local isTable = type(xPlayers[1]) == 'table'
 
                 for i = 1, #xPlayers do
                     -- Fallback to `GetPlayerFromId` if playerdata was not already returned
-                    local xPlayer = isTable and xPlayers[i] or ESX.GetPlayerFromId(xPlayers[i])
+                    local xPlayer = isTable and xPlayers[i] or Framework.GetPlayerFromId(xPlayers[i])
 
                     NPWD:newPlayer({
                         source = xPlayer.source,

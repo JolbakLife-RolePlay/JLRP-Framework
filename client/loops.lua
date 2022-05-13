@@ -77,40 +77,44 @@ CreateThread(
 local heading = 0
 CreateThread(
 	function()
-		while noclip do
-			SetEntityCoordsNoOffset(Framework.PlayerData.ped, noclip_pos.x, noclip_pos.y, noclip_pos.z, 0, 0, 0)
-			if IsControlPressed(1, 34) then
-				heading = heading + 1.5
-				if heading > 360 then
-					heading = 0
+		while true do
+			if noclip then
+				SetEntityCoordsNoOffset(Framework.PlayerData.ped, noclip_pos.x, noclip_pos.y, noclip_pos.z, 0, 0, 0)
+				if IsControlPressed(1, 34) then
+					heading = heading + 1.5
+					if heading > 360 then
+						heading = 0
+					end
+
+					SetEntityHeading(Framework.PlayerData.ped, heading)
 				end
 
-				SetEntityHeading(Framework.PlayerData.ped, heading)
-			end
+				if IsControlPressed(1, 9) then
+					heading = heading - 1.5
+					if heading < 0 then
+						heading = 360
+					end
 
-			if IsControlPressed(1, 9) then
-				heading = heading - 1.5
-				if heading < 0 then
-					heading = 360
+					SetEntityHeading(Framework.PlayerData.ped, heading)
 				end
 
-				SetEntityHeading(Framework.PlayerData.ped, heading)
-			end
+				if IsControlPressed(1, 8) then
+					noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 1.0, 0.0)
+				end
 
-			if IsControlPressed(1, 8) then
-				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 1.0, 0.0)
-			end
+				if IsControlPressed(1, 32) then
+					noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, -1.0, 0.0)
+				end
 
-			if IsControlPressed(1, 32) then
-				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, -1.0, 0.0)
-			end
+				if IsControlPressed(1, 27) then
+					noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, 1.0)
+				end
 
-			if IsControlPressed(1, 27) then
-				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, 1.0)
-			end
-
-			if IsControlPressed(1, 173) then
-				noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, -1.0)
+				if IsControlPressed(1, 173) then
+					noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, -1.0)
+				end
+			else
+				Wait(1000)
 			end
 			Wait(0)
 		end
