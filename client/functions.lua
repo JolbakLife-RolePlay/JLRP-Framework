@@ -1149,5 +1149,5 @@ function Framework.Game.Utils.DrawText3D(coords, text, size, font)
 end
 
 function Framework.SyncMetadata()
-	TriggerServerEvent('JLRP-Framework:onMetadataChange', Framework.PlayerData.metadata?)
+	TriggerServerEvent('JLRP-Framework:onMetadataChange', Framework.PlayerData.metadata)
 end
