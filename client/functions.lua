@@ -33,7 +33,7 @@ function Framework.SearchInventory(items, count)
 		local itemName = items[i]
 		returnData[itemName] = count and 0
 
-		for _, item in pairs(Framework.PlayerData.inventory) do
+		for _, item in pairs(Framework.GetPlayerData().inventory) do
 			if item.name == itemName then
 				if count then
 					returnData[itemName] = returnData[itemName] + item.count
@@ -341,7 +341,7 @@ end
 function Framework.UI.Menu.IsOpen(type, namespace, name)
 	return Framework.UI.Menu.GetOpened(type, namespace, name) ~= nil
 end
-
+--[[
 function Framework.UI.ShowInventoryItemNotification(add, item, count)
 	SendNUIMessage({
 		action = 'inventoryNotification',
@@ -350,7 +350,7 @@ function Framework.UI.ShowInventoryItemNotification(add, item, count)
 		count  = count
 	})
 end
-
+]]
 -- scaleform
 function Framework.Scaleform.ShowFreemodeMessage(title, msg, sec)
 	local scaleform = Framework.Scaleform.Utils.RequestScaleformMovie('MP_BIG_MESSAGE_FREEMODE')

@@ -54,7 +54,7 @@
 			$('#hud').append(html);
 		}
 	};
-
+	/*
 	Framework.inventoryNotification = function (add, label, count) {
 		let notif = '';
 
@@ -77,7 +77,7 @@
 			elem.remove();
 		});
 	};
-
+	*/
 	window.onData = (data) => {
 		switch (data.action) {
 			case 'setHUDDisplay': {
@@ -104,10 +104,11 @@
 				Framework.resetHUDElements();
 				break;
 			}
-
+			/*
 			case 'inventoryNotification': {
 				Framework.inventoryNotification(data.add, data.item, data.count);
 			}
+			*/
 		}
 	};
 
