@@ -597,8 +597,8 @@ function Core.Player.CreatePlayer(PlayerData)
 		return Inventory.Set(self.source, 'maxWeight', newWeight)
 	end
 
-    function self.hasItem(item, metadata)
-		return Inventory.GetItem(self.source, name, metadata)
+    function self.hasItem(item, metadata) -- for compatibility with esx
+		return Inventory.GetItem(self.source, item, metadata)
 	end
 
     -- loadout
