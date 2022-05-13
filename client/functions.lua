@@ -595,6 +595,15 @@ function Framework.Game.SpawnLocalObject(object, coords, cb)
 	end)
 end
 
+function Framework.Game.DeleteObject(object, cb)
+	--SetEntityAsMissionEntity(object, false, true) ?
+	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
+		if cb then
+			cb(response)
+		end
+	end, ObjToNet(object))
+end
+
 -- vehicle
 function Framework.Game.SpawnVehicle(vehicle, coords, heading, cb, networked)
 	networked = networked == nil and true or networked
@@ -654,6 +663,16 @@ function Framework.Game.SpawnLocalVehicle(vehicle, coords, heading, cb)
 	end)
 end
 
+function Framework.Game.DeleteVehicle(vehicle, cb)
+	--SetEntityAsMissionEntity(vehicle, false, true) ?
+	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
+		--TriggerServerEvent('JLRP-VehicleRemote:RemoveKey', GetVehicleNumberPlateText(vehicle))
+		if cb then
+			cb(response)
+		end
+	end, VehToNet(vehicle))
+end
+
 function Framework.Game.IsVehicleEmpty(vehicle)
 	local passengers = GetVehicleNumberOfPassengers(vehicle)
 	local driverSeatFree = IsVehicleSeatFree(vehicle, -1)
@@ -696,6 +715,15 @@ function Framework.Game.SpawnLocalPed(object, coords, heading, cb)
 			end
 		end)
 	end)
+end
+
+function Framework.Game.DeletePed(ped, cb)
+	--SetEntityAsMissionEntity(ped, false, true) ?
+	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
+		if cb then
+			cb(response)
+		end
+	end, PedToNet(ped))
 end
 
 function Framework.Game.GetObjects() -- for compatibility with esx

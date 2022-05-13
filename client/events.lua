@@ -199,7 +199,10 @@ AddEventHandler('JLRP-Framework:spawnVehicle', function(vehicle)
 
 			if IsModelInCdimage(model) then
 				local playerCoords, playerHeading = GetEntityCoords(Framework.PlayerData.ped), GetEntityHeading(Framework.PlayerData.ped)
-
+				local vehicle = GetVehiclePedIsIn(Framework.PlayerData.ped)
+				if vehicle ~= 0 then
+					Framework.Game.Delete(vehicle)
+				end
 				Framework.Game.SpawnVehicle(model, playerCoords, playerHeading, function(vehicle)
 					TaskWarpPedIntoVehicle(Framework.PlayerData.ped, vehicle, -1)
 				end)
