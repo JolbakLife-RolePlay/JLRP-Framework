@@ -54,30 +54,28 @@
 			$('#hud').append(html);
 		}
 	};
-	/*
-	Framework.inventoryNotification = function (add, label, count) {
-		let notif = '';
 
-		if (add) {
-			notif += '+';
-		} else {
-			notif += '-';
-		}
+	Framework.showNotification = function (type, message, length) {
+		$(".notificationText").text(message);
 
-		if (count) {
-			notif += count + ' ' + label;
-		} else {
-			notif += ' ' + label;
-		}
-
-		let elem = $('<div>' + notif + '</div>');
-		$('#inventory_notifications').append(elem);
-
-		$(elem).delay(3000).fadeOut(1000, function () {
-			elem.remove();
-		});
+		if (type === "info") {
+            document.getElementById("notificationInfo").style.display = "block";       
+        } else if (type === "error") {
+            document.getElementById("notificationError").style.display = "block";
+        } else if (type === "success") {
+            document.getElementById("notificationSuccess").style.display = "block";
+        }
+		Framework.timeoutNotification(length);
 	};
-	*/
+
+	Framework.timeoutNotification = function (length) {
+		setTimeout(function () {
+			document.getElementById("notificationInfo").style.display = "none";
+			document.getElementById("notificationError").style.display = "none";
+			document.getElementById("notificationSuccess").style.display = "none";
+		}, length)
+	};
+
 	window.onData = (data) => {
 		switch (data.action) {
 			case 'setHUDDisplay': {
@@ -104,11 +102,11 @@
 				Framework.resetHUDElements();
 				break;
 			}
-			/*
-			case 'inventoryNotification': {
-				Framework.inventoryNotification(data.add, data.item, data.count);
+			
+			case 'showNotification': {
+				Framework.showNotification(data.type, data.message, data.length);
 			}
-			*/
+			
 		}
 	};
 

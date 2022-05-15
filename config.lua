@@ -22,7 +22,7 @@ Config.Player.Bloodtypes = {
     "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
 }
 
-Config.NativeNotify = true
+Config.NativeNotify = false
 Config.EnableHud = true -- Enabling the default hud? Display current job, gang, and accounts (black, bank & cash)
 Config.MultiCharacter = false -- Enabling support for players having multiple characters - WOULD NOT BE IMPLEMENTED FOR NOW
 

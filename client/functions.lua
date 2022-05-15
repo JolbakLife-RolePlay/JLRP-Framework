@@ -79,18 +79,42 @@ function Framework.SetPlayerData(key, val)
 	end
 end
 
-function Framework.Progressbar(message, length, options)
-	-- TODO
-end
-
 function Framework.ShowNotification(message, type, length)
 	if Config.NativeNotify then
-		BeginTextCommandThefeedPost("STRING")
-		AddTextComponentSubstringPlayerName(message)
-		EndTextCommandThefeedPostTicker(0, 1)
+		Core.ShowNotification(message)
 	else
-		-- TODO
+		Core.ShowNUINotification(message, type, length)
 	end
+end
+
+function Core.ShowNotification(message)
+	BeginTextCommandThefeedPost("STRING")
+	AddTextComponentSubstringPlayerName(message)
+	EndTextCommandThefeedPostTicker(0, 1)
+end
+
+function Core.ShowNUINotification(message, type, length)
+	if Framework.String.IsNull(message) then return end
+	SendNUIMessage({
+		action = 'showNotification',
+		type = type or "info",
+        length = length or 3000,
+        message = message
+	})
+end
+
+function Framework.GetMinimapAnchor()
+    SetScriptGfxAlign(string.byte('L'), string.byte('B'))
+    local minimapTopX, minimapTopY = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
+    ResetScriptGfxAlign()
+    local w, h = GetActiveScreenResolution()
+	minimapTopX = w * minimapTopX
+	minimapTopY = h * minimapTopY
+    return minimapTopX, minimapTopY
+end
+
+function Framework.Progressbar(message, length, options)
+	-- TODO
 end
 
 function Framework.TextUI(message, type)
@@ -341,16 +365,7 @@ end
 function Framework.UI.Menu.IsOpen(type, namespace, name)
 	return Framework.UI.Menu.GetOpened(type, namespace, name) ~= nil
 end
---[[
-function Framework.UI.ShowInventoryItemNotification(add, item, count)
-	SendNUIMessage({
-		action = 'inventoryNotification',
-		add    = add,
-		item   = item,
-		count  = count
-	})
-end
-]]
+
 -- scaleform
 function Framework.Scaleform.ShowFreemodeMessage(title, msg, sec)
 	local scaleform = Framework.Scaleform.Utils.RequestScaleformMovie('MP_BIG_MESSAGE_FREEMODE')
