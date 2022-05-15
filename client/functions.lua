@@ -113,8 +113,25 @@ function Framework.GetMinimapAnchor()
     return minimapTopX, minimapTopY
 end
 
+--Framework.Progressbar("test", 25000,{FreezePlayer = false, animation ={type = "anim",dict = "mini@prostitutes@sexlow_veh", lib ="low_car_sex_to_prop_p2_player" }, onFinish = function())
 function Framework.Progressbar(message, length, options)
-	-- TODO
+	if Framework.String.IsNull(message) then return end
+	if options.animation then 
+        if options.animation.type == "anim" then
+            Framework.Streaming.RequestAnimDict(options.animation.dict, function()
+                TaskPlayAnim(Framework.PlayerData.ped, options.animation.dict, options.animation.lib, 1.0, 1.0, length, 1, 1.0, false,false,false)
+            end)
+        end
+    end
+    if options.FreezePlayer then FreezeEntityPosition(Framework.PlayerData.ped, options.FreezePlayer) end
+    SendNuiMessage({
+		action = 'progressBar',
+        length = length or 5000,
+        message = message
+    })
+    Wait(length)
+    if options.FreezePlayer then FreezeEntityPosition(Framework.PlayerData.ped, not options.FreezePlayer) end
+    if options.onFinish then options.onFinish() end
 end
 
 function Framework.TextUI(message, type)

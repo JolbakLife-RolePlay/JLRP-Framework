@@ -65,15 +65,40 @@
         } else if (type === "success") {
             document.getElementById("notificationSuccess").style.display = "block";
         }
-		Framework.timeoutNotification(length);
+		timeoutNotification();
+		
+		function timeoutNotification() {
+			setTimeout(function () {
+				document.getElementById("notificationInfo").style.display = "none";
+				document.getElementById("notificationError").style.display = "none";
+				document.getElementById("notificationSuccess").style.display = "none";
+			}, length)
+		}
 	};
 
-	Framework.timeoutNotification = function (length) {
-		setTimeout(function () {
-			document.getElementById("notificationInfo").style.display = "none";
-			document.getElementById("notificationError").style.display = "none";
-			document.getElementById("notificationSuccess").style.display = "none";
-		}, length)
+	Framework.progressBar = function (message, length) {
+		$(".progressBarText").text(message);
+		document.getElementById("progressBar").style.display = "block";
+		const start = new Date();
+		const maxTime = length;
+		const timeoutValue = Math.floor(maxTime/100);
+		updateProgressBarAnimation();
+
+		function updateProgressBarAnimation() {
+			const now = new Date();
+			const timeoutDiff = now.getTime() - start.getTime();
+			const progress = Math.round((timeoutDiff/maxTime)*100);
+			if (progress <= 100) {
+				updateProgressBar(progress);
+				setTimeout(updateProgressBarAnimation, timeoutValue);
+			} else {
+				document.getElementById('progressBar').style.display = "none";
+			}
+		}
+
+		function updateProgressBar(progress) {
+			$("#progressBarLine").css("width", progress + "%");
+		}	
 	};
 
 	window.onData = (data) => {
@@ -107,6 +132,9 @@
 				Framework.showNotification(data.type, data.message, data.length);
 			}
 			
+			case 'progressBar': {
+				Framework.progressBar(data.message, data.length);
+			}
 		}
 	};
 

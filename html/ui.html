@@ -1,29 +1,37 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="css/style.css" />
-		<script src="https://kit.fontawesome.com/a81368914c.js"></script> <!--for notification-->
+		<script src="https://kit.fontawesome.com/a81368914c.js"></script>
 	</head>
 	<body>
 		
 		<div id="hud"></div>
 
 		<div id="notificationInfo" class="notification info">
-			<div class="innerText">
+			<div class="notificationInnerText">
 				<i class="fas fa-info-circle icon icon-info"></i>
 				<p class="notificationText" id="infoMessage"></p>
 			</div>
 		</div>
 		<div id="notificationSuccess" class="notification success">
-			<div class="innerText">
+			<div class="notificationInnerText">
 				<i class="fas fa-check-circle icon icon-success"></i>
 				<p class="notificationText" id="successMessage"></p>
 			</div>
 		</div>
 		<div id="notificationError" class="notification error">
-			<div class="innerText">
+			<div class="notificationInnerText">
 				<i class="fas fa-times icon icon-error"></i>
 				<p class="notificationText" id="errorMessage"></p>
 			</div>
+		</div>
+
+		<div id="progressBar" class="progressBar">
+			<div class="progressBarInnerText">
+				<i class="fas fa-info-circle icon"></i>
+				<p class="progressBarText" id="infoMessage"></p>
+			</div>
+			<div id="progressBarLine" class="progressBarLine">
 		</div>
 
 		<script src="nui://game/ui/jquery.js" type="text/javascript"></script>
