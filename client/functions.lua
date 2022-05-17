@@ -119,7 +119,7 @@ function Framework.Progressbar(message, length, options)
 	if options.animation then 
         if options.animation.type == "anim" then
             Framework.Streaming.RequestAnimDict(options.animation.dict, function()
-                TaskPlayAnim(Framework.PlayerData.ped, options.animation.dict, options.animation.lib, 1.0, 1.0, length, 1, 1.0, false,false,false)
+                TaskPlayAnim(Framework.PlayerData.ped, options.animation.dict, options.animation.lib, 1.0, 1.0, length, 1, 1.0, false, false, false)
             end)
         end
     end
@@ -135,11 +135,20 @@ function Framework.Progressbar(message, length, options)
 end
 
 function Framework.TextUI(message, type)
-	-- TODO
+	if Framework.String.IsNull(message) then return end
+	SendNUIMessage({
+        action = 'textUI',
+		todo = 'show',
+        message = message,
+        type = type or 'info'
+    })
 end
 
 function Framework.HideUI()
-	-- TODO
+	SendNUIMessage({
+        action = 'textUI',
+		todo = 'hide'
+    })
 end
 
 function Framework.ShowAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)

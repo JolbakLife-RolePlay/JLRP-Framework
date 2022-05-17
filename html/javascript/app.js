@@ -101,6 +101,23 @@
 		}	
 	};
 
+	Framework.textUI = function (action, type, message) {
+		$(".textUIText").text(message);
+		if (todo === "show") {
+            if (type === "info") {
+                document.getElementById("textUIInfo").style.display = "block";
+            } else if (type === "error") {
+                document.getElementById("textUIError").style.display = "block";
+            } else if (type === "success") {
+                document.getElementById("textUISuccess").style.display = "block";
+            }
+        } else if (todo === "hide") {
+            document.getElementById("textUIInfo").style.display = "none";
+            document.getElementById("textUIError").style.display = "none";
+            document.getElementById("textUISuccess").style.display = "none";
+        }
+	};
+
 	window.onData = (data) => {
 		switch (data.action) {
 			case 'setHUDDisplay': {
@@ -134,6 +151,10 @@
 			
 			case 'progressBar': {
 				Framework.progressBar(data.message, data.length);
+			}
+
+			case 'textUI': {
+				Framework.textUI(data.todo, data.type, data.message);
 			}
 		}
 	};
