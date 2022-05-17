@@ -101,7 +101,7 @@
 		}	
 	};
 
-	Framework.textUI = function (action, type, message) {
+	Framework.textUI = function (todo, type, message) {
 		$(".textUIText").text(message);
 		if (todo === "show") {
             if (type === "info") {
@@ -147,14 +147,17 @@
 			
 			case 'showNotification': {
 				Framework.showNotification(data.type, data.message, data.length);
+				break;
 			}
 			
 			case 'progressBar': {
 				Framework.progressBar(data.message, data.length);
+				break;
 			}
 
 			case 'textUI': {
 				Framework.textUI(data.todo, data.type, data.message);
+				break;
 			}
 		}
 	};

@@ -234,12 +234,11 @@ Text UI
 .textUI {
 	flex: auto;
 	display: none;
-	border-left: 5px solid rgb(34, 132, 189);
 	position: absolute;
 	margin: 0 auto;
-	right: 2%;
-	bottom: 50%;
-	min-width: 15%;
+	left: 2%;
+	top: 50%;
+	min-width: 0%;
 	width: fit-content;
 	height: 50px;
 	background: rgba(5, 5, 5, 0.9);

@@ -26,7 +26,7 @@ Config.EnableHud = true -- Enabling the default hud? Display current job, gang, 
 Config.MultiCharacter = false -- Enabling support for players having multiple characters - WOULD NOT BE IMPLEMENTED FOR NOW
 
 Config.Server = {} -- General server config
-Config.Server.Name = "FrameworkRP" -- Name of the RP server
+Config.Server.Name = "JolbakLifeRP" -- Name of the RP server
 Config.Server.UseConnectQueue = true -- Use connectqueue as a queue for your server
 Config.Server.Closed = false -- Set server closed (no one can join except people with ace permission 'qbadmin.join')
 Config.Server.ClosedReason = "Server Closed" -- Reason message to display when people can't join the server
@@ -35,5 +35,5 @@ Config.Server.Whitelist = false -- Enable or disable whitelist on the server
 Config.Server.WhitelistPermission = 'admin' -- Permission that's able to enter the server when the whitelist is on
 Config.Server.Discord = "" -- Discord invite link
 Config.Server.CheckDuplicateLicense = true -- Check for duplicate rockstar license on join
-Config.Server.AdminGroups = {'developer', 'god', 'superadmin', 'admin', 'mod'} -- Add as many groups as you want here after creating them in your server.cfg
+Config.Server.AdminGroups = {'developer', 'owner', 'superadmin', 'admin', 'mod'} -- Add as many groups as you want here after creating them in your server.cfg
 

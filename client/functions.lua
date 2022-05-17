@@ -79,6 +79,16 @@ function Framework.SetPlayerData(key, val)
 	end
 end
 
+function Framework.GetMinimapAnchor()
+    SetScriptGfxAlign(string.byte('L'), string.byte('B'))
+    local minimapTopX, minimapTopY = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
+    ResetScriptGfxAlign()
+    local w, h = GetActiveScreenResolution()
+	minimapTopX = w * minimapTopX
+	minimapTopY = h * minimapTopY
+    return minimapTopX, minimapTopY
+end
+
 function Framework.ShowNotification(message, type, length)
 	if Config.NativeNotify then
 		Core.ShowNotification(message)
@@ -103,16 +113,6 @@ function Core.ShowNUINotification(message, type, length)
 	})
 end
 
-function Framework.GetMinimapAnchor()
-    SetScriptGfxAlign(string.byte('L'), string.byte('B'))
-    local minimapTopX, minimapTopY = GetScriptGfxPosition(-0.0045, 0.002 + (-0.188888))
-    ResetScriptGfxAlign()
-    local w, h = GetActiveScreenResolution()
-	minimapTopX = w * minimapTopX
-	minimapTopY = h * minimapTopY
-    return minimapTopX, minimapTopY
-end
-
 --Framework.Progressbar("test", 25000,{FreezePlayer = false, animation ={type = "anim",dict = "mini@prostitutes@sexlow_veh", lib ="low_car_sex_to_prop_p2_player" }, onFinish = function())
 function Framework.Progressbar(message, length, options)
 	if Framework.String.IsNull(message) then return end
@@ -124,7 +124,7 @@ function Framework.Progressbar(message, length, options)
         end
     end
     if options.FreezePlayer then FreezeEntityPosition(Framework.PlayerData.ped, options.FreezePlayer) end
-    SendNuiMessage({
+    SendNUIMessage({
 		action = 'progressBar',
         length = length or 5000,
         message = message
