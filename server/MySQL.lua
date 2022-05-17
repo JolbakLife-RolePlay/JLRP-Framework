@@ -96,8 +96,10 @@ MySQL.ready(function()
 		Framework.Gangs = Gangs
 	end
 
-	print('[^2INFO^7] ^5FRAMEWORK^0 INITIALIZED')
+	print('[^2INFO^7] ^5JLRP-FRAMEWORK^0 INITIALIZED')
+
 	PositionSync()
 	DBSync()
+	PayCheck()
 end)
 

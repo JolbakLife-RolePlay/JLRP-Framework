@@ -33,3 +33,27 @@ function DBSync()
 		end
 	)
 end
+
+function PayCheck()
+	CreateThread(function()
+		while true do
+			Wait(Config.Accounts.PayCheckInterval * 60 * 1000)
+			local xPlayers = Framework.GetPlayers()
+			for _, xPlayer in pairs(xPlayers) do
+				local job     = xPlayer.job.grade_name
+                local onDuty  = xPlayer.job.onDuty
+				local salary  = xPlayer.job.grade_salary
+
+				if salary > 0 then
+					if job == 'unemployed' then -- unemployed
+						xPlayer.addAccountMoney('bank', salary)
+						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _U('bank'), _U('received_paycheck'), _U('received_help', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 210)
+					elseif onDuty then -- generic job
+						xPlayer.addAccountMoney('bank', salary)
+						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _U('bank'), _U('received_paycheck'), _U('received_salary', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 210)
+					end
+				end
+			end
+		end
+	end)
+end

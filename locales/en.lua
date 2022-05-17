@@ -6,6 +6,15 @@ Locales["en"] = {
     ["duplicate_license"] = "Duplicate Rockstar License Found",
     ["not_whitelisted"] = "You're not whitelisted for this server",
     
+    -- Salary related
+    ['received_salary'] = 'You have been paid: ~g~$%s~s~',
+    ['received_help'] = 'You have been paid your welfare check: ~g~$%s~s~',
+    ['company_nomoney'] = 'the company you\'re employeed at is too poor to pay out your salary',
+    ['received_paycheck'] = 'received paycheck',
+    ['bank'] = 'Jolbak Bank',
+    ['account_bank'] = 'Bank',
+    ['account_black_money'] = 'Dirty Money',
+    ['account_money'] = 'Cash',
 
     ["act_imp"] = "Cannot Perform Action",
     ["in_vehicle"] = "Cannot Perform Action, Player is in a vehicle",
