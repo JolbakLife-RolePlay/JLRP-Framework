@@ -6,7 +6,7 @@ local isControlsDisabled = false
 
 RegisterNetEvent("onKeyDown")
 RegisterNetEvent("onKeyUP")
-RegisterNetEvent("onMultiplePress")
+RegisterNetEvent("onMultipleKeyPress")
 
 function registerKey(key, type)
     local command = key .. "donttouch"
@@ -26,7 +26,7 @@ function registerKey(key, type)
                 table.insert(keysHolding, key)
                 currentKeysHolding[key] = true
                 if #keysHolding > 1 then
-                    TriggerEvent("onMultiplePress", currentKeysHolding)
+                    TriggerEvent("onMultipleKeyPress", currentKeysHolding)
                 end
             end
         end
