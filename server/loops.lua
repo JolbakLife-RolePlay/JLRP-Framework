@@ -47,10 +47,10 @@ function PayCheck()
 				if salary > 0 then
 					if job == 'unemployed' then -- unemployed
 						xPlayer.addAccountMoney('bank', salary)
-						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _U('bank'), _U('received_paycheck'), _U('received_help', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 210)
+						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _Locale('bank'), _Locale('received_paycheck'), _Locale('received_help', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 195)
 					elseif onDuty then -- generic job
 						xPlayer.addAccountMoney('bank', salary)
-						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _U('bank'), _U('received_paycheck'), _U('received_salary', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 210)
+						TriggerClientEvent('JLRP-Framework:showAdvancedNotification', xPlayer.source, _Locale('bank'), _Locale('received_paycheck'), _Locale('received_salary', salary), 'CHAR_BANK_MAZE', 9, nil, nil, 195)
 					end
 				end
 			end
