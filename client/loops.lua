@@ -36,19 +36,16 @@ if Config.EnableHud then
 	CreateThread(
 		function()
 			local isPaused = false
-			local time = 500
+			local time = 1000
 			while true do
-				Wait(time)
-
 				if IsPauseMenuActive() and not isPaused then
-					--time = 100
 					isPaused = true
 					Framework.UI.HUD.SetDisplay(0.0)
 				elseif not IsPauseMenuActive() and isPaused then
-					--time = 100
 					isPaused = false
 					Framework.UI.HUD.SetDisplay(1.0)
 				end
+				Wait(time)
 			end
 		end
 	)
@@ -114,7 +111,7 @@ CreateThread(
 					noclip_pos = GetOffsetFromEntityInWorldCoords(Framework.PlayerData.ped, 0.0, 0.0, -1.0)
 				end
 			else
-				Wait(1000)
+				Wait(2000)
 			end
 			Wait(0)
 		end
@@ -125,14 +122,12 @@ CreateThread(function()
 	local isDead = false
 
 	while true do
-		--local sleep = 1500
 		local player = PlayerId()
 
 		if NetworkIsPlayerActive(player) then
 			local playerPed = PlayerPedId()
 
 			if IsPedFatallyInjured(playerPed) and not isDead then
-				--sleep = 0
 				isDead = true
 
 				local killerEntity, deathCause = GetPedSourceOfDeath(playerPed), GetPedCauseOfDeath(playerPed)
@@ -145,13 +140,12 @@ CreateThread(function()
 				end
 
 			elseif not IsPedFatallyInjured(playerPed) and isDead then
-				--sleep = 0
 				isDead = false
 			else
 				Wait(2000)
 			end
 		end
-	Wait(0)
+		Wait(0)
 	end
 end)
 
