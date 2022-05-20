@@ -355,12 +355,16 @@ function Framework.GetUsableItems()
 end
 
 function Framework.UseItem(source, item, data)
-	Core.UsableItemsCallbacks[item](source, item, data)
+	if ESX.Items[item] then
+		Core.UsableItemsCallbacks[item](source, item, data)
+	else
+		print(('[^3WARNING^7] Item ^5"%s"^7 was used but does not exist!'):format(item))
+	end
 end
 
 function Framework.GetItemLabel(item)
 	item = OX_INVENTORY:Items(item)
-		if item then return item.label end
+	if item then return item.label end
 end
 
 function Framework.GetJobs()

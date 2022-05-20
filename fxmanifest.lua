@@ -40,6 +40,7 @@ client_scripts {
 	"client/main.lua",
 	"client/loops.lua",
 	"client/modules/*.lua",
+	"client/wrapper.lua",
 
 	-- for Framework table injection we remove them from shared_scripts
 	"shared/functions/*.lua",
