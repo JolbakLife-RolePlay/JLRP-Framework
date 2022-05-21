@@ -705,7 +705,12 @@ function Framework.Game.SpawnLocalVehicle(vehicle, coords, heading, cb)
 end
 
 function Framework.Game.DeleteVehicle(vehicle, cb)
-	--SetEntityAsMissionEntity(vehicle, false, true) ?
+	if NetworkGetEntityIsLocal(vehicle) then
+		SetEntityAsMissionEntity(vehicle, false, true)
+		DeleteVehicle(vehicle)
+		return
+	end
+
 	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
 		--TriggerServerEvent('JLRP-VehicleRemote:RemoveKey', GetVehicleNumberPlateText(vehicle))
 		if cb then

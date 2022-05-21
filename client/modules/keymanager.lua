@@ -34,7 +34,7 @@ function registerKey(key, type)
     RegisterCommand(
         "-" .. command,
         function()
-            if not IsPauseMenuActive() then
+            if not IsPauseMenuActive() and not isControlsDisabled then
                 TriggerEvent("onKeyUP", key)
             end
             if currentKeysHolding[key] then
