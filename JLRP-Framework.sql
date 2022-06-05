@@ -34,7 +34,7 @@ CREATE TABLE `jobs` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE `job_grades` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `job_name` varchar(50) DEFAULT NULL,
   `grade` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -44,11 +44,12 @@ CREATE TABLE `job_grades` (
   `skin_male` longtext NOT NULL,
   `skin_female` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1;
+) ENGINE=InnoDB;
 
 CREATE TABLE `gangs` (
   `name` varchar(50) NOT NULL,
-  `label` varchar(50) DEFAULT NULL
+  `label` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `gang_grades` (
@@ -60,7 +61,8 @@ CREATE TABLE `gang_grades` (
   `is_boss` tinyint(1) DEFAULT 0,
   `salary` int(11) NOT NULL,
   `skin_male` longtext NOT NULL,
-  `skin_female` longtext NOT NULL
+  `skin_female` longtext NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `items` (
