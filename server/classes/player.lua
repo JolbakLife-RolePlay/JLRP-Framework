@@ -190,7 +190,8 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	end
 
     -- is_dead
-    PlayerData.is_dead = PlayerData.is_dead or 0
+    --PlayerData.is_dead = PlayerData.is_dead or 0
+	PlayerData.is_dead = PlayerData.is_dead or false
 
     local xPlayer = Core.Player.CreatePlayer(PlayerData)
     --Core.Players[source] = xPlayer -- using in server-side 'JLRP-Framework:playerLoaded'

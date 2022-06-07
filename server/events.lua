@@ -162,7 +162,7 @@ AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
     local xPlayer = Framework.GetPlayerFromId(_source)
     if xPlayer then
         if xPlayer.getMetadata('dead') then
-            MySQL.update(QUERIES.MODIFY_DEATH, { 0, xPlayer.citizenid })
+            MySQL.update(QUERIES.MODIFY_DEATH, { false, xPlayer.citizenid })
             xPlayer.setMetadata('isdead', false, false)
             xPlayer.setMetadata('is_dead', false, false)
             xPlayer.metadata['isDead'] = false -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
@@ -179,7 +179,7 @@ AddEventHandler('JLRP-Framework:onPlayerDeath', function(xPlayer, isNew)
     local _source = source
     local xPlayer = Framework.GetPlayerFromId(_source)
     if xPlayer then
-        MySQL.update(QUERIES.MODIFY_DEATH, { 1, xPlayer.citizenid })
+        MySQL.update(QUERIES.MODIFY_DEATH, { true, xPlayer.citizenid })
         xPlayer.setMetadata('isdead', true, false)
         xPlayer.setMetadata('is_dead', true, false)
         xPlayer.metadata['isDead'] = true -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
