@@ -188,7 +188,7 @@ AddEventHandler('JLRP-Framework:onPlayerDeath', function(xPlayer, isNew)
 end)
 
 RegisterNetEvent("JLRP-Framework:onMetadataChange")
-AddEventHandler("JLRP-Framework:onMetadataChange", function(newMetadata)
+AddEventHandler("JLRP-Framework:onMetadataChange", function(source, newMetadata)
     
 end)
 
