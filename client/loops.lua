@@ -142,7 +142,7 @@ CreateThread(function()
 				end
 				StartDeathCam()
 
-			elseif not IsPedFatallyInjured(PlayerPedID) and isDead and cam ~= nil then
+			elseif not IsPedFatallyInjured(PlayerPedID) and isDead then
 				isDead = false
 				EndDeathCam()
 			elseif cam and isDead then
@@ -151,6 +151,8 @@ CreateThread(function()
 				Wait(2000)
 			end
 			
+		else
+			Wait(1000)
 		end
 		Wait(0)
 	end
@@ -211,8 +213,7 @@ end
 
 -- process camera controls
 function ProcessCamControls()
-    local playerPed = PlayerPedId()
-    local playerCoords = GetEntityCoords(playerPed)
+    local playerCoords = Framework.PlayerData.coords
     -- disable 1st person as the 1st person camera can cause some glitches
     DisableFirstPersonCamThisFrame()
     -- calculate new position

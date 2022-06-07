@@ -40,9 +40,9 @@ function PayCheck()
 			Wait(Config.Accounts.PayCheckInterval * 60 * 1000)
 			local xPlayers = Framework.GetPlayers()
 			for _, xPlayer in pairs(xPlayers) do
-				local job     = xPlayer.job.grade_name
-                local onDuty  = xPlayer.job.onDuty
-				local salary  = xPlayer.job.grade_salary
+				local job = xPlayer.job.grade_name
+                local onDuty = xPlayer.job.onDuty
+				local salary = xPlayer.job.grade_salary
 
 				if salary > 0 then
 					if job == 'unemployed' then -- unemployed

@@ -410,7 +410,7 @@ function Core.Player.CreatePlayer(PlayerData)
 		grade = tostring(grade)
 		local lastGang = json.decode(json.encode(self.gang))
 
-		if Framework.DoesJobExist(gang, grade) then
+		if Framework.DoesGangExist(gang, grade) then
 			local gangObject, gradeObject = Framework.Gangs[gang], Framework.Gangs[gang].grades[grade]
 
 			self.gang.id    = gangObject.id
@@ -437,7 +437,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			TriggerEvent('JLRP-Framework:setGang', self.source, self.gang, lastGang)
 			self.triggerEvent('JLRP-Framework:setGang', self.gang)
 		else
-			print(('[JLRP-Framework] [^3WARNING^7] Ignoring invalid .setGang() usage for "%s"'):format(self.identifier))
+			print(('[JLRP-Framework] [^3WARNING^7] Ignoring invalid .setGang() usage for "%s"'):format(self.name))
 		end
 	end
 

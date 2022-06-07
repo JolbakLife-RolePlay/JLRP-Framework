@@ -141,8 +141,8 @@ end
 function Core.SavePlayer(xPlayer, cb)
 	MySQL.prepare(QUERIES.SAVE_PLAYER, {
 		xPlayer.group,
-		json.encode(xPlayer.job),
-		json.encode(xPlayer.gang),
+		json.encode(xPlayer.getJob()),
+		json.encode(xPlayer.getGang()),
 		json.encode(xPlayer.getAccounts(true)),
 		json.encode(xPlayer.getInventory(true)),
 		json.encode(xPlayer.getPosition()),
@@ -167,8 +167,8 @@ function Core.SavePlayers(cb)
 			local xPlayer = xPlayers[i]
 			parameters[#parameters+1] = {
                 xPlayer.group,
-                json.encode(xPlayer.job),
-				json.encode(xPlayer.gang),
+                json.encode(xPlayer.getJob()),
+				json.encode(xPlayer.getGang()),
 				json.encode(xPlayer.getAccounts(true)),
 				json.encode(xPlayer.getInventory(true)),			
 				json.encode(xPlayer.getPosition()),
