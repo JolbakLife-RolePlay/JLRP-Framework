@@ -722,7 +722,7 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
 	function self.syncMetadata()
-		TriggerEvent('JLRP-Framework:onMetadataChange', xPlayer.source, self.metadata)
+		TriggerEvent('JLRP-Framework:onMetadataChange', self.source, self.metadata)
 		self.triggerEvent('JLRP-Framework:onMetadataChange', self.metadata)
 	end
 
