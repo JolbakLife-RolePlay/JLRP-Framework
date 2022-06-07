@@ -124,7 +124,7 @@ function Framework.GetPlayers(key, val)
 	local xPlayers = {}
 	for k, v in pairs(Core.Players) do
 		if key then
-			if (key == 'job' and v.job.name == val) or v[key] == val then
+			if (key == 'job' and v.job.name == val) or (key == 'gang' and v.gang.name == val) or v[key] == val then
 				xPlayers[#xPlayers + 1] = v
 			end
 		else
