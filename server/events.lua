@@ -163,6 +163,10 @@ AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
     if xPlayer then
         if xPlayer.getMetadata('dead') then
             MySQL.update(QUERIES.MODIFY_DEATH, { 0, xPlayer.citizenid })
+            xPlayer.setMetadata('isdead', false, false)
+            xPlayer.setMetadata('is_dead', false, false)
+            xPlayer.metadata['isDead'] = false -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
+            xPlayer.setMetadata('dead', false, true)
         end    
     end
 end)
@@ -178,17 +182,14 @@ AddEventHandler('JLRP-Framework:onPlayerDeath', function(xPlayer, isNew)
         MySQL.update(QUERIES.MODIFY_DEATH, { 1, xPlayer.citizenid })
         xPlayer.setMetadata('isdead', true, false)
         xPlayer.setMetadata('is_dead', true, false)
+        xPlayer.metadata['isDead'] = true -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
         xPlayer.setMetadata('dead', true, true)
     end
 end)
 
 RegisterNetEvent("JLRP-Framework:onMetadataChange")
 AddEventHandler("JLRP-Framework:onMetadataChange", function(newMetadata)
-    local _source = source
-    local xPlayer = Framework.GetPlayerFromId(_source)
-    if xPlayer then
-        xPlayer.metadata = newMetadata
-    end
+    
 end)
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)

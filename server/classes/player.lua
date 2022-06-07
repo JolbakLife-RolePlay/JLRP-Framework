@@ -715,7 +715,8 @@ function Core.Player.CreatePlayer(PlayerData)
 		end
 	end
 
-    function self.getMetadata()
+    function self.getMetadata(k)
+		if k then return self.metadata[k] end
         return self.metadata
 	end
 
