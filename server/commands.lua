@@ -75,6 +75,12 @@ end, false, {help = _Locale('command_cardel'), validate = false, arguments = {
 	{name = 'radius', help = _Locale('command_cardel_radius'), type = 'any'}
 }})
 
+Framework.RegisterCommand('dvfor', "mod", function(xPlayer, args, showError)
+	args.playerId.triggerEvent('JLRP-Framework:deleteVehicle')
+end, false, {help = _Locale('command_cardel_for'), validate = true, arguments = {
+	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
+}})
+
 Framework.RegisterCommand('setaccountmoney', 'superadmin', function(xPlayer, args, showError)
 	if args.playerId.getAccount(args.account) then
 		args.playerId.setAccountMoney(args.account, args.amount)

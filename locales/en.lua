@@ -24,6 +24,7 @@ Locales["en"] = {
     ["command_car"] = "Spawn a vehicle",
     ["command_car_car"] = "Vehicle model or hash",
     ["command_cardel"] = "Remove vehicles in proximity",
+    ["command_cardel_for"] = "Remove vehicle for specified player",
     ["command_cardel_radius"] = "Removes all vehicles within the specified radius",
     ["command_clear"] = "Clear chat Text",
     ["command_clearall"] = "Clear chat Text for all players",

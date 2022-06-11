@@ -353,3 +353,11 @@ RegisterNetEvent("JLRP-Framework:onMetadataChange")
 AddEventHandler("JLRP-Framework:onMetadataChange", function(newMetadata)
 	Framework.SetPlayerData('metadata', newMetadata)
 end)
+
+RegisterNetEvent("JLRP-Framework:deleteVehicle")
+AddEventHandler("JLRP-Framework:deleteVehicle", function()
+	local vehicle = GetVehiclePedIsIn(Framework.PlayerData.ped)
+	if vehicle ~= 0 then
+		Framework.Game.DeleteVehicle(vehicle)
+	end
+end)
