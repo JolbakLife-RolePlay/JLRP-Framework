@@ -2,7 +2,7 @@ Config = {}
 Config.Locale = 'en'
 
 Config.DefaultSpawn = {x = -269.4, y = -955.3, z = 31.2, heading = 205.8} -- Default spawn point
-Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to jobdefaultDuty | false: set duty state from database last saved
+Config.ForceJobDefaultDutyAtLogin = false -- true: Force duty state to Config.DefaultDuty | false: set duty state from database last saved
 Config.DefaultDuty = false
 
 Config.Accounts = {}
@@ -28,7 +28,7 @@ Config.MultiCharacter = false -- Enabling support for players having multiple ch
 Config.Server = {} -- General server config
 Config.Server.Name = "JolbakLifeRP" -- Name of the RP server
 Config.Server.UseConnectQueue = true -- Use connectqueue as a queue for your server
-Config.Server.Closed = false -- Set server closed (no one can join except people with ace permission 'qbadmin.join')
+Config.Server.Closed = false -- Set server closed (no one can join except people with ace permission 'group.join')
 Config.Server.ClosedReason = "Server Closed" -- Reason message to display when people can't join the server
 Config.Server.Uptime = 0 -- Time the server has been up.
 Config.Server.Whitelist = false -- Enable or disable whitelist on the server

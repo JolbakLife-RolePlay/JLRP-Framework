@@ -57,7 +57,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		job.name, job.grade = 'unemployed', '0'
 		jobObject, jobGradeObject = Framework.Jobs[job.name], Framework.Jobs[job.name].grades[tostring(job.grade)]
 	end
-    PlayerData.job = {}
+    PlayerData.job = PlayerData.job or {}
 	PlayerData.job.id = jobObject.id
 	PlayerData.job.name = jobObject.name
 	PlayerData.job.label = jobObject.label
@@ -65,7 +65,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	PlayerData.job.grade_name = jobGradeObject.name
 	PlayerData.job.grade_label = jobGradeObject.label
 	PlayerData.job.grade_salary = jobGradeObject.salary
-    PlayerData.job.onDuty = Config.ForceJobDefaultDutyAtLogin and Config.DefaultDuty or PlayerData.job.onDuty or false
+    PlayerData.job.onDuty = Config.ForceJobDefaultDutyAtLogin == true and Config.DefaultDuty or PlayerData.job.onDuty or false
 	PlayerData.job.skin_male = json.decode(jobGradeObject.skin_male) or {}
 	PlayerData.job.skin_female = json.decode(jobGradeObject.skin_female) or {}
 
@@ -80,7 +80,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		gang.name, gang.grade = 'nogang', '0'
 		gangObject, gangGradeObject = Framework.Gangs[gang.name], Framework.Gangs[gang.name].grades[tostring(gang.grade)]
 	end
-    PlayerData.gang = {}
+    PlayerData.gang = PlayerData.gang or {}
     PlayerData.gang.id = gangObject.id
     PlayerData.gang.name = gangObject.name
     PlayerData.gang.label = gangObject.label
