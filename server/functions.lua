@@ -10,6 +10,14 @@ function Framework.GetPlayerFromIdentifier(identifier)
 	end
 end
 
+function Framework.GetPlayerFromCitizenId(citizenid)
+	for _, v in pairs(Core.Players) do
+		if v.citizenid == citizenid then
+			return v
+		end
+	end
+end
+
 function Framework.GetIdentifier(source, idtype)
     idtype = idtype or 'license'
     for _, v in pairs(GetPlayerIdentifiers(source)) do
