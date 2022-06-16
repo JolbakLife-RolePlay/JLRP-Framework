@@ -371,6 +371,18 @@ function Framework.GetJobs()
 	return Framework.Jobs
 end
 
+function Framework.GetGangs()
+	return Framework.Gangs
+end
+
+function Framework.RefreshJobs()
+	Core.RefreshJobs()
+end
+
+function Framework.RefreshGangs()
+	Core.RefreshGangs()
+end
+
 -- OneSync
 local function getNearbyPlayers(source, closest, distance, ignore)
 	local result = {}

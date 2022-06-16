@@ -65,6 +65,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 	PlayerData.job.grade_name = jobGradeObject.name
 	PlayerData.job.grade_label = jobGradeObject.label
 	PlayerData.job.grade_salary = jobGradeObject.salary
+	PlayerData.job.is_boss = jobGradeObject.is_boss
     PlayerData.job.onDuty = Config.ForceJobDefaultDutyAtLogin == true and Config.DefaultDuty or PlayerData.job.onDuty or false
 	PlayerData.job.skin_male = json.decode(jobGradeObject.skin_male) or {}
 	PlayerData.job.skin_female = json.decode(jobGradeObject.skin_female) or {}
@@ -88,6 +89,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.gang.grade_name = gangGradeObject.name
     PlayerData.gang.grade_label = gangGradeObject.label
     PlayerData.gang.grade_salary = gangGradeObject.salary
+	PlayerData.gang.is_boss = gangGradeObject.is_boss
     PlayerData.gang.skin_male = json.decode(gangGradeObject.skin_male) or {}
     PlayerData.gang.skin_female = json.decode(gangGradeObject.skin_female) or {}
 
@@ -231,6 +233,9 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 
     if isNew then
         MySQL.Async.insert(QUERIES.NEW_PLAYER, { PlayerData.citizenid, PlayerData.identifier, PlayerData.name, PlayerData.group, json.encode(PlayerData.job), json.encode(PlayerData.gang), json.encode(PlayerData.accounts), json.encode(PlayerData.position), json.encode(PlayerData.metadata) })
+		if Config.Accounts.StartingMoney.money then 
+			xPlayer.setAccountMoney('money', Config.Accounts.StartingMoney.money)
+		end
     end
 
 	xPlayer.triggerEvent('JLRP-Framework:registerSuggestions', Core.RegisteredCommands)
@@ -371,6 +376,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			self.job.grade_name   = gradeObject.name
 			self.job.grade_label  = gradeObject.label
 			self.job.grade_salary = gradeObject.salary
+			self.job.is_boss = gradeObject.is_boss
             self.job.onDuty = Config.DefaultDuty
 
 			if gradeObject.skin_male then
@@ -421,6 +427,7 @@ function Core.Player.CreatePlayer(PlayerData)
 			self.gang.grade_name   = gradeObject.name
 			self.gang.grade_label  = gradeObject.label
 			self.gang.grade_salary = gradeObject.salary
+			self.gang.is_boss = gradeObject.is_boss
 
 			if gradeObject.skin_male then
 				self.gang.skin_male = json.decode(gradeObject.skin_male)
@@ -741,8 +748,8 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- notification
-    function self.showNotification(msg)
-		self.triggerEvent('JLRP-Framework:showNotification', msg)
+    function self.showNotification(msg, type, length)
+		self.triggerEvent('JLRP-Framework:showNotification', msg, type, length)
 	end
 
     -- advanced notification

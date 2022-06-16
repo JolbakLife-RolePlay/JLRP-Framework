@@ -11,6 +11,18 @@ MySQL.ready(function()
 
 	while not next(Framework.Items) do Wait(50) end
 
+	Core.RefreshJobs()
+
+	Core.RefreshGangs()
+
+	print('[^2INFO^7] ^5JLRP-FRAMEWORK^0 INITIALIZED')
+
+	PositionSync()
+	DBSync()
+	PayCheck()
+end)
+
+function Core.RefreshJobs()
 	local Jobs = {}
 	local jobs = MySQL.query.await(QUERIES.GET_JOBS)
 
@@ -53,7 +65,9 @@ MySQL.ready(function()
 	else
 		Framework.Jobs = Jobs
 	end
+end
 
+function Core.RefreshGangs()
 	local Gangs = {}
 	local gangs = MySQL.query.await(QUERIES.GET_GANGS)
 
@@ -96,10 +110,4 @@ MySQL.ready(function()
 		Framework.Gangs = Gangs
 	end
 
-	print('[^2INFO^7] ^5JLRP-FRAMEWORK^0 INITIALIZED')
-
-	PositionSync()
-	DBSync()
-	PayCheck()
-end)
-
+end

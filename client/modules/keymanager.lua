@@ -4,9 +4,9 @@ local KeysWhiteList = {["g"] = true, ["t"] = true}
 local currentKeysHolding = {}
 local isControlsDisabled = false
 
-RegisterNetEvent("onKeyDown")
-RegisterNetEvent("onKeyUP")
-RegisterNetEvent("onMultipleKeyPress")
+--RegisterNetEvent("onKeyDown")
+--RegisterNetEvent("onKeyUp")
+--RegisterNetEvent("onMultipleKeyPress")
 
 function registerKey(key, type)
     local command = key .. "donttouch"
@@ -35,7 +35,7 @@ function registerKey(key, type)
         "-" .. command,
         function()
             if not IsPauseMenuActive() and not isControlsDisabled then
-                TriggerEvent("onKeyUP", key)
+                TriggerEvent("onKeyUp", key)
             end
             if currentKeysHolding[key] then
                 removeKey(key)

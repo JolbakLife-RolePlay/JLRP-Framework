@@ -7,7 +7,7 @@ Config.DefaultDuty = false
 
 Config.Accounts = {}
 Config.Accounts.MoneyTypes = {bank = 'bank', money = 'money', black_money = 'black_money'}
-Config.Accounts.StartingMoney = {bank = 5000}
+Config.Accounts.StartingMoney = {bank = 5000, money = 500}
 Config.Accounts.DontAllowMinus = {'cash', 'black_money', 'crypto'} -- Money that is not allowed going in minus
 Config.Accounts.PayCheckInterval = 15 -- The time in minutes that it will give the paycheck
 
