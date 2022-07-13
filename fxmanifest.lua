@@ -1,7 +1,7 @@
-fx_version "cerulean"
-
-game "gta5"
-lua54 "yes"
+fx_version 'cerulean'
+use_fxv2_oal 'yes'
+game 'gta5'
+lua54 'yes'
 
 name "JLRP-Framework"
 author "Mahan Moulaei"

@@ -148,7 +148,7 @@ end
 
 function Core.SavePlayer(xPlayer, cb)
 	MySQL.prepare(QUERIES.SAVE_PLAYER, {
-		xPlayer.group,
+		xPlayer.getGroup(),
 		json.encode(xPlayer.getJob()),
 		json.encode(xPlayer.getGang()),
 		json.encode(xPlayer.getAccounts(true)),
@@ -174,7 +174,7 @@ function Core.SavePlayers(cb)
 		for i=1, count do
 			local xPlayer = xPlayers[i]
 			parameters[#parameters+1] = {
-                xPlayer.group,
+                xPlayer.getGroup(),
                 json.encode(xPlayer.getJob()),
 				json.encode(xPlayer.getGang()),
 				json.encode(xPlayer.getAccounts(true)),

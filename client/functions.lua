@@ -1,3 +1,4 @@
+local isHudShowing = false
 function Framework.SetTimeout(msec, cb)
 	table.insert(
 		Core.TimeoutCallbacks,
@@ -89,11 +90,11 @@ function Framework.GetMinimapAnchor()
     return minimapTopX, minimapTopY
 end
 
-function Framework.ShowNotification(message, type, length)
+function Framework.ShowNotification(message, type, length, extra)
 	if Config.NativeNotify then
 		Core.ShowNotification(message)
 	else
-		Core.ShowNUINotification(message, type, length)
+		Core.ShowNUINotification(message, type, length, extra)
 	end
 end
 
@@ -103,8 +104,21 @@ function Core.ShowNotification(message)
 	EndTextCommandThefeedPostTicker(0, 1)
 end
 
-function Core.ShowNUINotification(message, type, length)
+function Core.ShowNUINotification(message, type, length, extra)
 	if Framework.String.IsNull(message) then return end
+	if GetResourceState('t-notify') == 'started' then
+		exports['t-notify']:Custom({
+			style		= type or 'info',
+			title  		= extra?.title or nil,
+			message		= message,
+			image		= extra?.image or nil,
+			duration	= length or 3000,
+			sound		= extra?.title or true,
+			custom		= extra?.custom or false,
+			position	= extra?.position or 'middle-left'
+		})
+		return
+	end
 	SendNUIMessage({
 		action = 'showNotification',
 		type = type or "info",
@@ -199,10 +213,15 @@ function Framework.TriggerServerCallback(name, cb, ...)
 end
 
 function Framework.UI.HUD.SetDisplay(opacity)
+	isHudShowing = opacity == 1.0 and true or opacity == 0.0 and false
 	SendNUIMessage({
 		action  = 'setHUDDisplay',
 		opacity = opacity
 	})
+end
+
+function Framework.UI.HUD.IsShowing()
+	return isHudShowing
 end
 
 function Framework.UI.HUD.RegisterElement(name, index, priority, html, data)

@@ -34,6 +34,7 @@ function StartServerSyncLoops()
 end
 
 if Config.EnableHud then
+	local isHudShown = true
 	CreateThread( function()
 		local isPaused = false
 		local time = 1000
@@ -43,9 +44,29 @@ if Config.EnableHud then
 				Framework.UI.HUD.SetDisplay(0.0)
 			elseif not IsPauseMenuActive() and isPaused then
 				isPaused = false
-				Framework.UI.HUD.SetDisplay(1.0)
+				if isHudShown then
+					Framework.UI.HUD.SetDisplay(1.0)
+				end
 			end
 			Wait(time)
+		end
+	end)
+	local interface = true
+	local function toggleHud()
+		interface = not interface
+		if not interface then
+			isHudShown = false
+			Framework.UI.HUD.SetDisplay(0.0)
+		elseif interface then
+			isHudShown = true
+			Framework.UI.HUD.SetDisplay(1.0)
+		end
+	end
+	
+	AddEventHandler("onKeyUp", function(key)
+		if key == 'oem_3' then -- key -> "~"
+			TriggerEvent('InteractSound_CL:PlayOnOne', 'pop', 0.2)
+			toggleHud()
 		end
 	end)
 end

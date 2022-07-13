@@ -7,7 +7,7 @@ function onPlayerConnecting(name, setKickReason, deferrals)
     Wait(0)
 
     if Config.Server.Closed then
-        if not IsPlayerAceAllowed(src, 'frameworkadmin.join') then
+        if not IsPlayerAceAllowed(src, 'join') then
             deferrals.done(Config.Server.ClosedReason)
         end
     end

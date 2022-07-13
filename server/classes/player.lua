@@ -37,7 +37,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     local defaultGroup = 'user'
 	if Core.IsPlayerAdmin(source) then
 		for i, rank in pairs(Config.Server.Permissions) do
-			if IsPlayerAceAllowed(source, rank) then			
+			if Framework.HasPermission(source, rank) then			
 				defaultGroup = rank
 				print(('[^2ADMIN SYSTEM^0] Player ^5%s ^0Has been granted %s permissions via ^5Ace Perms.^7'):format(source, defaultGroup))
 				break
@@ -679,7 +679,7 @@ function Core.Player.CreatePlayer(PlayerData)
 	end
 
     -- rpname
-    function self.getRPName()
+    function self.getRPname()
 		return self.rpname
 	end
 
