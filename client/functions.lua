@@ -113,7 +113,7 @@ function Core.ShowNUINotification(message, type, length, extra)
 			message		= message,
 			image		= extra?.image or nil,
 			duration	= length or 3000,
-			sound		= extra?.title or true,
+			sound		= extra?.sound or true,
 			custom		= extra?.custom or false,
 			position	= extra?.position or 'middle-left'
 		})
@@ -1211,6 +1211,11 @@ function Framework.Game.Utils.DrawText3D(coords, text, size, font)
 	SetDrawOrigin(vector.xyz, 0)
 	EndTextCommandDisplayText(0.0, 0.0)
 	ClearDrawOrigin()
+end
+
+function Framework.Game.GetPlate(vehicle)
+    if vehicle == 0 then return end
+    return Framework.Math.Trim(GetVehicleNumberPlateText(vehicle))
 end
 
 function Framework.SyncMetadata()

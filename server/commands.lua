@@ -121,6 +121,14 @@ end, true, {help = _Locale('command_setgroup'), validate = true, arguments = {
 	{name = 'group', help = _Locale('command_setgroup_group'), type = 'string'},
 }})
 
+Framework.RegisterCommand('admin', 'mod', function(xPlayer, args, showError)
+	if Core.IsPlayerAdmin(xPlayer.source) then
+		xPlayer.adminDuty(not xPlayer.adminDuty())
+	else
+		showError(_Locale('command_adminduty_not_authorized'))
+	end
+end, false, {help = _Locale('command_adminduty'), validate = false })
+
 Framework.RegisterCommand('save', 'superadmin', function(xPlayer, args, showError)
 	Core.SavePlayer(args.playerId)
 end, true, {help = _Locale('command_save'), validate = true, arguments = {
@@ -132,11 +140,15 @@ Framework.RegisterCommand('saveall', 'superadmin', function(xPlayer, args, showE
 end, true, {help = _Locale('command_saveall')})
 
 Framework.RegisterCommand('group', "user", function(xPlayer, args, showError)
-	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getGroup() .. "^0")
+	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getGroup() .. "^0 | onDuty = "..tostring(xPlayer.adminDuty()))
 end, true)
 
 Framework.RegisterCommand('job', "user", function(xPlayer, args, showError)
-	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getJob().name.. "^0 - ^5".. xPlayer.getJob().grade_label .. "^0")
+	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getJob().name.. "^0 - ^5".. xPlayer.getJob().grade_label .. "^0 | onDuty = "..tostring(xPlayer.getDuty()))
+end, true)
+
+Framework.RegisterCommand('gang', "user", function(xPlayer, args, showError)
+	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getGang().name.. "^0 - ^5".. xPlayer.getGang().grade_label .. "^0")
 end, true)
 
 Framework.RegisterCommand('info', "user", function(xPlayer, args, showError)

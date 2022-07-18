@@ -95,7 +95,7 @@ function Core.IsPlayerAdmin(source)
 	local xPlayer = Framework.GetPlayerFromId(source)
 	if xPlayer then
 		for i, rank in pairs(Config.Server.AdminGroups) do
-			if xPlayer.group == rank then
+			if xPlayer.getGroup() == rank then
 				return true
 			end
 		end
@@ -274,7 +274,7 @@ function Framework.RegisterCommand(name, group, cb, allowConsole, suggestion)
 							elseif v.type == 'player' or v.type == 'playerId' then
 								local targetPlayer = tonumber(args[k])
 
-								if args[k] == 'me' then targetPlayer = playerId end
+								if args[k] == 'me' or args[k] == 'ME' then targetPlayer = playerId end
 
 								if targetPlayer then
 									local xTargetPlayer = Framework.GetPlayerFromId(targetPlayer)

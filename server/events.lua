@@ -89,6 +89,16 @@ AddEventHandler('JLRP-Framework:updateCoords', function(coords, src)
 	end
 end)
 
+RegisterNetEvent('JLRP-Framework:setGroup')
+AddEventHandler('JLRP-Framework:setGroup', function(source, newGroup, lastGroup)
+    
+end)
+
+RegisterNetEvent('JLRP-Framework:adminDuty')
+AddEventHandler('JLRP-Framework:adminDuty', function(source, newState)
+    
+end)
+
 RegisterNetEvent('JLRP-Framework:setJob')
 AddEventHandler('JLRP-Framework:setJob', function(source, newJob, lastJob)
     
@@ -112,7 +122,7 @@ end)
 RegisterNetEvent('JLRP-Framework:setDuty')
 AddEventHandler('JLRP-Framework:setDuty', function(bool)
     local xPlayer = Framework.GetPlayerFromId(source)
-    if xPlayer.job.onDuty == bool then return end
+    if xPlayer.getJob().onDuty == bool then return end
     
     if bool then
         xPlayer.setDuty(true)
@@ -121,7 +131,7 @@ AddEventHandler('JLRP-Framework:setDuty', function(bool)
         xPlayer.setDuty(false)
         xPlayer.triggerEvent('JLRP-Framework:showNotification', _Locale('stopped_duty'))
     end
-    TriggerClientEvent('JLRP-Framework:setJob', xPlayer.source, xPlayer.job)
+    TriggerClientEvent('JLRP-Framework:setJob', xPlayer.source, xPlayer.getJob())
 end)
 
 RegisterNetEvent('JLRP-Framework:playerLoaded')
@@ -190,6 +200,25 @@ end)
 RegisterNetEvent("JLRP-Framework:onMetadataChange")
 AddEventHandler("JLRP-Framework:onMetadataChange", function(source, newMetadata)
     
+end)
+
+-- Non-Chat Command Calling
+RegisterNetEvent('JLRP-Framework:callCommand', function(command, args)
+    local src = source
+    if not Core.RegisteredCommands[command] then return end
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if not xPlayer then return end
+    local hasPerm = Framework.HasPermission(src, "command."..command)
+	print("JLRP-Framework:callCommand => "..tostring(hasPerm).." - "..command)
+    if hasPerm then
+        if Core.RegisteredCommands[command].suggestion.arguments and #Core.RegisteredCommands[command].suggestion.arguments ~= 0 and not args[#Core.RegisteredCommands[command].suggestion.arguments] then
+			xPlayer.showNotification(_U("commanderror_missing_args"), 'error')
+        else
+            Core.RegisteredCommands[command].cb(src, args)
+        end
+    else
+		xPlayer.showNotification(_U("command_adminduty_not_authorized"), 'error')
+    end
 end)
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)

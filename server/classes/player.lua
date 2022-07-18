@@ -287,6 +287,7 @@ function Core.Player.CreatePlayer(PlayerData)
     self.name = PlayerData.name
     self.rpname = PlayerData.firstname .. ' ' .. PlayerData.lastname
     self.group = PlayerData.group
+	self.adminduty = false
     self.job = PlayerData.job
     self.gang = PlayerData.gang
     self.accounts = PlayerData.accounts
@@ -336,10 +337,8 @@ function Core.Player.CreatePlayer(PlayerData)
 
     -- group
     function self.setGroup(newGroup)
-		--ExecuteCommand(('remove_principal identifier.%s group.%s'):format(self.license, self.group))
-		--self.group = newGroup
-		--ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
-
+		local lastGroup = self.group
+		
         if self.group ~= newGroup then
 			local identifiers = GetPlayerIdentifiers(self.source)
 			print(('[^2ADMIN SYSTEM^0] Player ^5%s ^0Has been removed %s permissions.^7'):format(self.source, self.group))
@@ -353,12 +352,27 @@ function Core.Player.CreatePlayer(PlayerData)
 			for i in ipairs(identifiers) do
 				ExecuteCommand(('add_principal identifier.%s group.%s'):format(identifiers[i], self.group))
 			end
+			
+			self.adminDuty(false)
+			TriggerEvent('JLRP-Framework:setGroup', self.source, self.group, lastGroup)
+			self.triggerEvent('JLRP-Framework:setGroup', self.group)
 		end
 	end
 
 	function self.getGroup()
 		return self.group
 	end
+	
+	function self.adminDuty(state)
+		if state == nil then
+			return self.adminduty
+		else
+			self.adminduty = state
+			TriggerEvent('JLRP-Framework:adminDuty', self.source, self.adminduty)
+			self.triggerEvent('JLRP-Framework:adminDuty', self.adminduty)
+		end
+	end
+	
 
     -- job
     function self.setJob(job, grade)

@@ -99,6 +99,7 @@ local haveToRegister = {
     ["insert"] = "keyboard",
     ["delete"] = "keyboard",
     ["escape"] = "keyboard",
+	["space"] = "keyboard",
     ["t"] = "keyboard",
     ["y"] = "keyboard",
     ["g"] = "keyboard",
@@ -109,6 +110,7 @@ local haveToRegister = {
     ["plus"] = "keyboard",
     ["9"] = "keyboard",
     ["b"] = "keyboard",
+	["c"] = "keyboard",
     ["oem_3"] = "keyboard", -- ~
     ["lcontrol"] = "keyboard",
     ["lshift"] = "keyboard",
@@ -137,9 +139,6 @@ for key, type in pairs(haveToRegister) do
     registerKey(key, type)
 end
 
-exports(
-    "disableControl",
-    function(status)
-        isControlsDisabled = status
-    end
-)
+exports("disableControl", function(status)
+	isControlsDisabled = status
+end)

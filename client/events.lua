@@ -3,6 +3,19 @@ AddEventHandler('JLRP-Framework:teleport', function(coords)
 	Framework.Game.Teleport(Framework.PlayerData.ped, coords)
 end)
 
+RegisterNetEvent('JLRP-Framework:setGroup')
+AddEventHandler('JLRP-Framework:setGroup', function(group)
+	Framework.SetPlayerData('group', group)
+end)
+
+RegisterNetEvent('JLRP-Framework:adminDuty')
+AddEventHandler('JLRP-Framework:adminDuty', function(newState)
+	Framework.SetPlayerData('adminduty', newState)
+	Framework.SetPlayerData('admin_duty', newState)
+	Framework.SetPlayerData('admin', newState)
+	Framework.SetPlayerData('adminDuty', newState)
+end)
+
 RegisterNetEvent('JLRP-Framework:setJob')
 AddEventHandler('JLRP-Framework:setJob', function(job)
 	if Config.EnableHud then
@@ -102,6 +115,12 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 			elseif skin then
 				TriggerEvent('skinchanger:loadSkin', skin)
 			end
+			Framework.SetPlayerData('group', Framework.PlayerData.group)
+			TriggerEvent('JLRP-Framework:adminDuty', false)
+			Framework.SetPlayerData('job', Framework.PlayerData.job)
+			Framework.SetPlayerData('gang', Framework.PlayerData.gang)
+			Framework.SetPlayerData('accounts', Framework.PlayerData.accounts)
+			Framework.SetPlayerData('metadata', Framework.PlayerData.metadata)
 
 			TriggerEvent('JLRP-Framework:loadingScreenOff')
 			
@@ -295,12 +314,12 @@ AddEventHandler("JLRP-Framework:tpm", function()
 			if found then
 				-- If Z coord was found, set coords in found coords.
 				SetPedCoordsKeepVehicle(ped, x, y, groundZ)
-				Framework.ShowNotification('~g~Successfully Teleported!', true, false, 140)
+				Framework.ShowNotification('~g~Successfully Teleported!', "success")
 			else
 				-- If we can't find the coords, set the coords to the old ones.
 				-- We don't unpack them before since they aren't in a loop and only called once.
 				SetPedCoordsKeepVehicle(ped, oldCoords['x'], oldCoords['y'], oldCoords['z'] - 1.0)
-				Framework.ShowNotification('~o~You got teleported back to your previous position!', true, false, 140)
+				Framework.ShowNotification('~o~You got teleported back to your previous position!', "error")
 			end		
 		end
 	end)
