@@ -226,6 +226,8 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
 		maxWeight = xPlayer.getMaxWeight(),
 		money = xPlayer.getMoney(),
         metadata = xPlayer.getMetadata(),
+		group = xPlayer.getGroup(),
+		admin = xPlayer.adminDuty(),
 		dead = false
 	}, isNew, PlayerData.skin)
 

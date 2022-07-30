@@ -104,6 +104,18 @@ function Core.IsPlayerAdmin(source)
 	return false
 end
 
+function Framework.IsPlayerAdmin(source)
+	local xPlayer = Core.Players[tonumber(source)]
+	if xPlayer then
+		for i, rank in pairs(Config.Server.AdminGroups) do
+			if xPlayer.getGroup() == rank and xPlayer.adminDuty() then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 function Framework.DoesJobExist(job, grade)
 	grade = tostring(grade)
 
@@ -315,7 +327,7 @@ function Framework.RegisterCommand(name, group, cb, allowConsole, suggestion)
 				if playerId == 0 then
 					print(('[^3WARNING^7] %s^7'):format(error))
 				else
-					xPlayer.showNotification(error)
+					xPlayer.showNotification(error, "error")
 				end
 			else
 				cb(xPlayer or false, args, function(msg)

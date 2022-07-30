@@ -656,7 +656,14 @@ function Framework.Game.SpawnLocalObject(object, coords, cb)
 end
 
 function Framework.Game.DeleteObject(object, cb)
-	--SetEntityAsMissionEntity(object, false, true) ?
+	if NetworkGetEntityIsLocal(object) then
+		SetEntityAsMissionEntity(object, false, true)
+		DeleteEntity(object)
+		if cb then
+			cb(true)
+		end
+		return
+	end
 	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
 		if cb then
 			cb(response)
@@ -727,6 +734,9 @@ function Framework.Game.DeleteVehicle(vehicle, cb)
 	if NetworkGetEntityIsLocal(vehicle) then
 		SetEntityAsMissionEntity(vehicle, false, true)
 		DeleteVehicle(vehicle)
+		if cb then
+			cb(true)
+		end
 		return
 	end
 
@@ -784,6 +794,15 @@ end
 
 function Framework.Game.DeletePed(ped, cb)
 	--SetEntityAsMissionEntity(ped, false, true) ?
+	if NetworkGetEntityIsLocal(ped) then
+		SetEntityAsMissionEntity(ped, false, true)
+		DeletePed(ped)
+		if DoesEntityExist(ped) then Framework.Game.DeleteObject(ped) end
+		if cb then
+			cb(true)
+		end
+		return
+	end
 	Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.Delete', function(response)
 		if cb then
 			cb(response)
@@ -1188,29 +1207,65 @@ function Framework.Game.SetVehicleProperties(vehicle, props)
 	end
 end
 
-function Framework.Game.Utils.DrawText3D(coords, text, size, font)
+function Framework.Game.Utils.DrawText3D(coords, text, size, font, r, g, b, a, drawRectangle)
 	local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
-
+	
 	local camCoords = GetFinalRenderedCamCoord()
 	local distance = #(vector - camCoords)
 
 	if not size then size = 1 end
-	if not font then font = 0 end
+	if not font then font = 4 end
+	if not r then r = 255 end
+	if not g then g = 255 end
+	if not b then b = 255 end
+	if not a then a = 255 end
 
 	local scale = (size / distance) * 2
 	local fov = (1 / GetGameplayCamFov()) * 100
 	scale = scale * fov
 
+	SetDrawOrigin(vector.x, vector.y, vector.z, 0)
 	SetTextScale(0.0 * scale, 0.55 * scale)
 	SetTextFont(font)
 	SetTextProportional(1)
-	SetTextColour(255, 255, 255, 215)
-	BeginTextCommandDisplayText('STRING')
+	SetTextColour(r, g, b, a)
 	SetTextCentre(true)
+	SetTextOutline()
+	
+	-- WIP - Experimental
+	if drawRectangle then
+		BeginTextCommandWidth("STRING")
+		AddTextComponentSubstringPlayerName(text)
+		local onScreen, worldX, worldY = GetScreenCoordFromWorldCoord(vector.x, vector.y, vector.z)
+		if onScreen then
+			local height = GetTextScaleHeight(0.8*scale, font)
+			local width = EndTextCommandGetWidth(font) + 0.005
+			DrawRect(worldX, worldY + scale / 50, width + 0.005, height + 0.008, r, g, b, a)
+            DrawRect(worldX, worldY + scale / 50, width, height, 59, 59, 59, 255)
+
+		end
+	end
+	
+	BeginTextCommandDisplayText('STRING')
 	AddTextComponentSubstringPlayerName(text)
-	SetDrawOrigin(vector.xyz, 0)
 	EndTextCommandDisplayText(0.0, 0.0)
 	ClearDrawOrigin()
+end
+
+function Framework.Game.Utils.DrawText(x, y, font, width, height, scale, r, g, b, a, text)
+    -- Use local function instead
+	
+    SetTextFont(font)
+    SetTextProportional(0)
+    SetTextScale(scale, scale)
+    SetTextColour(r, g, b, a)
+    SetTextDropShadow(0, 0, 0, 0, 255)
+    SetTextEdge(2, 0, 0, 0, 255)
+    SetTextDropShadow()
+    SetTextOutline()
+    BeginTextCommandDisplayText('STRING')
+    AddTextComponentSubstringPlayerName(text)
+    EndTextCommandDisplayText(x - width / 2, y - height / 2 + 0.005)
 end
 
 function Framework.Game.GetPlate(vehicle)
@@ -1220,4 +1275,13 @@ end
 
 function Framework.SyncMetadata()
 	TriggerServerEvent('JLRP-Framework:onMetadataChange', Framework.PlayerData.metadata)
+end
+
+function Framework.IsPlayerAdmin()
+	for i, rank in pairs(Config.Server.AdminGroups) do
+		if Framework.PlayerData.group == rank and Framework.PlayerData.admin then
+			return true
+		end
+	end
+	return false
 end

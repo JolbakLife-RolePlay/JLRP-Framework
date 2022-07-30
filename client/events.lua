@@ -27,7 +27,7 @@ AddEventHandler('JLRP-Framework:setJob', function(job)
 		})
 	end
 	Framework.SetPlayerData('job', job)
-end)
+	end)
 
 RegisterNetEvent('JLRP-Framework:setGang')
 AddEventHandler('JLRP-Framework:setGang', function(gang)
@@ -75,8 +75,8 @@ AddEventHandler('JLRP-Framework:progressBar', function(message, length, options)
 end)
 
 RegisterNetEvent('JLRP-Framework:showNotification')
-AddEventHandler('JLRP-Framework:showNotification', function(message, type, length)
-	Framework.ShowNotification(message, type, length)
+AddEventHandler('JLRP-Framework:showNotification', function(message, type, length, extra)
+	Framework.ShowNotification(message, type, length, extra)
 end)
 
 RegisterNetEvent('JLRP-Framework:showAdvancedNotification')
@@ -142,13 +142,13 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 	if Config.EnableHud then
 		-- accounts
 		for k, v in ipairs(Framework.PlayerData.accounts) do
-			local accountTpl = '<div>{{money}}&nbsp;<img src="images/accounts/' .. v.name .. '.png"/></div>'
+			local accountTpl = '<div>{{money}}&nbsp;<img src="images/accounts/' .. v.name .. '.png" style="vertical-align:middle;"/></div>'
 			local index = v.name == "money" and 0 or v.name == "black_money" and 1 or v.name == "bank" and 2
 			Framework.UI.HUD.RegisterElement('account_' .. v.name, index, 0, accountTpl, {money = Framework.Math.GroupDigits(v.money)})
 		end
 
 		-- job
-		local jobTpl = '<div>{{job_label}}{{grade_label}}&nbsp;<img src="images/job.png"/></div>'
+		local jobTpl = '<div>{{job_label}}{{grade_label}}&nbsp;<img src="images/job.png" style="vertical-align:middle;"/></div>'
 
 		local jobGradeLabel = Framework.PlayerData.job.grade_label ~= Framework.PlayerData.job.label and Framework.PlayerData.job.grade_label or ''
 		if jobGradeLabel ~= '' then jobGradeLabel = ' - '..jobGradeLabel end
@@ -159,7 +159,7 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 		})
 
 		-- gang
-		local gangTpl = '<div>{{gang_label}}{{grade_label}}&nbsp;<img src="images/gang.png"/></div>'
+		local gangTpl = '<div>{{gang_label}}{{grade_label}}&nbsp;<img src="images/gang.png" style="vertical-align:middle;"/></div>'
 
 		local gangFradeLabel = Framework.PlayerData.gang.grade_label ~= Framework.PlayerData.gang.label and Framework.PlayerData.gang.grade_label or ''
 		if gangFradeLabel ~= '' then gangFradeLabel = ' - '..gangFradeLabel end
@@ -378,5 +378,38 @@ AddEventHandler("JLRP-Framework:deleteVehicle", function()
 	local vehicle = GetVehiclePedIsIn(Framework.PlayerData.ped)
 	if vehicle ~= 0 then
 		Framework.Game.DeleteVehicle(vehicle)
+	end
+end)
+
+local currentlyShowing3D = {}
+RegisterNetEvent("JLRP-Framework:show3D")
+AddEventHandler("JLRP-Framework:show3D", function(senderId, message, duration, distance, size, font, r, g, b, a)
+	if senderId and senderId ~= 0 then
+		if currentlyShowing3D[senderId] == nil then
+			CreateThread(function()
+				local tempSenderId = senderId
+				currentlyShowing3D[senderId] = { message = message, duration = (duration ~= nil and duration or 10000) + GetGameTimer(), distance = distance ~= nil and distance or 30.0, size = size, font = font, r = r, g = g, b = b, a = a }
+				local sender = GetPlayerFromServerId(tempSenderId)
+				while currentlyShowing3D[tempSenderId] and currentlyShowing3D[tempSenderId].duration >= GetGameTimer() do
+					local targetPed = GetPlayerPed(sender)
+					if targetPed and (GetPlayerServerId(targetPed) == tempSenderId or GetPlayerServerId(targetPed) == GetPlayerServerId(PlayerPedId())) then
+						local tCoords = GetPedBoneCoords(targetPed, 31086)
+						if tCoords and #(GetEntityCoords(Framework.PlayerData.ped) - tCoords) <= currentlyShowing3D[tempSenderId].distance then
+							if HasEntityClearLosToEntity(Framework.PlayerData.ped, targetPed, 13) then
+								Framework.Game.Utils.DrawText3D(vec(tCoords.x, tCoords.y, tCoords.z + 0.4), currentlyShowing3D[tempSenderId].message, currentlyShowing3D[tempSenderId].size, currentlyShowing3D[tempSenderId].font, currentlyShowing3D[tempSenderId].r, currentlyShowing3D[tempSenderId].g, currentlyShowing3D[tempSenderId].b, currentlyShowing3D[tempSenderId].a)
+							end
+						else
+							Wait(500)
+						end
+					else
+						Wait(500)
+					end
+					Wait(0)
+				end
+				currentlyShowing3D[tempSenderId] = nil
+			end)
+		else
+			currentlyShowing3D[senderId] = { message = message, duration = (duration ~= nil and duration or 10000) + GetGameTimer(), distance = distance ~= nil and distance or 30.0, size = size, font = font, r = r, g = g, b = b, a = a }
+		end
 	end
 end)

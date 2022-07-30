@@ -38,7 +38,7 @@ end, true, {help = _Locale('command_gangjob'), validate = true, arguments = {
 
 Framework.RegisterCommand('removegang', "superadmin", function(xPlayer, args, showError)
     args.playerId.setGang('nogang', 0)
-end, true, {help = _Locale('command_removegang'), validate = true, arguments = {
+	end, true, {help = _Locale('command_removegang'), validate = true, arguments = {
 	{name = 'playerId', help = _Locale('commandgeneric_playerid'), type = 'player'}
 }})
 
@@ -123,7 +123,8 @@ end, true, {help = _Locale('command_setgroup'), validate = true, arguments = {
 
 Framework.RegisterCommand('admin', 'mod', function(xPlayer, args, showError)
 	if Core.IsPlayerAdmin(xPlayer.source) then
-		xPlayer.adminDuty(not xPlayer.adminDuty())
+		local admin = xPlayer.adminDuty()
+		xPlayer.adminDuty(not admin)
 	else
 		showError(_Locale('command_adminduty_not_authorized'))
 	end
@@ -155,7 +156,7 @@ Framework.RegisterCommand('info', "user", function(xPlayer, args, showError)
 	local job = xPlayer.getJob().label
 	local jobgrade = xPlayer.getJob().grade_name
 	local gang = xPlayer.getGang().label
-	print("^2ID : ^5"..xPlayer.source.." ^0| ^2Name:^5"..xPlayer.getName().." ^0 | ^2Group:^5"..xPlayer.getGroup().."^0 | ^2Job:^5".. job.."^0 | ^2Gang:^5".. gang.."^0")
+	print("^2ID : ^5"..xPlayer.source.." ^0| ^2Name:^5"..xPlayer.getName().." ^0 | ^2Group:^5"..xPlayer.getGroup().."^0(onDuty: "..tostring(xPlayer.adminDuty())..") | ^2Job:^5".. job.."^0 | ^2Gang:^5".. gang.."^0")
 end, true)
 
 Framework.RegisterCommand('coords', "admin", function(xPlayer, args, showError)
@@ -212,3 +213,7 @@ Framework.RegisterCommand('players', "developer", function(xPlayer, args, showEr
 		print("^1[ ^2ID : ^5"..xPlayer.source.." ^0| ^2Name : ^5"..xPlayer.getName().." ^0 | ^2Group : ^5"..xPlayer.getGroup().." ^0 | ^2CitizenID : ^5"..xPlayer.citizenid.." ^0 | ^2Identifier : ^5".. xPlayer.identifier .."^1]^0\n")
 	end
 end, true)
+
+Framework.RegisterCommand({'refreshjobs', 'jobs'}, 'developer', function(xPlayer, args, showError)
+    Framework.RefreshJobs()
+end, true, {help = _Locale('command_refreshjobs')})
