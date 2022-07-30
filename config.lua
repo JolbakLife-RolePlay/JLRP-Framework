@@ -15,8 +15,12 @@ Config.Player = {}
 Config.Player.PVP = true -- Enable or disable pvp on the server (Ability to shoot other players)
 Config.Player.HealthRegenerator = true -- Re-generate health up to %50 if it goes below %50
 Config.Player.MaxWeight = 30   -- The max inventory weight in KG
+Config.Player.UpdateInterval = 5 -- how often to update player data in minutes
+Config.Player.StatusInterval = 5000 -- how often to check hunger/thirst status in milliseconds
 Config.Player.HungerRate = 4.2 -- Rate at which hunger goes down.
 Config.Player.ThirstRate = 3.8 -- Rate at which thirst goes down.
+Config.Player.StressRate = 1.0 -- Rate at which stress goes down.
+Config.Player.DrunkRate = 5.0 -- Rate at which thirst goes down.
 Config.Player.Bloodtypes = {
     "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
 }

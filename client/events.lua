@@ -413,3 +413,8 @@ AddEventHandler("JLRP-Framework:show3D", function(senderId, message, duration, d
 		end
 	end
 end)
+
+RegisterNetEvent("JLRP-Framework:updateStatus")
+AddEventHandler("JLRP-Framework:updateStatus", function(newHunger, newThirst, newStress, newDrunk)
+	
+end)

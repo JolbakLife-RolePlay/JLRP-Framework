@@ -171,13 +171,28 @@ AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
 	local _source = source
     local xPlayer = Framework.GetPlayerFromId(_source)
     if xPlayer then
+        --[[
         if xPlayer.getMetadata('dead') then
             MySQL.update(QUERIES.MODIFY_DEATH, { false, xPlayer.citizenid })
             xPlayer.setMetadata('isdead', false, false)
             xPlayer.setMetadata('is_dead', false, false)
             xPlayer.metadata['isDead'] = false -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
-            xPlayer.setMetadata('dead', false, true)
-        end    
+            xPlayer.setMetadata('dead', false, false)
+        end
+        ]]
+        MySQL.update(QUERIES.MODIFY_DEATH, { false, xPlayer.citizenid })
+        xPlayer.setMetadata('isdead', false, false)
+        xPlayer.setMetadata('is_dead', false, false)
+        xPlayer.metadata['isDead'] = false -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
+        xPlayer.setMetadata('dead', false, false)
+
+        xPlayer.setMetadata('hunger', 50)
+        xPlayer.setMetadata('thirst', 50)
+        xPlayer.setMetadata('stress', 0)
+        xPlayer.setMetadata('drunk', 0)
+
+        xPlayer.syncMetadata()
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', xPlayer.getMetadata('hunger'), xPlayer.getMetadata('thirst'), xPlayer.getMetadata('stress'), xPlayer.getMetadata('drunk'))
     end
 end)
 
@@ -218,6 +233,138 @@ RegisterNetEvent('JLRP-Framework:callCommand', function(command, args)
         end
     else
 		xPlayer.showNotification(_U("command_adminduty_not_authorized"), 'error')
+    end
+end)
+
+-- hunger
+RegisterNetEvent('JLRP-Framework:addHunger', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('hunger') + (amount ~= nil and amount or Config.Player.HungerRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('hunger', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', newValue, nil, nil, nil)
+    end
+end)
+
+RegisterNetEvent('JLRP-Framework:removeHunger', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('hunger') - (amount ~= nil and amount or Config.Player.HungerRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('hunger', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', newValue, nil, nil, nil)
+    end
+end)
+
+-- thirst
+RegisterNetEvent('JLRP-Framework:addThirst', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('thirst') + (amount ~= nil and amount or Config.Player.ThirstRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('thirst', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, newValue, nil, nil)
+    end
+end)
+
+RegisterNetEvent('JLRP-Framework:removeThirst', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('thirst') - (amount ~= nil and amount or Config.Player.ThirstRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('thirst', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, newValue, nil, nil)
+    end
+end)
+
+-- stress
+RegisterNetEvent('JLRP-Framework:addStress', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('stress') + (amount ~= nil and amount or Config.Player.StressRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('stress', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, nil, newValue, nil)
+    end
+end)
+
+RegisterNetEvent('JLRP-Framework:removeStress', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('stress') - (amount ~= nil and amount or Config.Player.StressRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('stress', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, nil, newValue, nil)
+    end
+end)
+
+-- drunk
+RegisterNetEvent('JLRP-Framework:addDrunk', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('drunk') + (amount ~= nil and amount or Config.Player.DrunkRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('drunk', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, nil, nil, newValue)
+    end
+end)
+
+RegisterNetEvent('JLRP-Framework:removeDrunk', function(amount)
+    local src = source
+    local xPlayer = Framework.GetPlayerFromId(src)
+    if xPlayer then
+        local newValue = xPlayer.getMetadata('drunk') - (amount ~= nil and amount or Config.Player.DrunkRate)
+        
+        if newValue > 100 then
+            newValue = 100
+        elseif newValue < 0 then
+            newValue = 0
+        end
+        xPlayer.setMetadata('drunk', newValue, true)
+        xPlayer.triggerEvent('JLRP-Framework:updateStatus', nil, nil, nil, newValue)
     end
 end)
 

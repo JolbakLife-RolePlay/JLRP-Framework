@@ -20,6 +20,7 @@ MySQL.ready(function()
 	PositionSync()
 	DBSync()
 	PayCheck()
+	StatusUpdate()
 end)
 
 function Core.RefreshJobs()

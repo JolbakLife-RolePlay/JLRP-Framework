@@ -285,3 +285,15 @@ function ProcessNewPosition()
 	
     return pos
 end
+
+CreateThread(function()
+	while not Framework.IsPlayerLoaded() do Wait(1000) end
+	while true do
+		if (Framework.PlayerData.metadata['hunger'] <= 0 or Framework.PlayerData.metadata['thirst'] <= 0) and not Framework.PlayerData.dead then
+			local currentHealth = GetEntityHealth(Framework.PlayerData.ped)
+			local decreaseThreshold = math.random(5, 10)
+			SetEntityHealth(ped, currentHealth - decreaseThreshold)
+		end
+		Wait(Config.Player.StatusInterval)
+	end
+end)

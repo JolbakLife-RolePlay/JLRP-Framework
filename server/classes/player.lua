@@ -152,6 +152,7 @@ function Core.Player.CheckPlayerData(source, PlayerData, isNew)
     PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
     PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
     PlayerData.metadata['stress'] = PlayerData.metadata['stress'] or 0
+	PlayerData.metadata['drunk'] = PlayerData.metadata['drunk'] or 0
     PlayerData.metadata['isdead'] = PlayerData.metadata['isdead'] or false
     PlayerData.metadata['armor'] = PlayerData.metadata['armor'] or 0
     PlayerData.metadata['ishandcuffed'] = PlayerData.metadata['ishandcuffed'] or false
