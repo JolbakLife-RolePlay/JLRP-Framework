@@ -147,7 +147,7 @@ CreateThread(function()
 				local killerEntity, deathCause = GetPedSourceOfDeath(PlayerPedID), GetPedCauseOfDeath(PlayerPedID)
 				local killerClientId = NetworkGetPlayerIndexFromPed(killerEntity)
 
-				if killerEntity ~= PlayerPedID and killerClientId and NetworkIsPlayerActive(killerClientId) then
+				if killerClientId and NetworkIsPlayerActive(killerClientId) then
 					PlayerKilledByPlayer(GetPlayerServerId(killerClientId), killerClientId, deathCause)
 				else
 					PlayerKilled(deathCause)
@@ -287,13 +287,19 @@ function ProcessNewPosition()
 end
 
 CreateThread(function()
-	while not Framework.IsPlayerLoaded() do Wait(1000) end
+	while not Framework.IsPlayerLoaded() or not Framework.PlayerData.metadata do Wait(1000) end
+	local sleep
 	while true do
-		if (Framework.PlayerData.metadata['hunger'] <= 0 or Framework.PlayerData.metadata['thirst'] <= 0) and not Framework.PlayerData.dead then
+		sleep = Config.Player.StatusInterval
+		if (Framework.PlayerData.metadata.hunger <= 0 or Framework.PlayerData.metadata.thirst <= 0) and not Framework.PlayerData.dead then
 			local currentHealth = GetEntityHealth(Framework.PlayerData.ped)
+			if currentHealth <= (GetEntityMaxHealth(Framework.PlayerData.ped) / 2) and Config.Player.HealthRegenerator then
+				sleep = 1000
+			end
+			
 			local decreaseThreshold = math.random(5, 10)
-			SetEntityHealth(ped, currentHealth - decreaseThreshold)
+			SetEntityHealth(Framework.PlayerData.ped, currentHealth - decreaseThreshold)
 		end
-		Wait(Config.Player.StatusInterval)
+		Wait(sleep)
 	end
 end)

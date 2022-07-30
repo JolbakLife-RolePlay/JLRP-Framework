@@ -107,8 +107,9 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 			model = GetHashKey("mp_m_freemode_01"),
 			skipFade = false
 		}, function()
-			TriggerServerEvent('JLRP-Framework:onPlayerSpawn')
-			TriggerEvent('JLRP-Framework:onPlayerSpawn')
+			local firstTrigger = true
+			TriggerServerEvent('JLRP-Framework:onPlayerSpawn', firstTrigger)
+			TriggerEvent('JLRP-Framework:onPlayerSpawn', firstTrigger)
 
 			if isNew then
 				TriggerEvent('skinchanger:loadDefaultModel', skin.sex == 0)
@@ -173,7 +174,7 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 end)
 
 AddEventHandler('playerSpawned', onPlayerSpawn)
-AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
+AddEventHandler('JLRP-Framework:onPlayerSpawn', function(firstTrigger)
 	if Framework.PlayerLoaded then
 		Framework.SetPlayerData('ped', PlayerPedId())
 		Framework.SetPlayerData('isdead', false)

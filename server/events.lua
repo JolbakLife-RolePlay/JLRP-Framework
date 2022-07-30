@@ -167,7 +167,7 @@ AddEventHandler('JLRP-Framework:triggerServerCallback', function(name, requestId
 end)
 
 RegisterNetEvent('JLRP-Framework:onPlayerSpawn')
-AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
+AddEventHandler('JLRP-Framework:onPlayerSpawn', function(firstTrigger)
 	local _source = source
     local xPlayer = Framework.GetPlayerFromId(_source)
     if xPlayer then
@@ -186,11 +186,13 @@ AddEventHandler('JLRP-Framework:onPlayerSpawn', function()
         xPlayer.metadata['isDead'] = false -- we use this method because xPlayer.setMetadata(key, val, sync) translates the key to lowercase
         xPlayer.setMetadata('dead', false, false)
 
-        xPlayer.setMetadata('hunger', 50)
-        xPlayer.setMetadata('thirst', 50)
-        xPlayer.setMetadata('stress', 0)
-        xPlayer.setMetadata('drunk', 0)
-
+        if not firstTrigger then
+            xPlayer.setMetadata('hunger', 50)
+            xPlayer.setMetadata('thirst', 50)
+            xPlayer.setMetadata('stress', 0)
+            xPlayer.setMetadata('drunk', 0)
+        end
+        
         xPlayer.syncMetadata()
         xPlayer.triggerEvent('JLRP-Framework:updateStatus', xPlayer.getMetadata('hunger'), xPlayer.getMetadata('thirst'), xPlayer.getMetadata('stress'), xPlayer.getMetadata('drunk'))
     end
