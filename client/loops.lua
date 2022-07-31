@@ -290,15 +290,18 @@ CreateThread(function()
 	while not Framework.IsPlayerLoaded() or not Framework.PlayerData.metadata do Wait(1000) end
 	local sleep
 	while true do
-		sleep = Config.Player.StatusInterval
+		sleep = Framework.GetConfig().Player.StatusInterval
 		if (Framework.PlayerData.metadata.hunger <= 0 or Framework.PlayerData.metadata.thirst <= 0) and not Framework.PlayerData.dead then
-			local currentHealth = GetEntityHealth(Framework.PlayerData.ped)
-			if currentHealth <= (GetEntityMaxHealth(Framework.PlayerData.ped) / 2) and Config.Player.HealthRegenerator then
-				sleep = 1000
+			local health = GetEntityHealth(Framework.PlayerData.ped)
+			local maxHealth = GetEntityMaxHealth(Framework.PlayerData.ped)
+			local currentHealth = ((health - 100) * 100) / (maxHealth - 100)
+			if currentHealth <= (maxHealth - 100) / 2 and Framework.GetConfig().Player.HealthRegenerator then
+				sleep = 1500
 			end
 			
 			local decreaseThreshold = math.random(5, 10)
-			SetEntityHealth(Framework.PlayerData.ped, currentHealth - decreaseThreshold)
+			local final = health - decreaseThreshold
+			SetEntityHealth(Framework.PlayerData.ped, final)
 		end
 		Wait(sleep)
 	end

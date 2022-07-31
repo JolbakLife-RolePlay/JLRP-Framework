@@ -138,6 +138,8 @@ AddEventHandler('JLRP-Framework:playerLoaded', function(xPlayer, isNew, skin)
 
 	if not Config.Player.HealthRegenerator then
 		SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
+	else
+		SetPlayerHealthRechargeMultiplier(PlayerId(), 0.5)
 	end
 
 	if Config.EnableHud then
