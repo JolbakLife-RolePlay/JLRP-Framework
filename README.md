@@ -1,5 +1,5 @@
 # JLRP-Framework
-A <b>WIP</b> framework for creating roleplay servers on FiveM.
+A <b>WIP</b> framework for creating roleplay servers on FiveM. (Almost everything except gangs and live server closure work and tested!)
 
 ## Requirements
 
