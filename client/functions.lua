@@ -681,9 +681,12 @@ function Framework.Game.SpawnVehicle(vehicle, coords, heading, cb, networked)
 		CreateThread(function()
 			Framework.Streaming.RequestModel(model, function()
 				Framework.TriggerServerCallback('JLRP-Framework:Framework.OneSync.SpawnVehicle', function(netID)
-					while not NetworkDoesEntityExistWithNetworkId(netID) do Wait(50) end
-					local vehicle = NetToVeh(netID)
+					local timer = GetGameTimer()
+					while not NetworkDoesEntityExistWithNetworkId(netID) do Wait(0) if GetGameTimer() - timer > 60000 then return end end
+					timer = GetGameTimer()
 					SetNetworkIdCanMigrate(netID, true)
+					while NetworkDoesEntityExistWithNetworkId(netID) and not NetworkHasControlOfNetworkId(netID) do Wait(0) NetworkRequestControlOfNetworkId(netID) if GetGameTimer() - timer > 60000 then return end end
+					local vehicle = NetToVeh(netID)
 					SetEntityAsMissionEntity(vehicle, true, false)
 					SetVehicleHasBeenOwnedByPlayer(vehicle, true)
 					SetVehicleNeedsToBeHotwired(vehicle, false)

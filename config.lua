@@ -8,7 +8,7 @@ Config.DefaultDuty = false
 Config.Accounts = {}
 Config.Accounts.MoneyTypes = {bank = 'bank', money = 'money', black_money = 'black_money'}
 Config.Accounts.StartingMoney = {bank = 5000, money = 500}
-Config.Accounts.DontAllowMinus = {'mbankoney', 'money', 'black_money'} -- Money that is not allowed going in minus
+Config.Accounts.DontAllowMinus = {'bank', 'money', 'black_money'} -- Money that is not allowed going in minus
 Config.Accounts.PayCheckInterval = 15 -- The time in minutes that it will give the paycheck
 
 Config.Player = {}
@@ -17,10 +17,10 @@ Config.Player.HealthRegenerator = true -- Re-generate health up to %50 if it goe
 Config.Player.MaxWeight = 30   -- The max inventory weight in KG
 Config.Player.UpdateInterval = 1 -- how often to update player data in minutes
 Config.Player.StatusInterval = 5000 -- how often to check hunger/thirst status in milliseconds
-Config.Player.HungerRate = 2.5 -- Rate at which hunger goes down.
-Config.Player.ThirstRate = 3.0 -- Rate at which thirst goes down.
-Config.Player.StressRate = 4.5 -- Rate at which stress goes down.
-Config.Player.DrunkRate = 6.6 -- Rate at which drunk goes down.
+Config.Player.HungerRate = 1.5 -- Rate at which hunger goes down.
+Config.Player.ThirstRate = 2.1 -- Rate at which thirst goes down.
+Config.Player.StressRate = 3.0 -- Rate at which stress goes down.
+Config.Player.DrunkRate = 5.5 -- Rate at which drunk goes down.
 Config.Player.Bloodtypes = {
     "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
 }
